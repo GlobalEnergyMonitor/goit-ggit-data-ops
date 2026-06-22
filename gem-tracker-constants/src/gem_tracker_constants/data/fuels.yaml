@@ -17,13 +17,14 @@
 #   - A pipeline carrying ONLY refined products ('Oil products (only)',
 #     'Naphtha (only)', 'Naphtha, oil products') or only 'Condensate' is
 #     neither Oil nor NGL. Those strings live ONLY in oil_ngl_combined.
-#   - 'Oil, NGL' and 'Oil, NGL, naphtha' belong to BOTH buckets — naphtha
-#     doesn't disqualify them because oil and NGL are also present.
+#   - 'Oil, NGL' and 'Oil, NGL, naphtha' belong to the oil bucket ONLY — a
+#     pipeline carrying both fuels is classified as Oil, so the oil and ngl
+#     buckets partition cleanly and per-fuel totals never double-count.
 #
 # Invariants (enforced by tests/test_fuel_invariants.py):
-#   1. `oil` and `ngl` overlap on exactly the two shared multi-fuel strings
-#      'Oil, NGL' and 'Oil, NGL, naphtha' — a single pipeline tagged with one
-#      of those values shows up in BOTH the oil and NGL aggregates.
+#   1. `oil` and `ngl` are disjoint — every pipeline lands in at most one
+#      per-fuel aggregate. The dual-fuel strings 'Oil, NGL' and
+#      'Oil, NGL, naphtha' live in `oil`.
 #   2. oil_ngl_combined == union(oil, ngl) plus the tracker strings that are
 #      neither oil nor NGL but still ship in the combined Oil-NGL release:
 #      'Oil products (only)', 'Naphtha (only)', 'Naphtha, oil products',
@@ -55,8 +56,6 @@ oil:
 ngl:
   - NGL
   - NGL, oil products
-  - Oil, NGL
-  - Oil, NGL, naphtha
   - LPG
   - Condensate/NGL
 

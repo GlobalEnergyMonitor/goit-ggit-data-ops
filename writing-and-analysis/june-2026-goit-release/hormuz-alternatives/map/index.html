@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Strait of Hormuz crude-oil alternatives — GOIT June 2026</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="wrap">
+  <div class="toolbar">
+    <button id="dl-svg">Download SVG</button>
+    <button id="dl-png">Download PNG</button>
+    <label for="png-scale">PNG scale</label>
+    <select id="png-scale"><option value="2">2×</option><option value="3" selected>3×</option><option value="4">4×</option></select>
+  </div>
+  <div id="map"></div>
+</div>
+<div class="tooltip"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+<script src="map.js"></script>
+</body>
+</html>

@@ -65,7 +65,7 @@ Each bucket is the list of raw `Fuel`-column strings that count as that fuel typ
 | `GAS_HYDROGEN_FUEL_OPTIONS` | `Gas` and `Hydrogen` as separate values, for runs that keep hydrogen distinct. |
 | `HYDROGEN_FUEL_OPTIONS` | Hydrogen-only pipelines. |
 | `OIL_FUEL_OPTIONS` | Strings that count as an oil pipeline — oil alone or mixed with NGLs, condensate, or oil products. This is the Oil bucket the release downloads (xlsx / geojson / gpkg / shapefile) and qc summary tables filter on. |
-| `NGL_FUEL_OPTIONS` | Strings that count as an NGL pipeline — those explicitly naming an NGL (NGL, LPG, `Condensate/NGL`). Naphtha-only strings and standalone `Condensate` do **not** qualify. |
+| `NGL_FUEL_OPTIONS` | Strings that count as an NGL pipeline — those explicitly naming an NGL (NGL, LPG, `Condensate/NGL`) without also naming oil. Dual-fuel strings (`Oil, NGL`, `Oil, NGL, naphtha`) are classified as Oil, not NGL. Naphtha-only strings and standalone `Condensate` do **not** qualify. |
 | `OIL_NGL_COMBINED` | Everything in the combined Oil-NGL release downloads: the oil and NGL buckets **plus** the tracker strings that are neither (`Oil products (only)`, `Naphtha (only)`, `Naphtha, oil products`, `Condensate`). Mirrors the `fuel_options` in the release-downloads export notebook (`scripts/data-file-creation/`). |
 
 ### Which `Fuel` strings land in which bucket
@@ -73,8 +73,8 @@ Each bucket is the list of raw `Fuel`-column strings that count as that fuel typ
 | `Fuel` string | oil | ngl |
 | --- | :-: | :-: |
 | `Oil` | ✓ | |
-| `Oil, NGL` | ✓ | ✓ |
-| `Oil, NGL, naphtha` | ✓ | ✓ |
+| `Oil, NGL` | ✓ | |
+| `Oil, NGL, naphtha` | ✓ | |
 | `Oil, condensate` | ✓ | |
 | `Oil, oil products` | ✓ | |
 | `NGL` | | ✓ |
@@ -86,7 +86,7 @@ Each bucket is the list of raw `Fuel`-column strings that count as that fuel typ
 | `Naphtha, oil products` | | |
 | `Condensate` | | |
 
-All thirteen strings appear in `OIL_NGL_COMBINED`. The last four rows are in the Oil-NGL tracker but are neither Oil nor NGL: a pipeline carrying only refined products (oil products, naphtha) isn't an oil or NGL pipeline, and condensate on its own doesn't make a pipeline an NGL pipeline.
+All thirteen strings appear in `OIL_NGL_COMBINED`. The buckets are disjoint — the dual-fuel strings `Oil, NGL` and `Oil, NGL, naphtha` are classified as Oil, so a pipeline lands in at most one per-fuel aggregate. The last four rows are in the Oil-NGL tracker but are neither Oil nor NGL: a pipeline carrying only refined products (oil products, naphtha) isn't an oil or NGL pipeline, and condensate on its own doesn't make a pipeline an NGL pipeline.
 
 ### Status orderings
 
@@ -112,7 +112,7 @@ Pipeline trackers (GOIT, GGIT) use lowercase statuses; the LNG terminal tracker 
 
 Enforced by tests (`pytest`):
 
-1. `OIL_FUEL_OPTIONS` and `NGL_FUEL_OPTIONS` overlap on exactly `"Oil, NGL"` and `"Oil, NGL, naphtha"` — a pipeline tagged with either string appears in both buckets, and nothing else appears in both.
+1. `OIL_FUEL_OPTIONS` and `NGL_FUEL_OPTIONS` are disjoint — no string appears in both buckets, so Oil + NGL totals never double-count a pipeline. The dual-fuel strings `"Oil, NGL"` and `"Oil, NGL, naphtha"` live in the oil bucket.
 2. `set(OIL_NGL_COMBINED)` equals `set(OIL_FUEL_OPTIONS) | set(NGL_FUEL_OPTIONS)` plus the neither-Oil-nor-NGL strings (`"Oil products (only)"`, `"Naphtha (only)"`, `"Naphtha, oil products"`, `"Condensate"`).
 3. The neither-Oil-nor-NGL strings are absent from both `OIL_FUEL_OPTIONS` and `NGL_FUEL_OPTIONS` — none qualifies as Oil or NGL on its own.
 4. `PIPELINE_EXCEL_STATUS == PIPELINE_STATUS[:2] + [PIPELINE_IN_DEV_COL] + PIPELINE_STATUS[2:]` (and the same shape for terminals).

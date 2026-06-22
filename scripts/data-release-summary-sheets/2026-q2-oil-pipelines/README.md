@@ -1,3 +1,17 @@
+
+   292 NGL pipeline projects tracked
+ 0.112 M km tracked
+    38 NGL pipeline projects in development (proposed + construction)
+  11.1 K km in development
+
+
+
+ 1,634 Oil pipeline projects tracked
+ 0.487 M km tracked
+   152 Oil pipeline projects in development (proposed + construction)
+  32.4 K km in development
+
+
 # GOIT pipelines summary sheets — June 2026 release
 
 Methodology for the tables produced by `GOIT-pipelines-summary-sheets-June2026-release.ipynb`.
@@ -26,16 +40,18 @@ and `""` placeholders are then replaced with NaN.
 
 ## Fuel buckets
 
-`FUEL_CONFIG` defines which `Fuel` values belong to each bucket:
+The buckets come from the in-repo `gem-tracker-constants` package (`FUEL_CONFIG` just maps
+`FUEL_TYPE` to the imported list):
 
 | `FUEL_TYPE` | `Fuel` values included |
 | --- | --- |
 | `Gas` | `Gas`, `Gas and Hydrogen` (collapsed to `Gas`) |
-| `Oil` | `Oil`; `Oil, NGL`; `Oil, NGL, naphtha`; `Oil products (only)`; `Oil, oil products`; `Oil, condensate` |
-| `NGL` | `NGL`; `NGL, oil products`; `Oil, NGL`; `Oil, NGL, naphtha`; `LPG`; `Naphtha (only)`; `Naphtha, oil products`; `Condensate`; `Condensate/NGL` |
+| `Oil` | `Oil`; `Oil, NGL`; `Oil, NGL, naphtha`; `Oil, oil products`; `Oil, condensate` |
+| `NGL` | `NGL`; `NGL, oil products`; `LPG`; `Condensate/NGL` |
 
-`Oil, NGL` and `Oil, NGL, naphtha` intentionally appear in **both** the Oil and NGL buckets:
-those projects carry both fuels, so they show up in both per-fuel releases.
+The Oil and NGL buckets are disjoint: the dual-fuel strings `Oil, NGL` and
+`Oil, NGL, naphtha` are classified as Oil (they're labeled `Oil` in the release downloads
+too), so no pipeline is counted in both per-fuel summaries.
 
 ## Region filtering
 

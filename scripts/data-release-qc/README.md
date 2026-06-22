@@ -50,9 +50,10 @@ explain what each check means and what to do when it fires.
 
 These are reported, not hard-failed, because expected values differ by release:
 
-- **Fuel** — after simplification should be a small set (e.g. `Oil` / `NGL` /
-  `Oil, NGL`). Anything unexpected means the fuel-bucket filter in the export
-  notebook (driven by `gem-tracker-constants`) and this repo's QC disagree.
+- **Fuel** — after simplification should be a small set (e.g. `Oil` / `NGL`;
+  dual-fuel strings like `Oil, NGL` simplify to `Oil`). Anything unexpected
+  means the fuel-bucket filter in the export notebook (driven by
+  `gem-tracker-constants`) and this repo's QC disagree.
 - **Status** — canonical lowercase set: `proposed, construction, operating,
   idle, mothballed, shelved, cancelled, retired`. `N/A` must not appear (the
   export filters it).

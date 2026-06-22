@@ -4,7 +4,9 @@ from gem_tracker_constants import (
     OIL_NGL_COMBINED,
 )
 
-SHARED = {"Oil, NGL", "Oil, NGL, naphtha"}
+# Dual-fuel strings: classified as Oil (oil bucket only), so the oil and ngl
+# buckets partition cleanly and per-fuel totals never double-count a pipeline.
+DUAL_FUEL = {"Oil, NGL", "Oil, NGL, naphtha"}
 # Strings in the Oil-NGL tracker that are neither Oil nor NGL: refined-product
 # pipelines and standalone condensate. They ship in the combined release but
 # must not appear in the oil or ngl buckets.
@@ -16,11 +18,18 @@ NEITHER_OIL_NOR_NGL = {
 }
 
 
-def test_oil_and_ngl_overlap_is_exactly_the_shared_entries():
-    """'Oil, NGL' and 'Oil, NGL, naphtha' must appear in BOTH buckets so that
-    a pipeline tagged with one of those values is counted in oil and NGL —
-    and nothing else may live in both buckets."""
-    assert set(OIL_FUEL_OPTIONS) & set(NGL_FUEL_OPTIONS) == SHARED
+def test_oil_and_ngl_are_disjoint():
+    """No Fuel string may live in both buckets — a pipeline lands in at most
+    one per-fuel aggregate, so Oil + NGL totals never double-count."""
+    assert set(OIL_FUEL_OPTIONS) & set(NGL_FUEL_OPTIONS) == set()
+
+
+def test_dual_fuel_strings_are_oil():
+    """'Oil, NGL' and 'Oil, NGL, naphtha' are classified as Oil: present in
+    the oil bucket, absent from the ngl bucket."""
+    for fuel in DUAL_FUEL:
+        assert fuel in OIL_FUEL_OPTIONS
+        assert fuel not in NGL_FUEL_OPTIONS
 
 
 def test_combined_is_union_plus_neither_strings():
@@ -42,7 +51,6 @@ def test_buckets_exclude_neither_strings():
 
 
 def test_no_duplicates_within_a_bucket():
-    """The intentional overlap is across buckets, not within one bucket."""
     for name, bucket in [
         ("OIL_FUEL_OPTIONS", OIL_FUEL_OPTIONS),
         ("NGL_FUEL_OPTIONS", NGL_FUEL_OPTIONS),
