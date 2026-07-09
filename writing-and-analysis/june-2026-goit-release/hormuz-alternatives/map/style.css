@@ -118,8 +118,8 @@
   --pipe-w-operating: 4px;
   --pipe-w-kirkuk: 4px;
   --pipe-w-mothballed: 4px;
-  --pipe-w-retired: 2.5px;
-  --pipe-w-context: 2.5px; /* faint grey operating-network layer */
+  --pipe-w-retired: 3px;
+  --pipe-w-context: 3px; /* faint grey operating-network layer */
   --pipe-w-default: 4px; /* fallback for any uncategorised line */
 }
 * {
@@ -232,7 +232,10 @@ svg {
   stroke-linejoin: round;
 }
 .terminal {
-  fill: #333333;
+  fill: var(--text);
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 1px;
 }
 .terminal-label {
   font-family: "Barlow Semi Condensed", sans-serif;

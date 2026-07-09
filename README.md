@@ -20,6 +20,11 @@ release artifacts are committed deliberately (see that folder's README).
 ```
 gem-tracker-constants/                canonical fuel buckets + status orderings
                                       (installable package: pip install -e ./gem-tracker-constants)
+updates/                              annual update cycles (the research phase before a release)
+├── UPDATE-CHECKLIST.md               reusable cycle checklist
+├── asana-templates.md                Asana/update-sheet/Drive spin-up templates
+├── researcher-allocation/            researcher allocation calculations, by year
+└── YYYY-qN-<tracker>/                one folder per cycle (docs + progress/QC notebooks)
 scripts/
 ├── estimate-length/                  pipeline length calculations
 ├── owner-parent-scripts/             owner/parent attribution for pipelines + terminals
@@ -39,7 +44,6 @@ scripts/
 ├── data-file-creation/               export tracker sheets to release download files
 │   └── data-files/                   release artifacts (.gpkg/.zip committed)
 ├── data-release-qc/                  pre-distribution checks for release download files
-├── researcher-requests-scripts/      researcher allocation calculations, by year
 └── _archive/                         deprecated notebooks, pre-2023 work, old R code,
                                       wiki-page-cleanup-automation
 ```
@@ -47,6 +51,11 @@ scripts/
 Anything under a `_archive/` folder is kept for historical reference and is not part of the active workflow.
 
 ## Typical release workflow
+
+The yearly rhythm has two phases: the **annual update** (researchers revise
+the live tracker sheet country by country — run it from
+[updates/UPDATE-CHECKLIST.md](updates/UPDATE-CHECKLIST.md)), then the
+**release** (freeze, export, QC, publish — below).
 
 For a new quarterly release, work through [RELEASE-CHECKLIST.md](RELEASE-CHECKLIST.md) —
 copy it into the release folder and check items off so progress is visible.

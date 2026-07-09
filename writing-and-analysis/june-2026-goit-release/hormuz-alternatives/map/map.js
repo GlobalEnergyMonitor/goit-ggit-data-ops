@@ -69,12 +69,16 @@ const CONTEXT_STYLE = {
 // cities or pipelines. [name, lon, lat]; edit/add/move here.
 const COUNTRY_LABELS = [
   ["SAUDI ARABIA", 45.0, 22.5],
-  ["IRAQ", 43.0, 33.0],
+  ["IRAQ", 42.0, 32.5],
   ["IRAN", 53.5, 31.5],
-  ["TÜRKIYE", 35.5, 38.3],
-  ["SYRIA", 38.7, 34.9],
-  ["U.A.E.", 53.75, 23.6],
+  ["TÜRKIYE", 37, 39],
+  ["SYRIA", 38.7, 35.5],
+  ["U.A.E.", 54.25, 23.3],
 ];
+
+// Cities whose label reads better to the LEFT of the dot (right-aligned) —
+// e.g. near a frame edge or a busy cluster. Everything else labels to the right.
+const LABEL_LEFT = new Set(["Abu Dhabi", "Habshan", "Yanbu", "Sidon"]);
 
 // ---- Figure layout (GEM chart anatomy) ----
 // Width is fixed; the header (title + subtitle) wraps to the figure width, so
@@ -85,7 +89,15 @@ const Wfig = 1000,
   PAD = 28;
 const mapX = PAD,
   mapW = Wfig - 2 * PAD; // 944
-const mapH = Math.round((mapW * 18) / 26); // 654 (frame aspect lon26:lat18)
+// Geographic frame extent (lon/lat). The map aspect — and therefore the total
+// figure height — follows latSpan:lonSpan. The latitude span is set so the
+// figure aspect (~1000:931) matches the companion Flourish bar chart it sits
+// beside (1588:1478).
+const LON0 = 34,
+  LON1 = 60,
+  LAT0 = 19.65,
+  LAT1 = 40.35;
+const mapH = Math.round((mapW * (LAT1 - LAT0)) / (LON1 - LON0)); // 752
 
 // Header typography (baselines + line heights, px). The title/subtitle text
 // itself lives in the .text() calls in layoutHeader().
@@ -98,14 +110,14 @@ const TITLE_TOP = 46, // first title baseline
 // Assigned by layoutHeader() once the header is measured.
 let mapTop, mapBottom, footerTop, Hfig;
 
-// Fixed map frame matching the static PNG extent: lon ~34–60E, lat ~21–39N.
+// Fixed map frame: lon ~34–60E, lat ~19.65–40.35N (see LON0/LON1/LAT0/LAT1).
 // Use MultiPoint of the corners (not a Polygon) so fitExtent reads an
 // unambiguous bbox — a Polygon ring's winding can make d3 fit the whole globe.
 const FRAME = {
   type: "MultiPoint",
   coordinates: [
-    [34, 21],
-    [60, 39],
+    [LON0, LAT0],
+    [LON1, LAT1],
   ],
 };
 
@@ -293,8 +305,8 @@ function draw() {
   path = d3.geoPath(proj);
 
   // Water background (frame rectangle) + clip
-  const fx = proj([34, 39]),
-    fx2 = proj([60, 21]);
+  const fx = proj([LON0, LAT1]),
+    fx2 = proj([LON1, LAT0]);
   svg
     .append("rect")
     .attr("class", "water")
@@ -370,12 +382,13 @@ function drawContext() {
 
 function drawPipes() {
   const layer = g.append("g");
-  // sort so solid/operating draw on top of faint historic
+  // sort so mothballed lines draw on top, then operating, over faint historic.
+  // Keys MUST match the data's category values (flourish-hormuz-lines.geojson).
   const order = {
-    "Retired lines": 0,
-    "Mothballed oil pipelines": 1,
-    "Operating bypass routes": 2,
-    "Kirkuk–Ceyhan pipeline (reopened 2026)": 3,
+    "Retired routes": 0,
+    "Operating bypass routes": 1,
+    "Kirkuk–Ceyhan pipeline (reopened 2026)": 2,
+    "Mothballed lines": 3,
   };
   const feats = LINES.features
     .slice()
@@ -428,8 +441,9 @@ function drawPoints() {
   t.append("circle").attr("class", "terminal").attr("r", 2.6);
   t.append("text")
     .attr("class", "terminal-label")
-    .attr("x", 5)
+    .attr("x", (d) => (LABEL_LEFT.has(d.name) ? -5 : 5))
     .attr("y", 0)
+    .attr("text-anchor", (d) => (LABEL_LEFT.has(d.name) ? "end" : "start"))
     .text((d) => d.name.toUpperCase());
 
   const c = layer

@@ -34,7 +34,7 @@ SVG = HERE / "GOIT-Hormuz-alternative-routes-d3.svg"
 # Figure width is fixed in map.js; the height is dynamic (the title/subtitle
 # wrap to the width, so taller headers make a taller figure). These are only
 # fallbacks — the real size is read back out of the exported SVG below.
-FIG_W, FIG_H = 1000, 810
+FIG_W, FIG_H = 1000, 931
 
 
 def find_chrome():

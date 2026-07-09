@@ -22,3 +22,7 @@ README.md for the folder map and the typical release workflow.
   Exception: `scripts/data-file-creation/data-files/` commits `.gpkg`/`.zip`
   release artifacts deliberately — see the CLAUDE.md in that folder. Don't
   add data files to commits unless asked — releases are the user's call.
+- `updates/` holds annual update cycles (the researcher-driven phase before
+  a release): per-cycle folders with docs plus progress/QC notebooks, run
+  from `updates/UPDATE-CHECKLIST.md`. Cycle notebooks must stay strictly
+  read-only against Google Sheets.
