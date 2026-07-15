@@ -106,9 +106,11 @@ jobs:
           git init -q -b "$DEST_BRANCH"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add goit_map_latest.geojson
+          git add ./*.geojson
           git commit -q -m "map data build (${GITHUB_SHA::7}, ${{ github.event_name }})"
           git push -q --force \
             "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
             "HEAD:refs/heads/${DEST_BRANCH}"
-          echo "published: https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${DEST_BRANCH}/goit_map_latest.geojson"
+          for f in *.geojson; do
+            echo "published: https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${DEST_BRANCH}/${f}"
+          done
