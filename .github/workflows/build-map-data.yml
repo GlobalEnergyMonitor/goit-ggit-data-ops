@@ -1,0 +1,95 @@
+name: build map data
+
+# Rebuilds the GOIT interim-map geojson and publishes it to the stable
+# DO Spaces key that goit-ggit-cycle-maps fetches at runtime.
+#
+# Triggers:
+#  - repository_dispatch 'routes-normalized': fired by the normalize-routes
+#    workflow in goit-ggit-pipeline-routes after it pushes a new `normalized`
+#    branch (i.e. route geometries changed)
+#  - schedule: daily, so sheet-only edits (which never touch the routes repo)
+#    still reach the map within a day
+#  - workflow_dispatch: manual runs; `upload: false` builds without
+#    publishing, `dest_key` can point at a test key
+#
+# Secrets: GDRIVE_API_CREDENTIALS (Google service-account JSON, read by
+# pygsheets), DO_SPACES_KEY / DO_SPACES_SECRET (publicgemdata bucket).
+
+on:
+  repository_dispatch:
+    types: [routes-normalized]
+  schedule:
+    - cron: '23 6 * * *'
+  workflow_dispatch:
+    inputs:
+      dest_key:
+        description: 'DO Spaces object key to upload to'
+        default: interim_maps/goit_map_latest.geojson
+      upload:
+        description: 'upload to DO Spaces (uncheck for a dry run)'
+        type: boolean
+        default: true
+
+# Coalesce rapid route pushes: a newer trigger cancels an in-flight build.
+concurrency:
+  group: build-map-data
+  cancel-in-progress: true
+
+jobs:
+  build-goit-map:
+    runs-on: ubuntu-latest
+    steps:
+      - name: log trigger
+        run: |
+          echo "event: ${{ github.event_name }}"
+          echo "routes sha: ${{ github.event.client_payload.routes_sha }}"
+
+      - uses: actions/checkout@v4
+
+      - name: checkout normalized routes
+        uses: actions/checkout@v4
+        with:
+          repository: GlobalEnergyMonitor/goit-ggit-pipeline-routes
+          ref: normalized
+          path: pipeline-routes-normalized
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: scripts/data-file-creation/requirements.txt
+
+      - name: install dependencies
+        run: |
+          pip install -r scripts/data-file-creation/requirements.txt
+          pip install ./gem-tracker-constants
+
+      - name: build map geojson
+        env:
+          GDRIVE_API_CREDENTIALS: ${{ secrets.GDRIVE_API_CREDENTIALS }}
+        run: |
+          python scripts/data-file-creation/pipeline_exports.py \
+            --pipeline-type Oil-NGL --simplify-fuels Oil-and-NGL \
+            --routes-path pipeline-routes-normalized/data/individual-routes \
+            --map-only --map-output out/goit_map_latest.geojson
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: goit-map-geojson
+          path: out/goit_map_latest.geojson
+          retention-days: 5
+
+      - name: upload to DO Spaces
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.upload }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.DO_SPACES_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DO_SPACES_SECRET }}
+          AWS_DEFAULT_REGION: us-east-1
+          DEST_KEY: ${{ inputs.dest_key || 'interim_maps/goit_map_latest.geojson' }}
+        run: |
+          aws s3 cp out/goit_map_latest.geojson "s3://publicgemdata/${DEST_KEY}" \
+            --endpoint-url https://nyc3.digitaloceanspaces.com \
+            --acl public-read \
+            --cache-control "public, max-age=300" \
+            --content-type application/geo+json
+          echo "published: https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/${DEST_KEY}"

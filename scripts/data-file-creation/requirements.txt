@@ -1,0 +1,7 @@
+# deps for pipeline_exports.py / convert-ggit-goit-to-tracker-release-downloads.ipynb
+# also requires the repo-local constants package: pip install ./gem-tracker-constants
+pandas>=2.0
+geopandas>=1.0
+shapely>=2.0
+pygsheets>=2.0
+openpyxl>=3.1
