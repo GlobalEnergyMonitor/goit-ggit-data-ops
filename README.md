@@ -15,6 +15,21 @@ Most scripts are Jupyter notebooks. Data files (`.xlsx`, `.csv`, `.geojson`,
 exception is `scripts/data-file-creation/data-files/`, where `.gpkg`/`.zip`
 release artifacts are committed deliberately (see that folder's README).
 
+## Setup
+
+```bash
+conda env create -f environment.yml    # or install the same into an existing env
+conda activate goit-ggit-data-ops
+pip install pre-commit && pre-commit install   # strips outputs from updates/ notebooks at commit
+```
+
+Google Sheets access needs the `GDRIVE_API_CREDENTIALS` env var holding the
+service-account credentials JSON, and each sheet shared (viewer is enough for
+read-only work) with `gem-analysis@gem-analysis.iam.gserviceaccount.com`.
+Shared auth helpers and the canonical live-sheet key live in
+`gem_tracker_constants.sheets` (`get_sheet(key)`) — use those in new notebooks
+instead of re-declaring the pygsheets boilerplate.
+
 ## Folder map
 
 ```
@@ -46,6 +61,11 @@ scripts/
 ├── data-release-qc/                  pre-distribution checks for release download files
 └── _archive/                         deprecated notebooks, pre-2023 work, old R code,
                                       wiki-page-cleanup-automation
+writing-and-analysis/                 per-release briefings, announcements, figures
+└── <release-subfolder>/              e.g. june-2026-goit-release/
+maps/                                 local working area for tracker test maps
+                                      (see maps/README.md; maps/interim-maps/ is a
+                                      separate gitignored clone of the data team's repo)
 ```
 
 Anything under a `_archive/` folder is kept for historical reference and is not part of the active workflow.

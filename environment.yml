@@ -1,0 +1,29 @@
+# conda environment for the notebooks and scripts in this repo.
+#   conda env create -f environment.yml
+#   conda activate goit-ggit-data-ops
+# (or install the same packages into an existing env, e.g. `gem`).
+# Google Sheets access additionally needs the GDRIVE_API_CREDENTIALS env var
+# holding the service-account JSON — see README.md.
+name: goit-ggit-data-ops
+channels:
+  - conda-forge
+dependencies:
+  - python>=3.11
+  - pandas>=2.0
+  - geopandas>=1.0
+  - shapely>=2.0
+  - pyproj
+  - numpy
+  - scipy
+  - matplotlib
+  - seaborn
+  - squarify
+  - openpyxl>=3.1
+  - tqdm
+  - pytz
+  - jupyterlab
+  - ipykernel
+  - pip
+  - pip:
+      - pygsheets>=2.0
+      - -e ./gem-tracker-constants
