@@ -1,10 +1,12 @@
 name: build map data
 
-# Rebuilds the GOIT interim-map geojson and publishes it by force-pushing a
-# single-commit orphan branch (`map-data`) of THIS repo, which
+# Rebuilds the GOIT and GGIT interim-map geojsons and publishes them by
+# force-pushing a single-commit orphan branch (`map-data`) of THIS repo, which
 # goit-ggit-cycle-maps fetches at runtime via raw.githubusercontent.com
 # (free, CORS-enabled, ~5 min cache). The force-push keeps the branch at one
-# commit so repo history never grows with data.
+# commit so repo history never grows with data. Both maps build in one job:
+# the branch is replaced wholesale each publish, so publishing one file alone
+# would delete the other.
 #
 # Triggers:
 #  - repository_dispatch 'routes-normalized': fired by the normalize-routes
@@ -70,7 +72,7 @@ jobs:
           pip install -r scripts/data-file-creation/requirements.txt
           pip install ./gem-tracker-constants
 
-      - name: build map geojson
+      - name: build goit map geojson
         env:
           GDRIVE_API_CREDENTIALS: ${{ secrets.GDRIVE_API_CREDENTIALS }}
         run: |
@@ -79,10 +81,19 @@ jobs:
             --routes-path pipeline-routes-normalized/data/individual-routes \
             --map-only --map-output out/goit_map_latest.geojson
 
+      - name: build ggit map geojson
+        env:
+          GDRIVE_API_CREDENTIALS: ${{ secrets.GDRIVE_API_CREDENTIALS }}
+        run: |
+          python scripts/data-file-creation/pipeline_exports.py \
+            --pipeline-type Gas --simplify-fuels Gas \
+            --routes-path pipeline-routes-normalized/data/individual-routes \
+            --map-only --map-output out/ggit_map_latest.geojson
+
       - uses: actions/upload-artifact@v4
         with:
-          name: goit-map-geojson
-          path: out/goit_map_latest.geojson
+          name: map-geojsons
+          path: out/*.geojson
           retention-days: 5
 
       - name: publish to map-data branch
