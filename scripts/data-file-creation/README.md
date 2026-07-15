@@ -42,16 +42,21 @@ Outputs are written to `data-files/`.
 ## CI map build
 
 [`.github/workflows/build-map-data.yml`](../../.github/workflows/build-map-data.yml)
-runs the CLI in map-only mode and uploads the result to DigitalOcean Spaces at
-the stable key `interim_maps/goit_map_latest.geojson`, which the
+runs the CLI in map-only mode and publishes the result by force-pushing a
+single-commit orphan branch of this repo, `map-data` (so history never grows
+with data), which the
 [goit-ggit-cycle-maps](https://github.com/GlobalEnergyMonitor/goit-ggit-cycle-maps)
-GOIT map fetches at runtime. Triggers: `repository_dispatch`
+GOIT map fetches at runtime via `raw.githubusercontent.com` (free,
+CORS-enabled, ~5 min cache). Never commit to `map-data` by hand — it is
+overwritten on every build. Triggers: `repository_dispatch`
 (`routes-normalized`, fired by goit-ggit-pipeline-routes after it updates its
 `normalized` branch), a daily cron (catches sheet-only edits), and manual
-`workflow_dispatch` (with `upload: false` for dry runs and `dest_key` for test
-keys). Guardrails in `write_map_geojson()` refuse to publish a degraded build
-(too few features / too small a file). Repo secrets: `GDRIVE_API_CREDENTIALS`
-(service-account JSON content), `DO_SPACES_KEY`, `DO_SPACES_SECRET`.
+`workflow_dispatch` (with `upload: false` for dry runs and `dest_branch` for
+test branches). Guardrails in `write_map_geojson()` refuse to publish a
+degraded build (too few features / too small a file) or one raw can't serve
+(>95 MB; GitHub's blob limit is 100 MB). The only repo secret is
+`GDRIVE_API_CREDENTIALS` (service-account JSON content) — publishing uses the
+workflow's own `GITHUB_TOKEN`.
 
 ## Requirements
 

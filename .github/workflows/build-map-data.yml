@@ -1,7 +1,10 @@
 name: build map data
 
-# Rebuilds the GOIT interim-map geojson and publishes it to the stable
-# DO Spaces key that goit-ggit-cycle-maps fetches at runtime.
+# Rebuilds the GOIT interim-map geojson and publishes it by force-pushing a
+# single-commit orphan branch (`map-data`) of THIS repo, which
+# goit-ggit-cycle-maps fetches at runtime via raw.githubusercontent.com
+# (free, CORS-enabled, ~5 min cache). The force-push keeps the branch at one
+# commit so repo history never grows with data.
 #
 # Triggers:
 #  - repository_dispatch 'routes-normalized': fired by the normalize-routes
@@ -10,10 +13,10 @@ name: build map data
 #  - schedule: daily, so sheet-only edits (which never touch the routes repo)
 #    still reach the map within a day
 #  - workflow_dispatch: manual runs; `upload: false` builds without
-#    publishing, `dest_key` can point at a test key
+#    publishing, `dest_branch` can point at a test branch
 #
 # Secrets: GDRIVE_API_CREDENTIALS (Google service-account JSON, read by
-# pygsheets), DO_SPACES_KEY / DO_SPACES_SECRET (publicgemdata bucket).
+# pygsheets). Publishing needs no secret — GITHUB_TOKEN pushes to this repo.
 
 on:
   repository_dispatch:
@@ -22,13 +25,16 @@ on:
     - cron: '23 6 * * *'
   workflow_dispatch:
     inputs:
-      dest_key:
-        description: 'DO Spaces object key to upload to'
-        default: interim_maps/goit_map_latest.geojson
+      dest_branch:
+        description: 'branch to publish the map geojson to'
+        default: map-data
       upload:
-        description: 'upload to DO Spaces (uncheck for a dry run)'
+        description: 'publish the result (uncheck for a dry run)'
         type: boolean
         default: true
+
+permissions:
+  contents: write
 
 # Coalesce rapid route pushes: a newer trigger cancels an in-flight build.
 concurrency:
@@ -79,17 +85,19 @@ jobs:
           path: out/goit_map_latest.geojson
           retention-days: 5
 
-      - name: upload to DO Spaces
+      - name: publish to map-data branch
         if: ${{ github.event_name != 'workflow_dispatch' || inputs.upload }}
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.DO_SPACES_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.DO_SPACES_SECRET }}
-          AWS_DEFAULT_REGION: us-east-1
-          DEST_KEY: ${{ inputs.dest_key || 'interim_maps/goit_map_latest.geojson' }}
+          DEST_BRANCH: ${{ inputs.dest_branch || 'map-data' }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          aws s3 cp out/goit_map_latest.geojson "s3://publicgemdata/${DEST_KEY}" \
-            --endpoint-url https://nyc3.digitaloceanspaces.com \
-            --acl public-read \
-            --cache-control "public, max-age=300" \
-            --content-type application/geo+json
-          echo "published: https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/${DEST_KEY}"
+          cd out
+          git init -q -b "$DEST_BRANCH"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add goit_map_latest.geojson
+          git commit -q -m "map data build (${GITHUB_SHA::7}, ${{ github.event_name }})"
+          git push -q --force \
+            "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
+            "HEAD:refs/heads/${DEST_BRANCH}"
+          echo "published: https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${DEST_BRANCH}/goit_map_latest.geojson"

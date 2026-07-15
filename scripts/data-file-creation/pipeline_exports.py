@@ -5,6 +5,12 @@ convert-ggit-goit-to-tracker-release-downloads.ipynb (the notebook imports
 from this module) and for CI map builds
 (.github/workflows/build-map-data.yml).
 
+Which to use when: run THIS module as a CLI for a standard, no-inspection
+release run (one command, outputs in data-files/); use the notebook when you
+want to inspect as you go (tweak config, eyeball the ID-reconciliation
+report and dataframes before exporting, ad-hoc filtered data requests).
+Either way, logic changes go here — never in notebook cells.
+
 Pipeline modes: Oil-NGL | Oil | NGL | Gas | Gas-Hydrogen | Hydrogen | Oil-and-Gas
 
 CLI examples:
@@ -66,6 +72,7 @@ ALL_FORMATS = ('xlsx', 'geojson', 'gpkg', 'shp')
 # sheet fetch gone wrong) must never overwrite the public map file.
 MIN_MAP_FEATURES = 1000
 MIN_MAP_BYTES = 10 * 1024 * 1024
+MAX_MAP_BYTES = 95 * 1024 * 1024  # raw.githubusercontent.com can't serve blobs >100 MB
 
 # Map pipeline type to the relevant repo folder(s)
 FOLDER_MAP = {
@@ -694,6 +701,10 @@ def write_map_geojson(gdf_export, map_output):
     if n_bytes < MIN_MAP_BYTES:
         raise RuntimeError(f"map output guardrail: file is {n_bytes/1e6:.1f} MB "
                            f"(< {MIN_MAP_BYTES/1e6:.0f} MB) — refusing to publish")
+    if n_bytes > MAX_MAP_BYTES:
+        raise RuntimeError(f"map output guardrail: file is {n_bytes/1e6:.1f} MB "
+                           f"(> {MAX_MAP_BYTES/1e6:.0f} MB) — GitHub raw can't serve "
+                           f"blobs over 100 MB; rethink map hosting before publishing")
 
     print(f"✓ Map geojson: {map_output} ({n_features} features, {n_bytes/1e6:.1f} MB)")
     return map_output
