@@ -9,7 +9,7 @@ from __future__ import annotations
 from ._loader import FUELS, STATUSES
 from .helpers import collapse_gas_and_hydrogen, find_uncovered_fuels
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 
 # Fuel buckets — raw `Fuel` column values that count as each fuel type.
 GAS_FUEL_OPTIONS: list[str] = FUELS["gas"]
