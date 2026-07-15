@@ -11,6 +11,14 @@ README.md for the folder map and the typical release workflow.
   a notebook from disk before editing, and prefer telling the user about
   needed edits over NotebookEdit if they are actively running it (a Jupyter
   save would clobber file edits).
+- Committed notebook outputs are deliberate only for release-record notebooks
+  (summary sheets, estimate-length). `updates/` cycle notebooks must be
+  committed output-free — a `.pre-commit-config.yaml` nbstripout hook enforces
+  this for anyone who has run `pre-commit install`.
+- Shared pygsheets auth + the canonical live pipelines-sheet key live in
+  `gem_tracker_constants.sheets` (`get_sheet(key)`, `PIPELINES_SHEET_KEY`,
+  `SERVICE_ACCOUNT_EMAIL`) — use these in new notebooks instead of
+  re-declaring the auth boilerplate or hardcoding the key again.
 - Fuel buckets and status lists come from the `gem-tracker-constants` package,
   which lives in this repo at `gem-tracker-constants/` (install with
   `pip install -e ./gem-tracker-constants`). Never re-declare fuel lists

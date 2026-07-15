@@ -1,0 +1,12 @@
+# one-time setup: pip install pre-commit && pre-commit install
+#
+# Notebook-outputs policy: committed outputs are deliberate only for
+# release-record notebooks (summary sheets, estimate-length, etc.).
+# updates/ cycle notebooks are working dashboards and must be committed
+# output-free — this hook strips them automatically at commit time.
+repos:
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.8.1
+    hooks:
+      - id: nbstripout
+        files: ^updates/.*\.ipynb$
