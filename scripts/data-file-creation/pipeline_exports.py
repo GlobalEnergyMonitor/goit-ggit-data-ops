@@ -655,16 +655,22 @@ def release_base_name(out_dir, config, pipeline_type,
 def derive_map_fields(gdf_export):
     """Adapt the handoff GeoDataFrame for the interim maps.
 
-    The map file is deliberately the handoff file with ONE divergence:
-    rows without geometry are dropped (the handoff keeps 'no route' rows
-    with null geometry via enforce_no_route_null_geometry; the web map
-    can't draw them). Columns are otherwise identical, so the map configs
-    in goit-ggit-cycle-maps read handoff column names directly.
+    The map file is deliberately the handoff file with TWO divergences:
+      - rows without geometry are dropped (the handoff keeps 'no route'
+        rows with null geometry via enforce_no_route_null_geometry; the
+        web map can't draw them)
+      - CountriesOrAreas becomes '; '-separated instead of ', ' — the map
+        app's country filter (goit-ggit-cycle-maps src/site.js) splits on
+        semicolons
+    Columns are otherwise identical, so the map configs in
+    goit-ggit-cycle-maps read handoff column names directly.
     """
     gdf = gdf_export[gdf_export.geometry.notna()].copy()
     dropped = len(gdf_export) - len(gdf)
     if dropped:
         print(f"  Map output: dropped {dropped} null-geometry row(s)")
+    if 'CountriesOrAreas' in gdf.columns:
+        gdf['CountriesOrAreas'] = gdf['CountriesOrAreas'].str.replace(', ', '; ', regex=False)
     return gdf
 
 

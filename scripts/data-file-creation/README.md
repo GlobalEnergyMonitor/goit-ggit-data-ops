@@ -7,14 +7,28 @@ and [Global Gas Infrastructure Tracker (GGIT)](https://globalenergymonitor.org/p
 (Formerly the standalone `goit-ggit-data-requests` repo, merged into this repo
 in June 2026.)
 
-## Main notebook
+## Module, notebook, and CLI
 
-[`convert-ggit-goit-to-tracker-release-downloads.ipynb`](convert-ggit-goit-to-tracker-release-downloads.ipynb)
+All export logic lives in [`pipeline_exports.py`](pipeline_exports.py): it
 exports pipeline (and optionally LNG terminal) data from the tracker Google
 Sheets to Excel / GeoJSON / GeoPackage / zipped Shapefile, joining route
 geometries from the `goit-ggit-pipeline-routes` repo.
 
-Configuration lives in the notebook's Configuration cell:
+[`convert-ggit-goit-to-tracker-release-downloads.ipynb`](convert-ggit-goit-to-tracker-release-downloads.ipynb)
+is a thin interactive wrapper around the module (same flow, cell by cell).
+The module is also a CLI:
+
+```bash
+# full release exports (xlsx/geojson/gpkg/shp) into data-files/
+python pipeline_exports.py --pipeline-type Oil-NGL --simplify-fuels Oil-and-NGL
+
+# interim-map geojson only (what CI runs; handoff schema, null geometries
+# dropped, '; ' country separator)
+python pipeline_exports.py --pipeline-type Oil-NGL --simplify-fuels Oil-and-NGL \
+    --map-only --map-output out/goit_map_latest.geojson
+```
+
+Configuration (notebook Configuration cell, or the matching CLI flags):
 
 - **`PIPELINE_TYPE`** — `'Oil-NGL'` | `'Oil'` | `'NGL'` | `'Gas'` | `'Gas-Hydrogen'` | `'Hydrogen'` | `'Oil-and-Gas'`
 - **`SIMPLIFY_FUELS`** — `None` | `'Oil'` | `'NGL'` | `'Oil-and-NGL'` | `'Gas'`;
@@ -25,9 +39,24 @@ Configuration lives in the notebook's Configuration cell:
 
 Outputs are written to `data-files/`.
 
+## CI map build
+
+[`.github/workflows/build-map-data.yml`](../../.github/workflows/build-map-data.yml)
+runs the CLI in map-only mode and uploads the result to DigitalOcean Spaces at
+the stable key `interim_maps/goit_map_latest.geojson`, which the
+[goit-ggit-cycle-maps](https://github.com/GlobalEnergyMonitor/goit-ggit-cycle-maps)
+GOIT map fetches at runtime. Triggers: `repository_dispatch`
+(`routes-normalized`, fired by goit-ggit-pipeline-routes after it updates its
+`normalized` branch), a daily cron (catches sheet-only edits), and manual
+`workflow_dispatch` (with `upload: false` for dry runs and `dest_key` for test
+keys). Guardrails in `write_map_geojson()` refuse to publish a degraded build
+(too few features / too small a file). Repo secrets: `GDRIVE_API_CREDENTIALS`
+(service-account JSON content), `DO_SPACES_KEY`, `DO_SPACES_SECRET`.
+
 ## Requirements
 
 - Python with `pandas`, `geopandas`, `shapely`, `pygsheets`, `openpyxl`
+  (pinned in [`requirements.txt`](requirements.txt))
 - `gem-tracker-constants` (lives in this repo at
   [`../../gem-tracker-constants/`](../../gem-tracker-constants/), installed by
   the notebook's first cell) — single source of truth for fuel buckets and
