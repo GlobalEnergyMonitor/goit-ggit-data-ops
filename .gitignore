@@ -1,3 +1,16 @@
+# credentials — never commit (the blanket *.json rule below also catches
+# these, but keep explicit patterns in case that rule is ever loosened)
+*service-account*.json
+*service_account*.json
+credentials.json
+token.json
+sheets.googleapis.com-*.json
+*.pem
+
+# nested clone of GlobalEnergyMonitor/interim-maps (its own git repo —
+# never `git add` it into this one)
+maps/interim-maps/
+
 # added by Baird
 *.csv
 *.xlsx
@@ -123,34 +136,13 @@ dmypy.json
 
 # End of https://www.gitignore.io/api/python
 
-_temp_extension
-junit.xml
 [uU]ntitled*
-notebook/static/*
-!notebook/static/favicons
-notebook/labextension
-notebook/schemas
-docs/source/changelog.md
-docs/source/contributing.md
-
-# playwright
-ui-tests/test-results
-ui-tests/playwright-report
 
 # VSCode
 .vscode
 
-# RTC
-.jupyter_ystore.db
-
-# yarn >=2.x local files
-.yarn/*
-.pnp.*
-ui-tests/.yarn/*
-ui-tests/.pnp.*
-
-# generated html
-notebook/templates/*.html
+# codegraph local index
+.codegraph/
 
 # environments
 .env

@@ -2,7 +2,7 @@
 """Pre-distribution QC for tracker release downloads.
 
 Usage:
-    python qc-release-downloads.py /path/to/GEM-GOIT-Oil-NGL-Pipelines-2026-06
+    python data-release-qc.py /path/to/GEM-GOIT-Oil-NGL-Pipelines-2026-06
 
 Pass the base path WITHOUT an extension; the script locates the sibling
 .xlsx / .gpkg / .geojson / -shp.zip files. Checks that depend on a column
