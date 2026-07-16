@@ -6,13 +6,13 @@ outside the once-a-year data-team sync.
 ## What's here
 
 - The researcher-facing test map site lives in **its own repo**,
-  `GlobalEnergyMonitor/goit-ggit-cycle-maps` (created 2026-07-15), cloned
-  locally at `~/Dropbox/_git_ALL/_github-repos-gem/goit-ggit-cycle-maps/`
+  `GlobalEnergyMonitor/goit-ggit-interim-maps` (created 2026-07-15), cloned
+  locally at `~/Dropbox/_git_ALL/_github-repos-gem/goit-ggit-interim-maps/`
   (moved out of this folder 2026-07-15). It's a trimmed snapshot of the
   interim-maps app shell with just the `goit` and `ggit` trackers,
   auto-deployed to GitHub Pages on every push to `main`:
-  - https://globalenergymonitor.github.io/goit-ggit-cycle-maps/trackers/goit/
-  - https://globalenergymonitor.github.io/goit-ggit-cycle-maps/trackers/ggit/
+  - https://globalenergymonitor.github.io/goit-ggit-interim-maps/trackers/goit/
+  - https://globalenergymonitor.github.io/goit-ggit-interim-maps/trackers/ggit/
   To change what a map shows, edit the `geojson:` URL in
   `trackers/<name>/config.js` and push (see its README). Note: GitHub push
   protection flags the public Mapbox `pk.` token in `site-config.js` as a
@@ -74,11 +74,11 @@ units-of-m, start-year, fuel, url, location-display`).
 
 ## To point the test maps at our own cycle data
 
-Done via `goit-ggit-cycle-maps` (see above). The remaining data-side work:
+Done via `goit-ggit-interim-maps` (see above). The remaining data-side work:
 
 1. Generate a geojson matching the schema above (our release notebooks already
    produce GOIT geojson; add the map-specific display/search fields).
-2. Host it: <100 MB → commit it under `trackers/<name>/` in the cycle-maps repo
+2. Host it: <100 MB → commit it under `trackers/<name>/` in the goit-ggit-interim-maps repo
    and reference by relative path; larger → upload to DigitalOcean Spaces
    (needs data-team keys; CORS on `publicgemdata` is already open).
 3. Update `geojson:` in `trackers/<name>/config.js`, push — Pages redeploys in

@@ -2,7 +2,7 @@ name: build map data
 
 # Rebuilds the GOIT and GGIT interim-map geojsons and publishes them by
 # force-pushing a single-commit orphan branch (`map-data`) of THIS repo, which
-# goit-ggit-cycle-maps fetches at runtime via raw.githubusercontent.com
+# goit-ggit-interim-maps fetches at runtime via raw.githubusercontent.com
 # (free, CORS-enabled, ~5 min cache). The force-push keeps the branch at one
 # commit so repo history never grows with data. Both maps build in one job:
 # the branch is replaced wholesale each publish, so publishing one file alone

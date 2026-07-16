@@ -667,10 +667,10 @@ def derive_map_fields(gdf_export):
         rows with null geometry via enforce_no_route_null_geometry; the
         web map can't draw them)
       - CountriesOrAreas becomes '; '-separated instead of ', ' — the map
-        app's country filter (goit-ggit-cycle-maps src/site.js) splits on
+        app's country filter (goit-ggit-interim-maps src/site.js) splits on
         semicolons
     Columns are otherwise identical, so the map configs in
-    goit-ggit-cycle-maps read handoff column names directly.
+    goit-ggit-interim-maps read handoff column names directly.
     """
     gdf = gdf_export[gdf_export.geometry.notna()].copy()
     dropped = len(gdf_export) - len(gdf)

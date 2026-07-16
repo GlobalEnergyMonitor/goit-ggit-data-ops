@@ -46,7 +46,7 @@ runs the CLI in map-only mode twice — GOIT (`goit_map_latest.geojson`) and
 GGIT gas pipelines (`ggit_map_latest.geojson`) — and publishes both files by
 force-pushing a single-commit orphan branch of this repo, `map-data` (so
 history never grows with data), which the
-[goit-ggit-cycle-maps](https://github.com/GlobalEnergyMonitor/goit-ggit-cycle-maps)
+[goit-ggit-interim-maps](https://github.com/GlobalEnergyMonitor/goit-ggit-interim-maps)
 maps fetch at runtime via `raw.githubusercontent.com` (free,
 CORS-enabled, ~5 min cache). Never commit to `map-data` by hand — it is
 overwritten on every build. Triggers: `repository_dispatch`
