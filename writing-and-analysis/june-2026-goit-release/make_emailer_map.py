@@ -6,7 +6,7 @@ oil & NGL pipelines, drawn over the faint operating network, with a subtle
 marker on the Strait of Hormuz. Construction vs proposed are colored
 separately to support the "shrinkage is in proposals, not construction" point.
 
-Data: scripts/data-file-creation/data-files/GEM-GOIT-Oil-NGL-Pipelines-2026-06.gpkg
+Data: release/downloads/data-files/GEM-GOIT-Oil-NGL-Pipelines-2026-06.gpkg
 Status buckets come from gem_tracker_constants so this matches release/QC totals.
 """
 
@@ -19,7 +19,7 @@ import cartopy.feature as cfeature
 import geopandas as gpd
 
 HERE = __import__("pathlib").Path(__file__).resolve().parent
-GPKG = (HERE / ".." / ".." / "scripts" / "data-file-creation" / "data-files"
+GPKG = (HERE / ".." / ".." / "release" / "downloads" / "data-files"
         / "GEM-GOIT-Oil-NGL-Pipelines-2026-06.gpkg").resolve()
 OUT = HERE / "GOIT-June2026-emailer-map.png"
 

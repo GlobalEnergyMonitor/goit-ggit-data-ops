@@ -2,7 +2,7 @@
 
 Retroactive record — this cycle finished before the `updates/` workspace
 existed. The research cycle ran in Q1 2026 and fed the June 2026 GOIT release
-(`scripts/data-release-summary-sheets/2026-q2-oil-pipelines/` and
+(`release/summary-sheets/2026-q2-oil-pipelines/` and
 `writing-and-analysis/june-2026-goit-release/`).
 
 ## Links

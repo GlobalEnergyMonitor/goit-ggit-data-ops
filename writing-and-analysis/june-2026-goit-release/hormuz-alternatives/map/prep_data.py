@@ -26,7 +26,7 @@ from gem_tracker_constants import OIL_FUEL_OPTIONS
 
 HERE = pathlib.Path(__file__).resolve().parent
 REPO = HERE.parents[3]  # .../goit-ggit-data-ops
-GPKG = REPO / "scripts" / "data-file-creation" / "data-files" / "GEM-GOIT-Oil-NGL-Pipelines-2026-06.gpkg"
+GPKG = REPO / "release" / "downloads" / "data-files" / "GEM-GOIT-Oil-NGL-Pipelines-2026-06.gpkg"
 OUT = HERE / "data" / "operating-context-2026-06.geojson"
 
 # Map frame is lon 34–60E, lat 21–39N (see FRAME in map.js); pad ~2° so lines
