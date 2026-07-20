@@ -66,7 +66,7 @@ Each bucket is the list of raw `Fuel`-column strings that count as that fuel typ
 | `HYDROGEN_FUEL_OPTIONS` | Hydrogen-only pipelines. |
 | `OIL_FUEL_OPTIONS` | Strings that count as an oil pipeline — oil alone or mixed with NGLs, condensate, or oil products. This is the Oil bucket the release downloads (xlsx / geojson / gpkg / shapefile) and qc summary tables filter on. |
 | `NGL_FUEL_OPTIONS` | Strings that count as an NGL pipeline — those explicitly naming an NGL (NGL, LPG, `Condensate/NGL`) without also naming oil. Dual-fuel strings (`Oil, NGL`, `Oil, NGL, naphtha`) are classified as Oil, not NGL. Naphtha-only strings and standalone `Condensate` do **not** qualify. |
-| `OIL_NGL_COMBINED` | Everything in the combined Oil-NGL release downloads: the oil and NGL buckets **plus** the tracker strings that are neither (`Oil products (only)`, `Naphtha (only)`, `Naphtha, oil products`, `Condensate`). Mirrors the `fuel_options` in the release-downloads export notebook (`release/downloads/`). |
+| `OIL_NGL_COMBINED` | Everything in the combined Oil-NGL release downloads: the oil and NGL buckets **plus** the tracker strings that are neither (`Oil products (only)`, `Naphtha (only)`, `Naphtha, oil products`, `Condensate`). Mirrors the `fuel_options` in the release-downloads export notebook (`releases/downloads/`). |
 
 ### Which `Fuel` strings land in which bucket
 

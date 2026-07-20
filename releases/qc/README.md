@@ -1,7 +1,7 @@
 # Release download QC
 
 Pre-distribution checks for the tracker release downloads produced by the
-export notebook in `release/downloads/`
+export notebook in `releases/downloads/`
 (`GEM-<tracker>-<type>-Pipelines-YYYY-MM.{xlsx,geojson,gpkg}`
 plus the `-shp.zip` shapefile). Run these on the final files **before** they go
 out — this is the last gate for data errors.
@@ -106,7 +106,7 @@ These are reported, not hard-failed, because expected values differ by release:
 
 - **Copyright**: names the right tracker and release month/year, and the
   `File creation date:` line actually has a date (the 2026-06 release shipped
-  it dangling — that's a fix in the `release/downloads` export notebook).
+  it dangling — that's a fix in the `releases/downloads` export notebook).
 - **Acronyms**: every unit appearing in `CapacityUnits` etc. should be either
   self-evident or defined; flag duplicates and gaps.
 - **Data dictionary**: no empty definitions.
@@ -116,7 +116,7 @@ These are reported, not hard-failed, because expected values differ by release:
 | Problem class | Fix it in |
 |---|---|
 | Bad/missing values, schema gaps, column order | Source tracker Google Sheet |
-| Creation date, placeholder conventions, sheet assembly | Export notebook in `release/downloads/` |
+| Creation date, placeholder conventions, sheet assembly | Export notebook in `releases/downloads/` |
 | Mapped route with no geometry | `goit-ggit-pipeline-routes` repo (or the sheet's RouteType) |
 
 Then **re-run the export** — never hand-edit the release files.

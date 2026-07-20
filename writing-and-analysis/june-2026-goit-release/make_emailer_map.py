@@ -6,8 +6,8 @@ oil & NGL pipelines, drawn over the faint operating network, with a subtle
 marker on the Strait of Hormuz. Construction vs proposed are colored
 separately to support the "shrinkage is in proposals, not construction" point.
 
-Data: release/downloads/data-files/GEM-GOIT-Oil-NGL-Pipelines-2026-06.gpkg
-Status buckets come from gem_tracker_constants so this matches release/QC totals.
+Data: releases/downloads/data-files/GEM-GOIT-Oil-NGL-Pipelines-2026-06.gpkg
+Status buckets come from gem_tracker_constants so this matches releases/QC totals.
 """
 
 import matplotlib

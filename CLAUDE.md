@@ -27,7 +27,7 @@ README.md for the folder map and the typical release workflow.
   match QC totals. Old release notebooks may still pin `v0.x` tags from the
   pre-merge standalone repo (`bairdlangenbrunner/gem-tracker-constants`).
 - Data files (`.xlsx`, `.csv`, `.geojson`, `.json`) are gitignored repo-wide.
-  Exception: `release/downloads/data-files/` commits `.gpkg`/`.zip`
+  Exception: `releases/downloads/data-files/` commits `.gpkg`/`.zip`
   release artifacts deliberately — see the CLAUDE.md in that folder. Don't
   add data files to commits unless asked — releases are the user's call.
 - `updates/` holds annual update cycles (the researcher-driven phase before

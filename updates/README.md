@@ -7,7 +7,7 @@ winds down and the data freezes, work hands off to the root
 [RELEASE-CHECKLIST.md](../RELEASE-CHECKLIST.md).
 
 One folder per cycle, named `YYYY-qN-<tracker>` by **research quarter**
-(matching the `release/summary-sheets/` convention). Note the
+(matching the `releases/summary-sheets/` convention). Note the
 mismatch to watch for in Drive: the release-artifacts Drive folders are named
 by **release** quarter (e.g. "2025 Q4 - GGIT pipelines update" holds the
 release built from the **Q3** 2025 research cycle).

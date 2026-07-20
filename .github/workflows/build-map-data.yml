@@ -65,18 +65,18 @@ jobs:
         with:
           python-version: '3.12'
           cache: pip
-          cache-dependency-path: release/downloads/requirements.txt
+          cache-dependency-path: releases/downloads/requirements.txt
 
       - name: install dependencies
         run: |
-          pip install -r release/downloads/requirements.txt
+          pip install -r releases/downloads/requirements.txt
           pip install ./gem-tracker-constants
 
       - name: build goit map geojson
         env:
           GDRIVE_API_CREDENTIALS: ${{ secrets.GDRIVE_API_CREDENTIALS }}
         run: |
-          python release/downloads/pipeline_exports.py \
+          python releases/downloads/pipeline_exports.py \
             --pipeline-type Oil-NGL --simplify-fuels Oil-and-NGL \
             --routes-path pipeline-routes-normalized/data/individual-routes \
             --map-only --map-output out/goit_map_latest.geojson
@@ -85,7 +85,7 @@ jobs:
         env:
           GDRIVE_API_CREDENTIALS: ${{ secrets.GDRIVE_API_CREDENTIALS }}
         run: |
-          python release/downloads/pipeline_exports.py \
+          python releases/downloads/pipeline_exports.py \
             --pipeline-type Gas --simplify-fuels Gas \
             --routes-path pipeline-routes-normalized/data/individual-routes \
             --map-only --map-output out/ggit_map_latest.geojson

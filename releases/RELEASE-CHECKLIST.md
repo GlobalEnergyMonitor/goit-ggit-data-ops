@@ -2,7 +2,7 @@
 
 Step-by-step checklist for producing a quarterly GOIT/GGIT pipeline data
 release. Copy this file into the release folder
-(`release/summary-sheets/YYYY-qN-<tracker>/CHECKLIST.md`),
+(`releases/summary-sheets/YYYY-qN-<tracker>/CHECKLIST.md`),
 fill in the header, and check items off as you go — that way the state of a
 release is visible to anyone who opens the folder.
 
@@ -34,7 +34,7 @@ Skip this section if you've run a release from this machine before.
 - [ ] `GDRIVE_API_CREDENTIALS` env var pointing at a Google service-account
       JSON that has read access to the tracker sheets
 - [ ] Confirm sheet access works: run the first few cells of
-      `release/downloads/convert-ggit-goit-to-tracker-release-downloads.ipynb`
+      `releases/downloads/convert-ggit-goit-to-tracker-release-downloads.ipynb`
 
 ## 2. Pre-flight (per release)
 
@@ -47,7 +47,7 @@ Skip this section if you've run a release from this machine before.
       `gem-tracker-constants/src/gem_tracker_constants/data/*.yaml` and run
       the package's `pytest` suite)
 - [ ] Create the release folder:
-      `release/summary-sheets/YYYY-qN-<tracker>/`
+      `releases/summary-sheets/YYYY-qN-<tracker>/`
 - [ ] Copy this checklist into it and fill in the header block above
 
 ## 3. Backend QC sweep — tracker sheet and pipeline routes
@@ -64,7 +64,7 @@ to fix now than after export.
         typos)
   - [ ] `ProjectID` non-null, unique, matching `P<digits>`
   - [ ] Obvious year/capacity/units outliers — the checks in
-        `release/qc/` are a good guide; most of what that script
+        `releases/qc/` are a good guide; most of what that script
         flags on the final files can be caught in the sheet now
 - [ ] Reconcile routes against `goit-ggit-pipeline-routes`:
   - [ ] Mapped routes in the sheet with no `<ProjectID>.geojson` on GitHub
@@ -76,7 +76,7 @@ to fix now than after export.
 
 ## 4. Length estimation
 
-Notebook: `release/estimate-length/estimate-length.ipynb`
+Notebook: `releases/estimate-length/estimate-length.ipynb`
 
 - [ ] Point the notebook at the release's tracker sheet
 - [ ] Run all cells
@@ -87,7 +87,7 @@ Notebook: `release/estimate-length/estimate-length.ipynb`
 
 ## 5. Owner/parent attribution
 
-Notebook: `release/owner-parent/GOIT-GGIT-owner-parent-importing-ownership-tracker-CURRENT.ipynb`
+Notebook: `releases/owner-parent/GOIT-GGIT-owner-parent-importing-ownership-tracker-CURRENT.ipynb`
 (pipelines; LNG terminals have their own CURRENT notebook)
 
 - [ ] Point the notebook at the release's tracker sheet
@@ -116,21 +116,21 @@ then take the release snapshot.
 
 ## 7. Release downloads (data files)
 
-Notebook: `release/downloads/convert-ggit-goit-to-tracker-release-downloads.ipynb`
+Notebook: `releases/downloads/convert-ggit-goit-to-tracker-release-downloads.ipynb`
 (see that folder's README for config details)
 
 - [ ] Point the notebook at the **release snapshot** sheet (step 6)
 - [ ] Set the Configuration cell for this release:
       `PIPELINE_TYPE`, `SIMPLIFY_FUELS`, `FILTER_STATUS` / `FILTER_COUNTRIES`,
       `PIPELINE_ROUTES_PATH`, and the release-month stamp
-- [ ] Run the export — outputs land in `release/downloads/data-files/`
+- [ ] Run the export — outputs land in `releases/downloads/data-files/`
       as `GEM-<tracker>-<type>-Pipelines-YYYY-MM.{xlsx,geojson,gpkg}` + `-shp.zip`
 - [ ] Repeat for each variant the release ships (e.g. full and simplified-fuel
       versions), if applicable
 
 ## 8. Release download QC — the last gate
 
-Script: `release/qc/data-release-qc.py`
+Script: `releases/qc/data-release-qc.py`
 (its README explains every check and what to do when one fires)
 
 Run this before the summary sheets so a QC fix doesn't force a summary re-run.
@@ -138,8 +138,8 @@ Run this before the summary sheets so a QC fix doesn't force a summary re-run.
 - [ ] Run against the base path **without extension**:
 
       ```bash
-      python release/qc/data-release-qc.py \
-          release/downloads/data-files/GEM-GOIT-Oil-NGL-Pipelines-YYYY-MM
+      python releases/qc/data-release-qc.py \
+          releases/downloads/data-files/GEM-GOIT-Oil-NGL-Pipelines-YYYY-MM
       ```
 
 - [ ] Fix anything flagged **at the source**, per the "where fixes go" table
@@ -176,7 +176,7 @@ Folder: the release folder created in step 2.
 ## 10. Publish and wrap up
 
 - [ ] Commit the final `.gpkg` and `-shp.zip` artifacts in
-      `release/downloads/data-files/` (these are committed
+      `releases/downloads/data-files/` (these are committed
       deliberately; `.xlsx`/`.geojson` stay gitignored; keep each file under
       GitHub's 100 MB limit)
 - [ ] Distribute the download files (tracker download page / Drive — whatever
