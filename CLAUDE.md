@@ -30,6 +30,17 @@ README.md for the folder map and the typical release workflow.
   Exception: `releases/downloads/data-files/` commits `.gpkg`/`.zip`
   release artifacts deliberately — see the CLAUDE.md in that folder. Don't
   add data files to commits unless asked — releases are the user's call.
+- `gem-wiki/` holds GEM.wiki (MediaWiki) API work — `gemwiki.py` helpers +
+  `wiki_query.py` CLI. Reads are anonymous; edits need the bot password in
+  `gem-wiki/.env` (never committed). Same policy as Google Sheets: never
+  push a wiki edit without previewing it and getting explicit per-edit
+  approval from the user. Exception (user-approved 2026-07-20):
+  `gem-wiki/cite-error-fixes/` runs its gated orphaned-ref repair in
+  approved batches of ~50 pages, not per edit — see that folder's README
+  for the gates; it authenticates via the macOS keychain `citation-fixer`
+  credential (never print the token), not `.env`. Its `batch*_log.csv`
+  files are gitignored data but are the batch driver's done-list state —
+  never delete them; progress lives in `cite-error-fixes/STATUS.md`.
 - `updates/` holds annual update cycles (the researcher-driven phase before
   a release): per-cycle folders with docs plus progress/QC notebooks, run
   from `updates/UPDATE-CHECKLIST.md`. Cycle notebooks must stay strictly

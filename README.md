@@ -62,6 +62,8 @@ releases/                              the release phase (freeze, export, QC, pu
     └── _archive/                     2022–2023 releases (pre-folder-per-release convention)
 writing-and-analysis/                 per-release briefings, announcements, figures
 └── <release-subfolder>/              e.g. june-2026-goit-release/
+gem-wiki/                             GEM.wiki API queries + edits (edit history,
+                                      cite-error cleanups; see gem-wiki/README.md)
 maps/                                 local working area for tracker test maps
                                       (see maps/README.md; maps/interim-maps/ is a
                                       separate gitignored clone of the data team's repo)
