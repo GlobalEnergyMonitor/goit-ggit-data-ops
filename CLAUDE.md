@@ -7,6 +7,10 @@ README.md for the folder map and the typical release workflow.
 
 ## Key facts
 
+- This repo stays private on GitHub, so the global "never name individual
+  researchers in committed content" rule does not apply here (user-approved
+  2026-07-21) — researcher names and similar personal info are fine in
+  commits, docs, and notes in this repo.
 - Notebooks are often open in Jupyter while a Claude session runs — re-read
   a notebook from disk before editing, and prefer telling the user about
   needed edits over NotebookEdit if they are actively running it (a Jupyter

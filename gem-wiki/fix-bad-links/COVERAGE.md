@@ -2,9 +2,8 @@
 
 Queue source: LNG update assignments sheet — the researcher's countries with
 Complete? = FALSE. Italy, Spain, and Germany are marked complete there and are
-out of scope for now. Second batch (2026-07-21): a second researcher's assigned
-countries plus the user's own (Singapore, Thailand, Kuwait, Qatar, Türkiye,
-UAE, Vietnam).
+out of scope for now. Second batch (2026-07-21): Amalia's assigned countries
+plus Baird's own (Singapore, Thailand, Kuwait, Qatar, Türkiye, UAE, Vietnam).
 
 | Country | Pages | Status | Date | Revisions / notes |
 |---|---|---|---|---|
