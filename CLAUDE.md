@@ -43,6 +43,11 @@ README.md for the folder map and the typical release workflow.
   credential (never print the token), not `.env`. Its `batch*_log.csv`
   files are gitignored data but are the batch driver's done-list state —
   never delete them; progress lives in `cite-error-fixes/STATUS.md`.
+  Second exception (user-approved 2026-07-21): `gem-wiki/fix-bad-links/`
+  repairs broken Background-section citations on LNG terminal pages fully
+  autonomously — no per-edit approval; escalate only for URLs needing a
+  human browser check or novel situations. Country coverage is tracked in
+  `fix-bad-links/COVERAGE.md`; workflow in its README.
 - `updates/` holds annual update cycles (the researcher-driven phase before
   a release): per-cycle folders with docs plus progress/QC notebooks, run
   from `updates/UPDATE-CHECKLIST.md`. Cycle notebooks must stay strictly
