@@ -37,7 +37,9 @@ README.md for the folder map and the typical release workflow.
   approval from the user. Exception (user-approved 2026-07-20):
   `gem-wiki/cite-error-fixes/` runs its gated orphaned-ref repair in
   approved batches of ~50 pages, not per edit — see that folder's README
-  for the gates; it authenticates via the macOS keychain `citation-fixer`
+  for the gates (project completed 2026-07-20: all 411 flagged pages fixed,
+  including the manual queue; STATUS.md has the record and two follow-ups —
+  a Data Team heads-up and 4 broken DB wiki links); it authenticates via the macOS keychain `citation-fixer`
   credential (never print the token), not `.env`. Its `batch*_log.csv`
   files are gitignored data but are the batch driver's done-list state —
   never delete them; progress lives in `cite-error-fixes/STATUS.md`.

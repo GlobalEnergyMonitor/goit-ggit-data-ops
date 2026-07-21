@@ -1,0 +1,4 @@
+# pilot dry-run artifacts (before/after/diff wikitext) — regenerable
+artifacts/
+*.wikitext
+*.diff
