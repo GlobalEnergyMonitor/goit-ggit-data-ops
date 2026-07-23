@@ -28,7 +28,7 @@ diff was built. After saving, run cite_errors() and require 0.
 import re
 import sys
 
-sys.path.insert(0, sys.path[0] + "/..")
+sys.path.insert(0, sys.path[0] + "/../..")
 import gemwiki as gw
 
 REF_RE = re.compile(r"<ref[^>/]*?(?:/>|>.*?</ref>)", re.DOTALL)

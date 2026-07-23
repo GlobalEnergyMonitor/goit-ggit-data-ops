@@ -6,6 +6,11 @@ country in [COVERAGE.md](COVERAGE.md). The queue comes from the LNG update
 assignments sheet: countries the researcher is working on but has not yet
 finished (Complete? = FALSE).
 
+Everything except this README and COVERAGE.md lives in `working-files/`:
+the scripts (`fixlib.py`, `scan_background_refs.py`, per-country fix specs),
+scan/diagnosis output, and the `<slug>_old.wiki`/`<slug>_new.wiki` page
+dumps. Run scripts from inside `working-files/`.
+
 ## Workflow (per country)
 
 1. **Enumerate pages** from `Category:LNG Terminals in <Country>`
@@ -38,7 +43,8 @@ finished (Complete? = FALSE).
   "COMMENT 3" in page wikitext) are out of scope.
 - Refs that are dead with no archive and no verifiable replacement are left
   as-is and noted in COVERAGE.md.
-- Edits authenticate via the bot password in `../.env` (never committed).
+- Edits authenticate via the bot password in `../../.env` relative to
+  `working-files/` (i.e. `gem-wiki/.env`, never committed).
 - Per-edit approval exception (user-approved 2026-07-21): this project runs
   autonomously — no per-edit approval needed. Escalate to the user only for
   URLs needing a human browser check or genuinely new situations.

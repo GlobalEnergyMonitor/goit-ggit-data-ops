@@ -22,7 +22,7 @@ import re
 import sys
 import unicodedata
 
-sys.path.insert(0, sys.path[0] + "/..")
+sys.path.insert(0, sys.path[0] + "/../..")
 import gemwiki as gw
 
 import requests
