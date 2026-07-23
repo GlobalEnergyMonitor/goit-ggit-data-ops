@@ -50,10 +50,10 @@ other. Compiled 2026-07-23.
 
 ## 2. Dead refs needing a replacement source (researcher judgment)
 
-Update 2026-07-23: replacement candidates researched and staged below as
-**Proposed replacement** blocks — every URL was content-verified (key phrases
-quoted from the live/archived page), but **nothing has been saved to the
-wiki**. Check off an item to approve it; strike or comment to reject.
+Update 2026-07-23: replacement candidates were researched, staged as
+**Proposed replacement** blocks, content-verified (key phrases quoted from
+the live/archived page), and — after the user approved all of them — saved
+to the wiki (revs 1198408–1198414). Section 2 is now fully resolved.
 
 - [x] ~~**Karwar FSRU** — dead pipelineme.com ref (page's only Background
   citation)~~ **Resolved 2026-07-23** (rev 1198405): the automated search found
@@ -68,101 +68,51 @@ wiki**. Check off an item to approve it; strike or comment to reject.
   **Resolved 2026-07-23, no edit needed**: the PDF is reachable again (200,
   789 KB) — the earlier failure was a transient nic.in outage. The existing
   ref is intact and well-formed.
-- [ ] **[Haldia FSRU](https://www.gem.wiki/Haldia_FSRU)** — therisk.global
-  project page now redirects to an about page:
-  <https://therisk.global/energy/haldia-fsru-project/>
-  - **Proposed replacement** (high confidence):
-    `<ref>[https://indiaseatradenews.com/smp-kolkata-awards-30-year-licence-for-floating-lng-terminal-at-haldia/ SMP Kolkata awards 30-year licence for floating LNG terminal at Haldia], India Seatrade News, September 8, 2025</ref>`
-    — article body matches every supported fact (30-yr SMPK concession,
-    Invenire Petrodyne + Excelerate consortium, FSRU at Haldia Dock Complex,
-    1.5 mtpa expandable to 3, launch H2 2027); corroborated by GIIGNL's news
-    page, Blackridge, and S&P.
-- [ ] **[Gate LNG Terminal](https://www.gem.wiki/Gate_LNG_Terminal)** — Techint
-  case-study PDF, dead and never archived:
-  <http://www.techint-ingenieria.com/sites/default/files/upload/publications/files/Project%20Cse%20Study%20Gate.pdf>
-  - **Proposed replacement** (high confidence):
-    `<ref>[https://www.offshore-technology.com/projects/gate-lng-terminal/ Gate LNG Terminal], Offshore Technology, Dec. 14, 2011</ref>`
-    — live page confirms everything the sentence bundles: June 2008
-    construction start, Sept 2011 inauguration, Techint/SENER EPC consortium,
-    Gasunie+Vopak ownership, €800m (~US$1.1B) cost. (The dead ref shares its
-    sentence with 3 other refs, so this is a drop-in.)
-- [ ] **[Terneuzen FSRU](https://www.gem.wiki/Terneuzen_FSRU)** — dead Nasdaq
-  copy of a Dec 2022 Reuters piece (Gasunie eyeing Terneuzen), no archive or
-  other syndication found:
-  <https://www.nasdaq.com/articles/dutch-grid-operator-gasunie-looking-at-terneuzen-for-new-lng-capacity>
-  - **Proposed replacement** (split into two refs — the dead ref supports two
-    unrelated sentences and no single live source covers both):
-    - Terneuzen-candidate-site sentence (medium-high):
-      `<ref>[https://www.gasunie.nl/en/news/gasunie-investigates-options-for-increasing-lng-imports-in-the-netherlands Gasunie investigates options for increasing LNG imports in the Netherlands], Gasunie, December 12, 2022</ref>`
-      — Gasunie's own press release: "For this, the port of Terneuzen is
-      currently in the picture."
-    - Bergermeer ~€500M sentence (high):
-      `<ref>[https://www.euronews.com/next/2022/12/09/netherlands-gas-storage Netherlands to spend up to $548 million to fill gas storage for next winter], Euronews (citing Reuters), December 9, 2022</ref>`
-      — "expects to spend up to 520.5 million euros… to fill the gas storage
-      at Bergermeer… winter of 2023/2024."
-    - Caveat: the same dead Nasdaq URL also lives in auto-generated
-      `autoref_0` used across Tables 1–5 — out of this project's Background
-      scope, flagged here for awareness.
-- [ ] **[Revithoussa LNG Terminal](https://www.gem.wiki/Revithoussa_LNG_Terminal)**
-  — dead DESFA page; live DESFA pages don't confirm the 1999/DEPA claims it
-  supported: <http://www.desfa.gr/?p=11022&lang=en>
-  - **Proposed replacement** (high confidence; split into two refs, one per
-    fact — archived captures of the dead `?p=11022` URL all resolve to
-    homepage/unrelated pages, so the original is truly unrecoverable):
-    - 1999 completion:
-      `<ref>[https://web.archive.org/web/20110721080341/http://www.depa.gr/files/downloadables/brochures/AnnualReport2006.pdf DEPA Annual Report 2006 (PDF), p. 16], DEPA S.A., 2007 (Wayback Machine capture)</ref>`
-      — PDF text: "Construction of the Revythoussa… Terminal was completed in
-      December 1999."
-    - DESFA as DEPA subsidiary:
-      `<ref>[https://web.archive.org/web/20180416151130/http://www.desfa.gr/en/company/historical-background Historical Background], DESFA S.A., April 16, 2018 (Wayback Machine capture)</ref>`
-      — "established DESFA S.A. as a subsidiary company owned in its entirety
-      by DEPA S.A."
-- [ ] **[Kutubdia LNG Terminal (Petronet)](https://www.gem.wiki/Kutubdia_LNG_Terminal_%28Petronet%29)**
-  — Petrobangla 2018 annual report PDF, dead path and never archived (the
-  report may have moved elsewhere on petrobangla.org.bd):
-  <https://petrobangla.org.bd/admin/attachment/webtable/1263_upload_0.pdf>
-  - **Proposed replacement** (high confidence): Petrobangla's current site only
-    hosts FY2022-23+ reports, so swap to JV partner Petronet LNG's own annual
-    report, which covers the same feasibility-study fact:
-    `<ref>[https://www.petronetlng.in/documents/699827/734537/Annual_Report__2017-18.pdf/475bb8fc-690e-f1f0-e537-fbe7a12f1ac5?t=1720013769072 Annual Report 2017-18], Petronet LNG Limited, August 18, 2018.</ref>`
-    — PDF text: "Engineers India Limited has prepared Detailed Feasibility
-    Report (DFR)… submitted a commercial proposal to Petrobangla." Backup
-    mirror if the petronetlng.in path rots:
-    <https://www.bseindia.com/bseplus/annualreport/532522/5325220318.pdf>
-- [ ] **[QatarEnergy LNG (N)](https://www.gem.wiki/QatarEnergy_LNG_%28N%29)** —
-  Hellenic Shipping News "The five stages of LNG grief", dead with 404-only
-  archives and no syndicated copy found:
-  <http://www.hellenicshippingnews.com/the-five-stages-of-lng-grief/>
-  - **Proposed replacement** (medium-high; split into two refs — the sentence
-    bundles two separate deals and no single live source covers both):
-    - Petronet/RasGas price cut:
-      `<ref>[https://www.enerdata.net/publications/daily-energy-news/rasgas-qatar-agrees-cut-price-lng-sold-petronet-india.html Rasgas (Qatar) agrees to cut price of LNG sold to Petronet (India)], Enerdata, January 4, 2016</ref>`
-      — "RasGas has agreed to nearly halve the price of LNG sold to Indian LNG
-      importer Petronet LNG… as of 1 January 2016." (Dateline is Jan 2016 —
-      when the deal closed — not 2017; the wiki sentence cites it as
-      background.)
-    - Oversupply framing + PGNiG/Qatargas:
-      `<ref>[https://gulfnews.com/business/energy/qatargas-agrees-to-double-lng-supplies-to-poland-1.1993823 Qatargas agrees to double LNG supplies to Poland], Gulf News (Reuters), March 14, 2017</ref>`
-      — "a deepening global gas glut offers opportunities to bring in cheap
-      LNG from Qatar" + Qatargas doubling PGNiG volumes at favorable pricing;
-      publish date confirmed via page metadata.
-- [ ] **[QatarEnergy LNG (N)](https://www.gem.wiki/QatarEnergy_LNG_%28N%29)** and
-  **[(S)](https://www.gem.wiki/QatarEnergy_LNG_%28S%29)** — uk.reuters.com
-  factbox (domain retired, no content archive) — try searching reuters.com for
-  the headline "Factbox: Oil majors' investments in countries involved in Qatar
-  row":
-  <http://uk.reuters.com/article/gulf-qatar-energy/factbox-oil-majors-investments-in-countries-involved-in-qatar-row-idUKL8N1JW0KM>
-  - **Proposed replacement** (high confidence): no fetchable copy of the
-    Reuters factbox survives anywhere (reuters.com/uk.reuters variants,
-    Yahoo syndications, PressReader, Al Jazeera's Reuters piece — all dead,
-    JS shells, or missing the ownership breakdown). Instead cite Qatargas's
-    own archived corporate-structure page, which itemizes the JV shareholders
-    and together names exactly the seven companies in the wiki sentence:
-    `<ref name="Reuters">[https://web.archive.org/web/20180104172916/http://www.qatargas.com/english/aboutus/corporate-structure Corporate Structure], Qatargas (via Wayback Machine, archived January 4, 2018).</ref>`
-    — applies to the same sentence on **both** (N) and (S). Caveats: primary
-    source rather than a news wire, and it describes the pre-2022 structure —
-    but so does the wiki sentence itself (QatarEnergy took 100% of Qatargas 1
-    in Jan 2022), so the sentence may separately deserve a factual update.
+- [x] ~~**Haldia FSRU** — therisk.global project page redirects to an about
+  page~~ **Resolved 2026-07-23** (rev 1198408): replaced with the India
+  Seatrade News article ("SMP Kolkata awards 30-year licence for floating LNG
+  terminal at Haldia", Sept 8, 2025), which matches every supported fact
+  (30-yr SMPK concession, Invenire Petrodyne + Excelerate, Haldia Dock
+  Complex, 1.5→3 mtpa, launch H2 2027).
+- [x] ~~**Gate LNG Terminal** — Techint case-study PDF, dead and never
+  archived~~ **Resolved 2026-07-23** (rev 1198409): replaced with the
+  Offshore Technology project page (Dec 14, 2011), which confirms everything
+  the sentence bundles (2008 start, Sept 2011 service, Techint/SENER,
+  Gasunie+Vopak, ~US$1.1B).
+- [x] ~~**Terneuzen FSRU** — dead Nasdaq copy of a Dec 2022 Reuters piece, no
+  archive or syndication~~ **Resolved 2026-07-23** (rev 1198410): split into
+  two refs — Gasunie's own Dec 12, 2022 press release on the
+  Terneuzen-candidate-site sentence, and Euronews (citing Reuters, Dec 9,
+  2022) on the Bergermeer ~€500M sentence. Caveat stands: the same dead
+  Nasdaq URL also lives in auto-generated `autoref_0` used across Tables 1–5
+  — out of this project's Background scope, flagged for awareness.
+- [x] ~~**Revithoussa LNG Terminal** — dead DESFA page (`?p=11022`), archived
+  captures all resolve to homepage/unrelated pages~~ **Resolved 2026-07-23**
+  (rev 1198411): split into two refs, one per fact — archived DEPA Annual
+  Report 2006 p. 16 (Wayback) for the 1999 completion, archived DESFA
+  "Historical Background" page (Wayback, Apr 2018) for the DEPA-subsidiary
+  claim.
+- [x] ~~**Kutubdia LNG Terminal (Petronet)** — Petrobangla 2018 annual report
+  PDF, dead path and never archived~~ **Resolved 2026-07-23** (rev 1198412):
+  Petrobangla's site only hosts FY2022-23+ reports, so swapped to JV partner
+  Petronet LNG's Annual Report 2017-18, which covers the same
+  feasibility-study fact. Backup mirror if the petronetlng.in path rots:
+  <https://www.bseindia.com/bseplus/annualreport/532522/5325220318.pdf>
+- [x] ~~**QatarEnergy LNG (N)** — Hellenic Shipping News "The five stages of
+  LNG grief", dead with 404-only archives and no syndicated copy~~
+  **Resolved 2026-07-23** (rev 1198413): split into two refs — Enerdata
+  (Jan 4, 2016) on the Petronet/RasGas price cut, Gulf News (Reuters,
+  Mar 14, 2017) on the oversupply framing + PGNiG/Qatargas deal.
+- [x] ~~**QatarEnergy LNG (N)** and **(S)** — uk.reuters.com factbox (domain
+  retired, no content archive, no surviving syndication)~~
+  **Resolved 2026-07-23** (revs 1198413/1198414): replaced on both pages
+  (keeping `name="Reuters"`) with Qatargas's archived corporate-structure
+  page (Wayback, Jan 2018), which itemizes the JV shareholders and names
+  exactly the seven companies in the wiki sentence. Caveats noted at review
+  time: primary source rather than a news wire, and it describes the
+  pre-2022 structure — but so does the wiki sentence itself, which may
+  separately deserve a factual update (QatarEnergy took 100% of Qatargas 1
+  in Jan 2022).
 
 ## Note
 
