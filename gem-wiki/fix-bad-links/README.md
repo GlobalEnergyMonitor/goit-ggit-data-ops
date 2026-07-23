@@ -45,6 +45,13 @@ dumps. Run scripts from inside `working-files/`.
   "COMMENT 3" in page wikitext) are out of scope.
 - Refs that are dead with no archive and no verifiable replacement are left
   as-is and noted in COVERAGE.md.
+- "No replacement found" via WebSearch is not proof none exists — the API's
+  index/ranking differs from plain Google (e.g. LinkedIn Pulse posts rank on
+  Google but barely surface in WebSearch; that's how the Karwar syndicated
+  copy was missed, 2026-07-23). Before declaring a ref unrecoverable, hand
+  the reviewer 2–3 ready-made Google queries (headline fragments, dollar
+  figures, both figure variants if sources disagree) so a quick browser
+  search can catch what the API missed.
 - Edits authenticate via the bot password in `../../.env` relative to
   `working-files/` (i.e. `gem-wiki/.env`, never committed).
 - Per-edit approval exception (user-approved 2026-07-21): this project runs
