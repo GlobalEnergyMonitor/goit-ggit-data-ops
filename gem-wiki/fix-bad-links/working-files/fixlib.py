@@ -31,7 +31,7 @@ import sys
 sys.path.insert(0, sys.path[0] + "/../..")
 import gemwiki as gw
 
-REF_RE = re.compile(r"<ref[^>/]*?(?:/>|>.*?</ref>)", re.DOTALL)
+REF_RE = re.compile(r"<ref[^>/]*?(?:/>|>.*?</ref>)", re.DOTALL | re.IGNORECASE)
 
 # GIIGNL annual report PDFs (Webflow CDN behind giignl.org/annual-report)
 CDN = "https://cdn.prod.website-files.com/67bdb9fc993751711c5f54fd/"

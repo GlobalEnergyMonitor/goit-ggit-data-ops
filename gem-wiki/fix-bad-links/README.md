@@ -4,7 +4,9 @@ Checks every citation in the **Background section** of GEM.wiki LNG terminal
 pages and repairs broken or drifted references. Coverage is tracked per
 country in [COVERAGE.md](COVERAGE.md). The queue comes from the LNG update
 assignments sheet: countries the researcher is working on but has not yet
-finished (Complete? = FALSE).
+finished (Complete? = FALSE). Refs the sweep could not settle (bot walls,
+login-only pages, dead refs needing a replacement source) are queued for a
+person in [HUMAN-REVIEW.md](HUMAN-REVIEW.md).
 
 Everything except this README and COVERAGE.md lives in `working-files/`:
 the scripts (`fixlib.py`, `scan_background_refs.py`, per-country fix specs),
