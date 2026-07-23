@@ -12,15 +12,13 @@ other. Compiled 2026-07-23.
 
 ## 1. Quick browser checks (bot-walled — a click settles it)
 
-- [ ] **[Hazira LNG Terminal](https://www.gem.wiki/Hazira_LNG_Terminal)** —
-  Reuters (401 to bots, no content archive; URL slug matches the claim):
-  <https://www.reuters.com/article/shell-hazira-capacity/shell-plans-to-double-hazira-lng-plant-capacity-india-head-idUSL3N1H84HZ>
-- [ ] **[Haldia FSRU](https://www.gem.wiki/Haldia_FSRU)** — S&P Global
-  (bot-walled, no archive; slug matches):
-  <https://www.spglobal.com/commodity-insights/en/news-research/latest-news/crude-oil/091025-appec-invenire-boosts-india-upstream-presence-ventures-into-lng-infrastructure>
-- [ ] **[Dabhol LNG Terminal](https://www.gem.wiki/Dabhol_LNG_Terminal)** —
-  Offshore Technology (Cloudflare-walled; slug matches):
-  <https://www.offshore-technology.com/news/gail-dabhol-lng-terminal-capacity/?cf-view>
+- [x] ~~**Hazira LNG Terminal** — Reuters (401 to bots)~~ **Reviewed
+  2026-07-23: loads fine in a browser** — bot wall only, no wiki edit needed.
+- [x] ~~**Haldia FSRU** — S&P Global (bot-walled)~~ **Reviewed 2026-07-23:
+  loads fine in a browser** — bot wall only, no wiki edit needed.
+- [x] ~~**Dabhol LNG Terminal** — Offshore Technology (Cloudflare-walled)~~
+  **Reviewed 2026-07-23: loads fine in a browser** — bot wall only, no wiki
+  edit needed.
 - [x] ~~**Dabhol / Hazira / AMNS Suvali** — Argus AMNS-Suvali article~~
   **Resolved 2026-07-23**: dead for humans too — swapped to the Dec 2024
   Wayback snapshot on Dabhol (rev 1198398) and Hazira (rev 1198399); AMNS
@@ -42,11 +40,28 @@ other. Compiled 2026-07-23.
   `webcache.googleusercontent.com` URL (which is why a page search for
   "energyinst" finds nothing); reviewer judged it not worth chasing.
 - [ ] **[Dabhol LNG Terminal](https://www.gem.wiki/Dabhol_LNG_Terminal)** —
-  ICIS, "India's GAIL puts Dabhol LNG terminal expansion plan on hold" (Feb
-  2014). The live URL serves an empty page shell (likely a login wall), it was
-  never archived, and no syndicated copy exists — needs an ICIS
-  subscription/browser check:
+  ICIS, "India's GAIL puts Dabhol LNG terminal expansion plan on hold" (Ajoy
+  K Das, Feb 7, 2014; cited on the page via bit.ly/2vLTNzg):
   <https://www.icis.com/resources/news/2014/02/07/9751104/india-s-gail-puts-dabhol-lng-terminal-expansion-plan-on-hold/>
+  - **Reviewer confirmed dead in a browser 2026-07-23.** Follow-up API sweep
+    the same day found no repair path: zero Wayback captures (CDX empty),
+    the newer `/explore/` URL variant returns 200 but is an empty subscriber
+    shell (redirects to subscriber.icis.com), and no syndicated or
+    contemporary copy surfaced (LNG World News 2014 archive, Indian business
+    press, exact-headline search — every hit circles back to the GEM wiki).
+  - What's at stake: the ref supports "expansion put on hold since 2014 due
+    to low capacity utilisation… high LNG prices and lack of breakwater."
+    The sentence's second ref (archived LNG World News, Apr 2016) already
+    covers ~60% utilisation + breakwater/monsoon, but not "on hold since
+    2014" or "high LNG prices".
+  - **Ready-made Google queries** (per the websearch-vs-google policy):
+    1. `"Dabhol LNG terminal expansion plan on hold"`
+    2. `GAIL Dabhol expansion hold February 2014 "Ajoy" icis`
+    3. `GAIL Dabhol 2014 expansion "high LNG prices" "capacity utilisation"`
+  - If Google finds nothing either: options are (a) leave the dead ref
+    as-is and note it in COVERAGE.md, or (b) swap in a retrospective source
+    (2025 breakwater-completion coverage confirms expansion only resumed
+    after the breakwater) and soften the sentence — researcher's call.
 
 ## 2. Dead refs needing a replacement source (researcher judgment)
 
