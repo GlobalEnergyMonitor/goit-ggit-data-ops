@@ -55,25 +55,15 @@ Update 2026-07-23: replacement candidates researched and staged below as
 quoted from the live/archived page), but **nothing has been saved to the
 wiki**. Check off an item to approve it; strike or comment to reject.
 
-- [ ] **[Karwar FSRU](https://www.gem.wiki/Karwar_FSRU)** — pipelineme.com is
-  gone and this is the page's **only** Background citation (highest priority):
-  <https://www.pipelineme.com/news/international-news/2017/01/hyundai-heavy-industries-wins-563-contract-to-build-asia-s-largest-fsru-in-karnataka/>
-  *(Note 2026-07-23: a reviewer fix was reported but never landed — the page's
-  last revision is from Oct 2025 and still cites the dead URL.)*
-  - **No verifiable replacement found** (deep search 2026-07-23). The
-    load-bearing claim — HHI won a US$563M contract in Jan 2017 — could not be
-    independently corroborated anywhere: the URL was never archived; every web
-    hit is gem.wiki itself or derivative of it (a moneycentral.com.ng article
-    repeats the sentence verbatim but hyperlinks back to gem.wiki — circular);
-    Fox Petroleum's own site only shows the earlier stage (Hyundai one of
-    several candidate shipyards, cost *estimated* at US$563M, no award); Korean
-    press coverage of HHI's 2017 FSRU deals (Höegh, Swan Energy/Jafrabad) never
-    mentions Fox/Karwar; a tankterminals.com snippet claiming a Dec 2016 award
-    404s with no archive. **Options:** (a) leave the dead link and add a
-    citation-needed-style flag, (b) recast the sentence to what Fox Petroleum's
-    [projects page](https://www.foxpetroleum.net/projects.php) supports
-    (Hyundai shortlisted, ~US$563M estimate — weaker claim), or (c) manual
-    search in a paid trade-press archive (ProQuest, LNG Journal, etc.).
+- [x] ~~**Karwar FSRU** — dead pipelineme.com ref (page's only Background
+  citation)~~ **Resolved 2026-07-23** (rev 1198405): the automated search found
+  nothing independent (moneycentral.com.ng repeats the wiki verbatim and links
+  back to it — circular), but the reviewer located a [LinkedIn syndicated
+  copy](https://www.linkedin.com/pulse/hyundai-heavy-industries-awarded-us565m-contract-largest-williams)
+  of the same original article (identical US$563m-body/US$565m-headline
+  mismatch, same Jan 2017 dating, names Fox Petroleum and Karwar) — swapped in.
+  Closing sentence also updated per reviewer: shelved as of 2019, cancelled as
+  of 2021 (last update Jan 2017).
 - [x] ~~**Kukrahati LNG Terminal** — environmentclearance.nic.in risk-assessment PDF~~
   **Resolved 2026-07-23, no edit needed**: the PDF is reachable again (200,
   789 KB) — the earlier failure was a transient nic.in outage. The existing
