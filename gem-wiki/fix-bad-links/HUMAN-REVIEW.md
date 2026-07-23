@@ -39,29 +39,20 @@ other. Compiled 2026-07-23.
   **Reviewed 2026-07-23, left as-is**: the page cites it via a
   `webcache.googleusercontent.com` URL (which is why a page search for
   "energyinst" finds nothing); reviewer judged it not worth chasing.
-- [ ] **[Dabhol LNG Terminal](https://www.gem.wiki/Dabhol_LNG_Terminal)** —
-  ICIS, "India's GAIL puts Dabhol LNG terminal expansion plan on hold" (Ajoy
-  K Das, Feb 7, 2014; cited on the page via bit.ly/2vLTNzg):
-  <https://www.icis.com/resources/news/2014/02/07/9751104/india-s-gail-puts-dabhol-lng-terminal-expansion-plan-on-hold/>
-  - **Reviewer confirmed dead in a browser 2026-07-23.** Follow-up API sweep
-    the same day found no repair path: zero Wayback captures (CDX empty),
-    the newer `/explore/` URL variant returns 200 but is an empty subscriber
-    shell (redirects to subscriber.icis.com), and no syndicated or
-    contemporary copy surfaced (LNG World News 2014 archive, Indian business
-    press, exact-headline search — every hit circles back to the GEM wiki).
-  - What's at stake: the ref supports "expansion put on hold since 2014 due
-    to low capacity utilisation… high LNG prices and lack of breakwater."
-    The sentence's second ref (archived LNG World News, Apr 2016) already
-    covers ~60% utilisation + breakwater/monsoon, but not "on hold since
-    2014" or "high LNG prices".
-  - **Ready-made Google queries** (per the websearch-vs-google policy):
-    1. `"Dabhol LNG terminal expansion plan on hold"`
-    2. `GAIL Dabhol expansion hold February 2014 "Ajoy" icis`
-    3. `GAIL Dabhol 2014 expansion "high LNG prices" "capacity utilisation"`
-  - If Google finds nothing either: options are (a) leave the dead ref
-    as-is and note it in COVERAGE.md, or (b) swap in a retrospective source
-    (2025 breakwater-completion coverage confirms expansion only resumed
-    after the breakwater) and soften the sentence — researcher's call.
+- [x] ~~**Dabhol LNG Terminal** — ICIS, "India's GAIL puts Dabhol LNG
+  terminal expansion plan on hold" (Ajoy K Das, Feb 7, 2014)~~
+  **Closed 2026-07-23, left as-is (no wiki edit).** Reviewer confirmed dead
+  in a browser; the staged Google queries were then run across engines
+  (Brave index + WebSearch; Google, Bing, DuckDuckGo, Mojeek, Startpage all
+  captcha/JS-block automation) along with Wayback CDX, ICIS's newer
+  `/explore/` URL (empty subscriber shell), the LNG World News 2014 archive,
+  and searches for pages citing the article ID/slug — every content hit is
+  the GEM wiki itself. Truly unrecoverable. The sentence's second ref
+  (archived LNG World News, Apr 2016) still covers the ~60% utilisation +
+  breakwater/monsoon claims; only "on hold since 2014" and "high LNG prices"
+  rest on the dead ref. If a researcher wants full support, an option is a
+  retrospective source (2025 breakwater-completion coverage) plus a slight
+  softening of the sentence.
 
 ## 2. Dead refs needing a replacement source (researcher judgment)
 
