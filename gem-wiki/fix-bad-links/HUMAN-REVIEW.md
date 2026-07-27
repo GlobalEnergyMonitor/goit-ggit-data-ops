@@ -132,42 +132,34 @@ to the wiki (revs 1198408–1198414). Section 2 is now fully resolved.
 
 ## 3. Latin America / Caribbean batch (compiled 2026-07-27)
 
-The 16 small countries are otherwise complete (revs 1202600–1202616). Three
-leftovers, none of them a broken-link problem the sweep can settle.
+The 16 small countries and Mexico are complete (revs 1202600–1202616,
+1202625, 1202628–1202638). Both Andrés dead refs have now been recovered;
+what remains is one Peru factual question plus two Mexico dead refs with no
+archive.
 
-### Dead refs needing a replacement source (researcher judgment)
+### Dead refs on Andrés — both now resolved
 
-Both sit on **Andrés LNG Terminal** and both are genuinely dead with an archive
-that exists but is useless — worth knowing that a 200 Wayback capture is not
-automatically a usable one.
+Both sat on **Andrés LNG Terminal** and both turned out to be recoverable,
+not dead — a reminder that a "404" host and a 200 Wayback capture can each be
+misleading.
 
-- [ ] **Andrés — the unnamed AES ref, footnote [19] as rendered**
-  (`aes.com/energas-and-aes-break-dominican-republics-reliance-oil`, 404).
-  Supports: *"In 2018, AES Andres began building the Eastern Gas Pipeline, a
-  project designed to bring natural gas from the Boca Chica terminal to several
-  power plants in the San Pedro de Macorís region."*
-  The only capture (Jun 2023) returns 200 with the right `<title>`, but the body
-  is AES site navigation and footer only — the article text was never captured,
-  so it can't support the sentence. Ready-made searches:
-  - `"Energas and AES break the Dominican Republic's reliance on oil"`
-  - `AES Energas Dominican Republic "reliance on oil" press release`
-  - `AES Andres Energas fuel conversion Dominican Republic case study`
-- [ ] **Andrés — `<ref name=Argus>`, footnote [20] as rendered**
-  (`argusmedia.com/en/news/2158007-domrep-converts-oilbased-power-to-gas`, 404).
-  Reused twice: the Los Mina / Quisqueya I / Quisqueya II / San Pedro de Macorís
-  conversion sentence, and the 2020 storage-expansion sentence (160,000 →
-  280,000 m³).
-  The Jan 2024 capture replays Argus's own error page ("An error has occured.
-  The article you are searching for was not found"), so there is no archived
-  copy of the article at all. Note the tracker's auto-generated `autoref_9`
-  cites the same article and already points at that same useless 2024-01-25
-  capture — so the rendered page shows an "Archived from the original" link
-  that leads to an error page. Fixing the autoref is out of scope (it is
-  regenerated), but it means the archive is not the fallback it appears to be.
-  Ready-made searches:
-  - `"DomRep converts oil-based power to gas"`
-  - `Argus 2158007 DomRep oil-based power gas`
-  - `Dominican Republic converts oil-fired power to natural gas Argus 2021`
+- [x] ~~**Andrés — the unnamed AES ref, footnote [19] as rendered**
+  (`aes.com/energas-and-aes-break-dominican-republics-reliance-oil`, 404).~~
+  **Resolved 2026-07-27** (rev 1202625): not gone, just relocated — a Brave
+  search surfaced the live copy at
+  `aes.com/energy-insights/energas-and-aes-break-dominican-republics-reliance-oil`
+  (200, full case-study body). Simple URL swap; the dead Jun 2023 Wayback
+  capture had only been nav chrome, which is why it looked unrecoverable.
+- [x] ~~**Andrés — `<ref name=Argus>`, footnote [20] as rendered**
+  (`argusmedia.com/en/news/2158007-domrep-converts-oilbased-power-to-gas`, 404).~~
+  **Resolved 2026-07-27** (rev 1202638): the researcher supplied a live Argus
+  copy of the same article at
+  `argusmedia.com/en/news-and-insights/latest-market-news/2123188-domrep-converts-oil-based-power-to-gas-update`
+  (200, verified to carry the DomRep/AES/power-to-gas content). The old article
+  ID 2158007 was retired; the live path uses ID 2123188 and the `-update` slug.
+  Straight URL swap. (The tracker's auto-generated `autoref_9` still cites the
+  retired URL with its useless 2024-01-25 error-page capture, but autorefs are
+  regenerated and out of scope.)
 
 ### Factual question, not a citation question
 
@@ -179,6 +171,31 @@ automatically a usable one.
   US$200 million** BCP local-bond tranche as of Jan 2009, not $350m+. No
   independent source for the $350m figure could be found. Either it reflects a
   later upsizing that needs its own source, or the number wants correcting.
+
+### Mexico batch (compiled 2026-07-27) — dead refs, no archive
+
+Two dead links on the Mexico pages could not be repaired: no Wayback capture
+exists and no working relocated/syndicated copy was found. Everything else on
+the 17 Mexico pages was fixed (revs 1202628–1202638) or is a live-for-readers
+bot-wall left as-is (all `ir.newfortressenergy.com` and `investor.sempra.com`
+refs answer an immediate HTTP/2 RST to scripts but load in a browser).
+
+- [ ] **Costa Azul + Vista Pacífico — nasdaq/Reuters "U.S. allows Sempra to
+  re-export LNG from Mexico"** (Dec 20 2022;
+  `nasdaq.com/articles/u.s.-allows-sempra-to-re-export-lng-from-mexico`, 404 with
+  a stray `?utm_source=substack` query). `website=Reuters` in the cite, so this
+  is Nasdaq's syndication of a Reuters wire piece. Nasdaq `/articles/` URLs are
+  not archived (Wayback has nothing), and the two pages share the same dead ref.
+  Needs a live Reuters original or another syndication. Ready-made searches:
+  - `"U.S. allows Sempra to re-export LNG from Mexico" Reuters`
+  - `Sempra re-export LNG Mexico December 2022 Reuters`
+- [ ] **Progreso LNG Terminal — NGV Journal "Korean energy company will build
+  LNG terminal in Yucatan"** (Aug 18 2016;
+  `ngvjournal.com/s1-news/c7-lng-h2-blends/…-in-yucatan/`, 404). The site
+  reorganized and the article was never archived (Wayback has no capture of the
+  Yucatan slug). A 2016 niche trade item; low stakes. Ready-made searches:
+  - `Korea LNG terminal Progreso Yucatan 2016`
+  - `NGV Journal Korean company LNG terminal Yucatan`
 
 ## Note
 

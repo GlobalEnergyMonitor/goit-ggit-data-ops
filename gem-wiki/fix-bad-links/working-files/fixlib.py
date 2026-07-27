@@ -65,7 +65,7 @@ def build(s, title, fixes, outdir="."):
     """Apply fixes to the live text; write <slug>_old/_new.wiki; return
     (old, new). Each fix: (label, marker, ("swap", old_url, new_url) |
     ("full", new_ref_text))."""
-    slug = re.sub(r"[ \-]", "_", title)
+    slug = re.sub(r"[ \-/]", "_", title)
     old = gw.page_text(s, title)
     new = old
     print("=" * 70)
