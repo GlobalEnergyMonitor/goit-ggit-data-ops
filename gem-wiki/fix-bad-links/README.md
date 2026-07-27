@@ -68,8 +68,15 @@ dumps. Run scripts from inside `working-files/`.
 
 ## Scope and policies
 
-- Background sections only. Auto-generated `autoref_*` sections (below
-  "COMMENT 3" in page wikitext) are out of scope.
+- Background sections only, delimited by the `==Background==` heading up to the
+  next `==` heading (that is what `background_section()` matches — *not* the
+  "COMMENT 3" marker, which sits just above the heading).
+- Refs named `autoref_*` are auto-generated from the tracker database and are
+  out of scope: they are regenerated, so editing them by hand is wasted. Scope
+  them out **by the `autoref_` name**, never by position — the generated
+  infobox/tables that define them sit near the top of the wikitext, *above*
+  Background, and `<ref name="autoref_N" />` reuses appear inside Background
+  itself. `fixlib.find_ref` and `find_ref_by_url` both filter on the name.
 - Refs that are dead with no archive and no verifiable replacement are left
   as-is and noted in COVERAGE.md.
 - "No replacement found" via WebSearch is not proof none exists — the API's
