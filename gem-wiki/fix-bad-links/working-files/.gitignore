@@ -1,0 +1,11 @@
+# Working data for the citation sweep, not source. The repo root already
+# ignores *.json (scan/diag/verify output); these are the rest of the churn:
+# page dumps, extracted Background text, run logs, and console captures.
+# Per-country fix specs (fix_<country>.py) stay visible — they are the record
+# of what each batch changed — as do the shared fixlib.py / scan_*.py.
+*.wiki
+*_bg.txt
+*.jsonl
+*.log
+*.err
+*.bak

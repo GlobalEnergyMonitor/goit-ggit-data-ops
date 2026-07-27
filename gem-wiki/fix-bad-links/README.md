@@ -27,11 +27,38 @@ dumps. Run scripts from inside `working-files/`.
      Wayback snapshot's *content* (keyword counts), retry with full browser
      headers, and only repair if confirmed dead. If alive, leave untouched.
    - 200 can still be a soft 404 or a redirect-to-homepage drift.
+   - **3xx is not a death certificate.** Bot/JS challenges answer 307 to a
+     script and 200 to a browser — every `atlanticlng.com` ref in the LatAm
+     batch scanned as `BROKEN 307` yet loads fine with the right title
+     (2026-07-27). Re-fetch redirects by hand before repairing.
+   - **SOFT404 verdicts need eyes, never automation.** All six in the LatAm
+     batch were false positives: the pattern matched `404 */ .error` inside a
+     site's *stylesheet* (gnlglobal) and a boilerplate "no longer available"
+     string in page furniture (trinidadexpress), while the articles were live
+     with correct titles (2026-07-27). Treat SOFT404 as "look at this", not as
+     a repair trigger.
+   - A URL that failed once may just have been having a bad day — re-check
+     live before repairing (Andrés's aesmcac.com went 503 → 200).
 4. **Repair, archive-first**: Wayback snapshot of the original URL
    (verify the snapshot's content actually supports the sentence) →
    relocated live copy of the same document → new source verified to
    support the claim. Cite GIIGNL reports in the standard format
    (`fixlib.giignl`). Deduplicate same-URL refs into named refs.
+   - **A 200 capture is not automatically a usable one.** Check the body, not
+     the status and title: Andrés's aes.com capture is navigation and footer
+     with no article text, and its argusmedia capture replays Argus's own
+     "the article you are searching for was not found" page. Both look like
+     healthy 200s.
+   - **Merge, don't overwrite.** For `{{cite}}` templates, leave the original
+     in `url=` and record the snapshot in `archive-url` / `archive-date` /
+     `url-status=dead` (see `apply_archive` in `fix_latam_small.py`) — a URL
+     believed dead today can come back, and the original is the citation's
+     provenance. Bare `[url text]` links have no field for it, so there the
+     URL is replaced; nothing is lost because a Wayback URL embeds the
+     original. Skip refs whose `archive-url` is already populated.
+   - Validate before saving: parse the new wikitext via `action=parse` and
+     compare its `mw-ext-cite-error` count against the old text, so a
+     malformed template is caught before it reaches the wiki, not after.
 5. **Build + save** — author a per-country fix spec using `fixlib.py`
    (see the docstring): marker-locates each ref uniquely, writes
    `<slug>_old.wiki` / `<slug>_new.wiki`, and the guarded save re-fetches
@@ -57,5 +84,8 @@ dumps. Run scripts from inside `working-files/`.
 - Per-edit approval exception (user-approved 2026-07-21): this project runs
   autonomously — no per-edit approval needed. Escalate to the user only for
   URLs needing a human browser check or genuinely new situations.
-- Scan output (`*.json`) and page dumps (`*.wiki`) are working data,
-  gitignored repo-wide.
+- Scan output, page dumps, extracted Background text and run logs are working
+  data, not source: `*.json` is gitignored repo-wide and
+  `working-files/.gitignore` covers the rest (`*.wiki`, `*_bg.txt`, `*.jsonl`,
+  `*.log`, `*.err`). The per-country fix specs (`fix_<country>.py`) are the
+  record of what each batch changed and stay visible.

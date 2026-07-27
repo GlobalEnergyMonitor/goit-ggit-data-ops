@@ -8,7 +8,8 @@ source that supports the sentence, which is researcher judgment.
 
 For each item: if the article loads and matches the citation, check it off (no
 wiki edit needed). If it's gone, tell Claude and the ref gets repaired like any
-other. Compiled 2026-07-23.
+other. Sections 1–2 compiled 2026-07-23 and fully resolved; section 3 is the
+open queue.
 
 ## 1. Quick browser checks (bot-walled — a click settles it)
 
@@ -119,6 +120,43 @@ to the wiki (revs 1198408–1198414). Section 2 is now fully resolved.
   pre-2022 structure — but so does the wiki sentence itself, which may
   separately deserve a factual update (QatarEnergy took 100% of Qatargas 1
   in Jan 2022).
+
+## 3. Latin America / Caribbean batch (compiled 2026-07-27)
+
+The 16 small countries are otherwise complete (revs 1202600–1202616). Three
+leftovers, none of them a broken-link problem the sweep can settle.
+
+### Dead refs needing a replacement source (researcher judgment)
+
+Both sit on **Andrés LNG Terminal** and both are genuinely dead with an archive
+that exists but is useless — worth knowing that a 200 Wayback capture is not
+automatically a usable one.
+
+- [ ] **Andrés [8]** — `aes.com/energas-and-aes-break-dominican-republics-reliance-oil`,
+  404. The only capture (Jun 2023) returns 200 with the right `<title>`, but the
+  body is AES site navigation and footer only — the article text was never
+  captured, so it can't support the sentence. Ready-made searches:
+  - `"Energas and AES break the Dominican Republic's reliance on oil"`
+  - `AES Energas Dominican Republic "reliance on oil" press release`
+  - `AES Andres Energas fuel conversion Dominican Republic case study`
+- [ ] **Andrés [9]** — `argusmedia.com/en/news/2158007-domrep-converts-oilbased-power-to-gas`,
+  404. The Jan 2024 capture replays Argus's own error page ("An error has
+  occured. The article you are searching for was not found"), so there is no
+  archived copy of the article at all. Ready-made searches:
+  - `"DomRep converts oil-based power to gas"`
+  - `Argus 2158007 DomRep oil-based power gas`
+  - `Dominican Republic converts oil-fired power to natural gas Argus 2021`
+
+### Factual question, not a citation question
+
+- [ ] **Peru LNG Terminal** — the sentence listing the project's lenders says
+  Banco de Crédito arranged "upwards of $350 million" in local bonds. Its dead
+  citation was replaced (rev 1202613) with IJGlobal's project case study, which
+  matches every other figure exactly (IFC US$300m, IDB US$400m A-loan +
+  US$400m B-loan, K-Exim US$300m, Sace US$250m) but documents a **planned
+  US$200 million** BCP local-bond tranche as of Jan 2009, not $350m+. No
+  independent source for the $350m figure could be found. Either it reflects a
+  later upsizing that needs its own source, or the number wants correcting.
 
 ## Note
 
