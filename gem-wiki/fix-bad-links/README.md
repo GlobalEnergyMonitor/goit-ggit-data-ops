@@ -59,6 +59,11 @@ dumps. Run scripts from inside `working-files/`.
    - Validate before saving: parse the new wikitext via `action=parse` and
      compare its `mw-ext-cite-error` count against the old text, so a
      malformed template is caught before it reaches the wiki, not after.
+4b. **Writing for a human?** Never hand over a bare scanner `[n]`. That index
+   counts `<ref>`s inside Background only; the wiki's rendered footnote numbers
+   count the whole page and start with the auto-generated infobox/table refs, so
+   the two never line up (Andrés scanner `[8]` = displayed footnote `[19]`).
+   Identify a ref by URL, `<ref name=...>`, and the sentence it supports.
 5. **Build + save** — author a per-country fix spec using `fixlib.py`
    (see the docstring): marker-locates each ref uniquely, writes
    `<slug>_old.wiki` / `<slug>_new.wiki`, and the guarded save re-fetches

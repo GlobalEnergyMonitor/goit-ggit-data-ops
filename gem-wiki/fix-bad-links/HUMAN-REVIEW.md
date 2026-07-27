@@ -11,6 +11,15 @@ wiki edit needed). If it's gone, tell Claude and the ref gets repaired like any
 other. Sections 1–2 compiled 2026-07-23 and fully resolved; section 3 is the
 open queue.
 
+**Don't identify a ref by a bare `[n]`.** Any `[n]` in sections 1–2 is a
+*scanner* index — the nth `<ref>` inside the Background section, reuses
+included, counting from 1. It is **not** the footnote number the wiki renders,
+which counts every ref on the page and so starts with the auto-generated
+infobox/table refs: Andrés's scanner `[8]` is displayed footnote `[19]`. The
+two never match. Identify refs for a human by URL, `<ref name=...>`, and the
+sentence they support, and give the rendered footnote number only with the date
+it was true (adding or removing any earlier ref renumbers it).
+
 ## 1. Quick browser checks (bot-walled — a click settles it)
 
 - [x] ~~**Hazira LNG Terminal** — Reuters (401 to bots)~~ **Reviewed
@@ -132,17 +141,30 @@ Both sit on **Andrés LNG Terminal** and both are genuinely dead with an archive
 that exists but is useless — worth knowing that a 200 Wayback capture is not
 automatically a usable one.
 
-- [ ] **Andrés [8]** — `aes.com/energas-and-aes-break-dominican-republics-reliance-oil`,
-  404. The only capture (Jun 2023) returns 200 with the right `<title>`, but the
-  body is AES site navigation and footer only — the article text was never
-  captured, so it can't support the sentence. Ready-made searches:
+- [ ] **Andrés — the unnamed AES ref, footnote [19] as rendered**
+  (`aes.com/energas-and-aes-break-dominican-republics-reliance-oil`, 404).
+  Supports: *"In 2018, AES Andres began building the Eastern Gas Pipeline, a
+  project designed to bring natural gas from the Boca Chica terminal to several
+  power plants in the San Pedro de Macorís region."*
+  The only capture (Jun 2023) returns 200 with the right `<title>`, but the body
+  is AES site navigation and footer only — the article text was never captured,
+  so it can't support the sentence. Ready-made searches:
   - `"Energas and AES break the Dominican Republic's reliance on oil"`
   - `AES Energas Dominican Republic "reliance on oil" press release`
   - `AES Andres Energas fuel conversion Dominican Republic case study`
-- [ ] **Andrés [9]** — `argusmedia.com/en/news/2158007-domrep-converts-oilbased-power-to-gas`,
-  404. The Jan 2024 capture replays Argus's own error page ("An error has
-  occured. The article you are searching for was not found"), so there is no
-  archived copy of the article at all. Ready-made searches:
+- [ ] **Andrés — `<ref name=Argus>`, footnote [20] as rendered**
+  (`argusmedia.com/en/news/2158007-domrep-converts-oilbased-power-to-gas`, 404).
+  Reused twice: the Los Mina / Quisqueya I / Quisqueya II / San Pedro de Macorís
+  conversion sentence, and the 2020 storage-expansion sentence (160,000 →
+  280,000 m³).
+  The Jan 2024 capture replays Argus's own error page ("An error has occured.
+  The article you are searching for was not found"), so there is no archived
+  copy of the article at all. Note the tracker's auto-generated `autoref_9`
+  cites the same article and already points at that same useless 2024-01-25
+  capture — so the rendered page shows an "Archived from the original" link
+  that leads to an error page. Fixing the autoref is out of scope (it is
+  regenerated), but it means the archive is not the fallback it appears to be.
+  Ready-made searches:
   - `"DomRep converts oil-based power to gas"`
   - `Argus 2158007 DomRep oil-based power gas`
   - `Dominican Republic converts oil-fired power to natural gas Argus 2021`
