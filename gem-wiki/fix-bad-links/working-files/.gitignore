@@ -9,3 +9,6 @@
 *.log
 *.err
 *.bak
+
+# per-batch diagnostic dumps (india/bangladesh left these behind)
+_diag_*/
