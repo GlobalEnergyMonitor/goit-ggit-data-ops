@@ -10,6 +10,13 @@ small-countries-first — the 16 small countries, then Mexico, then Brazil and
 Argentina / Chile / Venezuela. **Batch complete 2026-07-27**: all 21 countries
 done (16 small + Mexico + Brazil + Argentina + Chile + Venezuela).
 
+**Queue re-checked against the assignments sheet 2026-07-27** (read via the
+Google Drive connector — not the service account): all 35 countries currently
+marked `Complete? = FALSE` are already in the table below. The sweep queue is
+empty — link repair has run ahead of the researchers, several of whom are still
+mid-update. No new country enters scope from this sheet unless assignments
+change or countries are added.
+
 | Country | Pages | Status | Date | Revisions / notes |
 |---|---|---|---|---|
 | France | 7 | ✅ done | 2026-07-21 | revs 1198065, 1198067–1198074; 26 refs repaired, 0 cite errors. Left as-is: TradeWinds (dead, no archive); 6 bot-walled refs verified alive via archives (Reuters ×3, S&P ×2, Euractiv). |
