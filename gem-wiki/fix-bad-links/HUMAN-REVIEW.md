@@ -132,10 +132,10 @@ to the wiki (revs 1198408–1198414). Section 2 is now fully resolved.
 
 ## 3. Latin America / Caribbean batch (compiled 2026-07-27)
 
-The 16 small countries and Mexico are complete (revs 1202600–1202616,
-1202625, 1202628–1202638). Both Andrés dead refs have now been recovered;
-what remains is one Peru factual question plus two Mexico dead refs with no
-archive.
+The 16 small countries, Mexico, and Brazil are complete (revs 1202600–1202616,
+1202625, 1202628–1202638, 1202646–1202665). Both Andrés dead refs have now been
+recovered; what remains is one Peru factual question, two Mexico dead refs, and
+four Brazil dead refs — all with no usable archive.
 
 ### Dead refs on Andrés — both now resolved
 
@@ -196,6 +196,42 @@ refs answer an immediate HTTP/2 RST to scripts but load in a browser).
   Yucatan slug). A 2016 niche trade item; low stakes. Ready-made searches:
   - `Korea LNG terminal Progreso Yucatan 2016`
   - `NGV Journal Korean company LNG terminal Yucatan`
+
+### Brazil batch (compiled 2026-07-27) — dead refs, no archive
+
+Four dead links on the Brazil pages could not be repaired: no usable Wayback
+capture exists (or only an error-page capture) and no working relocated copy
+was found. Everything else on the 25 Brazil pages was fixed (revs 1202646–1202665)
+or is a live-for-readers block left as-is — most notably all 20 `epbr.com.br`
+refs, which return a Cloudflare 522 gateway-timeout to datacenter IPs (via both
+local curl and WebFetch's separate network path) but are a live Brazilian energy
+publisher, not down.
+
+- [ ] **Bahia FSRU — Nasdaq/Reuters "Brazil's Petrobras disqualifies
+  Excelerate Energy's bid on LNG lease"** (Jun 21 2021;
+  `nasdaq.com/articles/brazils-petrobras-disqualifies-excelerate-energys-bid-on-lng-lease-2021-06-21`,
+  404). Nasdaq `/articles/` URLs are not archived (Wayback has nothing). Needs a
+  live Reuters original or another syndication. Ready-made searches:
+  - `Petrobras disqualifies Excelerate Energy LNG lease bid 2021 Reuters`
+  - `"Excelerate" Petrobras Bahia LNG lease disqualified June 2021`
+- [ ] **Presidente Kennedy FSRU — ABOL Brasil "Polimix planeja iniciar obra de
+  US$ 650 milhões em porto no ES"** (`abolbrasil.org.br/posts/polimix-planeja-iniciar-obra-de-us-650-milhoes-em-porto-no-es`,
+  404; the only Wayback capture is a 403 error page). Ready-made searches:
+  - `Polimix porto Presidente Kennedy US$ 650 milhões`
+  - `Polimix terminal GNL Presidente Kennedy Espírito Santo`
+- [ ] **Tergás Rio Grande LNG Terminal — SEMA/RS "FEPAM recebe EIA-RIMA para
+  obras do terminal de gás e termelétrica em Rio Grande"**
+  (`sema.rs.gov.br/fepam-recebe-eia-rima-para-obras-do-terminal-de-gas-e-termeletrica-em-rio-grande-5862c670daf5e`,
+  404, never archived). State-government press page; likely reorganized.
+  Ready-made searches:
+  - `FEPAM EIA-RIMA terminal gás termelétrica Rio Grande`
+  - `SEMA RS terminal GNL Rio Grande EIA RIMA`
+- [ ] **Terminal Gás Sul FSRU — Itajaí Naval "Autorizada a construção do
+  Terminal Gás Sul na Baía da Babitonga"**
+  (`itajainaval.com.br/autorizada-a-construcao-do-terminal-gas-sul-na-baia-da-babitonga`,
+  times out / never archived). Ready-made searches:
+  - `Terminal Gás Sul construção autorizada Baía da Babitonga`
+  - `TGS terminal GNL São Francisco do Sul autorização construção`
 
 ## Note
 
