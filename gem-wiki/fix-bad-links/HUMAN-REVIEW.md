@@ -132,10 +132,10 @@ to the wiki (revs 1198408–1198414). Section 2 is now fully resolved.
 
 ## 3. Latin America / Caribbean batch (compiled 2026-07-27)
 
-The 16 small countries, Mexico, and Brazil are complete (revs 1202600–1202616,
-1202625, 1202628–1202638, 1202646–1202665). Both Andrés dead refs have now been
-recovered; what remains is one Peru factual question, two Mexico dead refs, and
-four Brazil dead refs — all with no usable archive.
+The full batch is complete (revs 1202600–1202616, 1202625, 1202628–1202638,
+1202646–1202675) — 21 countries. Both Andrés dead refs have now been recovered;
+what remains is one Peru factual question plus dead refs with no usable archive:
+two on Mexico, four on Brazil, and four on Argentina/Chile.
 
 ### Dead refs on Andrés — both now resolved
 
@@ -232,6 +232,37 @@ publisher, not down.
   times out / never archived). Ready-made searches:
   - `Terminal Gás Sul construção autorizada Baía da Babitonga`
   - `TGS terminal GNL São Francisco do Sul autorização construção`
+
+### Argentina / Chile batch (compiled 2026-07-27) — dead refs, no archive
+
+Four dead links across the Argentina and Chile pages have no usable Wayback
+capture and no working relocated copy. Everything else on those pages was fixed
+(revs 1202666–1202675) or is a live-for-readers bot-wall/paywall left as-is.
+
+- [ ] **TGS Puerto Galván LNG Terminal — Petrol News "noticia.php?r=46829"**
+  (`petrolnews.net/noticia.php?r=46829`, host won't connect; never archived — the
+  numeric article ID gives no way to guess the topic). Ready-made searches:
+  - `Petrol News TGS Puerto Galván GNL`
+  - `TGS Puerto Galván terminal GNL Bahía Blanca`
+- [ ] **TGS Puerto Galván LNG Terminal — Financial Post "TGS halts Argentina LNG
+  plant as state-run project seeks backers"**
+  (`financialpost.com/pmn/business-pmn/tgs-halts-argentina-lng-plant-as-state-run-project-seeks-backers`,
+  410 Gone; the only Wayback capture is a 403 error page). It's a Reuters/Bloomberg
+  wire piece syndicated by Financial Post — a live original likely exists. Ready-made
+  searches:
+  - `"TGS halts Argentina LNG plant" state-run project backers`
+  - `Transportadora de Gas del Sur halts LNG plant 2024 Reuters`
+- [ ] **Talcahuano FSRU — GNL Global "Corte Suprema de Chile obliga a Gasoducto
+  del Pacífico…"** (`gnlglobal.com/mercados/america-latina-y-el-caribe/corte-suprema-de-chile-obliga-a-gasoducto-del-pacifico-a-dar-respuesta-fundada-a-gnl-talcahuano-para-no-aceptar-conexion/`,
+  404, never archived). Ready-made searches:
+  - `Corte Suprema Gasoducto del Pacífico GNL Talcahuano conexión`
+  - `GNL Talcahuano Gasoducto del Pacífico fallo Corte Suprema`
+- [ ] **Talcahuano FSRU — Canal 9 Bío Bío "GNL Talcahuano irá a la Corte Suprema
+  para salvar proyecto…"** (`canal9.cl/programas/noticias/2021/11/19/gnl-talcahuano-ira-a-la-corte-suprema-para-salvar-proyecto-de-gas-natural.shtml`;
+  original path 404s, the site moved content to `/episodios/…` which also 404s; never
+  archived). Ready-made searches:
+  - `GNL Talcahuano Corte Suprema salvar proyecto Canal 9`
+  - `GNL Talcahuano recurso Corte Suprema noviembre 2021`
 
 ## Note
 
