@@ -8,8 +8,9 @@ source that supports the sentence, which is researcher judgment.
 
 For each item: if the article loads and matches the citation, check it off (no
 wiki edit needed). If it's gone, tell Claude and the ref gets repaired like any
-other. Sections 1–2 compiled 2026-07-23 and fully resolved; section 3 is the
-open queue.
+other. Sections 1–2 compiled 2026-07-23 and fully resolved; section 3 (Latin
+America, compiled 2026-07-27) is now fully resolved too — the whole queue is
+clear as of 2026-07-27.
 
 **Don't identify a ref by a bare `[n]`.** Any `[n]` in sections 1–2 is a
 *scanner* index — the nth `<ref>` inside the Background section, reuses
@@ -133,9 +134,12 @@ to the wiki (revs 1198408–1198414). Section 2 is now fully resolved.
 ## 3. Latin America / Caribbean batch (compiled 2026-07-27)
 
 The full batch is complete (revs 1202600–1202616, 1202625, 1202628–1202638,
-1202646–1202675) — 21 countries. Both Andrés dead refs have now been recovered;
-what remains is one Peru factual question plus dead refs with no usable archive:
-two on Mexico, four on Brazil, and four on Argentina/Chile.
+1202646–1202675) — 21 countries. A follow-up inline research pass on 2026-07-27
+(revs 1202676–1202682) recovered eight of the ten "dead, no archive" refs via
+live relocated URLs, wire/syndication copies, or the same article on a live
+host. The remaining three — one Peru factual question and two Brazil refs
+(Tergás, Terminal Gás Sul) — were resolved by the researcher on 2026-07-27.
+**Section 3 is now fully resolved.**
 
 ### Dead refs on Andrés — both now resolved
 
@@ -163,106 +167,105 @@ misleading.
 
 ### Factual question, not a citation question
 
-- [ ] **Peru LNG Terminal** — the sentence listing the project's lenders says
-  Banco de Crédito arranged "upwards of $350 million" in local bonds. Its dead
-  citation was replaced (rev 1202613) with IJGlobal's project case study, which
-  matches every other figure exactly (IFC US$300m, IDB US$400m A-loan +
-  US$400m B-loan, K-Exim US$300m, Sace US$250m) but documents a **planned
-  US$200 million** BCP local-bond tranche as of Jan 2009, not $350m+. No
-  independent source for the $350m figure could be found. Either it reflects a
-  later upsizing that needs its own source, or the number wants correcting.
+- [x] **Peru LNG Terminal** — **Resolved by the researcher 2026-07-27.** For the
+  record: the sentence listing the project's lenders said Banco de Crédito
+  arranged "upwards of $350 million" in local bonds. Its dead citation was
+  replaced (rev 1202613) with IJGlobal's project case study, which matches every
+  other figure exactly (IFC US$300m, IDB US$400m A-loan + US$400m B-loan, K-Exim
+  US$300m, Sace US$250m) but documents a **planned US$200 million** BCP
+  local-bond tranche as of Jan 2009, not $350m+; no independent source for the
+  $350m figure was found in the automated pass.
 
 ### Mexico batch (compiled 2026-07-27) — dead refs, no archive
 
-Two dead links on the Mexico pages could not be repaired: no Wayback capture
-exists and no working relocated/syndicated copy was found. Everything else on
-the 17 Mexico pages was fixed (revs 1202628–1202638) or is a live-for-readers
-bot-wall left as-is (all `ir.newfortressenergy.com` and `investor.sempra.com`
-refs answer an immediate HTTP/2 RST to scripts but load in a browser).
+Both Mexico dead links were recovered on the 2026-07-27 follow-up pass and are
+now resolved (below). Everything else on the 17 Mexico pages was fixed (revs
+1202628–1202638) or is a live-for-readers bot-wall left as-is (all
+`ir.newfortressenergy.com` and `investor.sempra.com` refs answer an immediate
+HTTP/2 RST to scripts but load in a browser).
 
-- [ ] **Costa Azul + Vista Pacífico — nasdaq/Reuters "U.S. allows Sempra to
-  re-export LNG from Mexico"** (Dec 20 2022;
-  `nasdaq.com/articles/u.s.-allows-sempra-to-re-export-lng-from-mexico`, 404 with
-  a stray `?utm_source=substack` query). `website=Reuters` in the cite, so this
-  is Nasdaq's syndication of a Reuters wire piece. Nasdaq `/articles/` URLs are
-  not archived (Wayback has nothing), and the two pages share the same dead ref.
-  Needs a live Reuters original or another syndication. Ready-made searches:
-  - `"U.S. allows Sempra to re-export LNG from Mexico" Reuters`
-  - `Sempra re-export LNG Mexico December 2022 Reuters`
-- [ ] **Progreso LNG Terminal — NGV Journal "Korean energy company will build
-  LNG terminal in Yucatan"** (Aug 18 2016;
-  `ngvjournal.com/s1-news/c7-lng-h2-blends/…-in-yucatan/`, 404). The site
-  reorganized and the article was never archived (Wayback has no capture of the
-  Yucatan slug). A 2016 niche trade item; low stakes. Ready-made searches:
-  - `Korea LNG terminal Progreso Yucatan 2016`
-  - `NGV Journal Korean company LNG terminal Yucatan`
+- [x] ~~**Costa Azul + Vista Pacífico — nasdaq/Reuters "U.S. allows Sempra to
+  re-export LNG from Mexico"** (Dec 20 2022)~~ **Resolved 2026-07-27** (revs
+  1202676/1202677): the same Reuters wire piece is live at Natural Gas World
+  (`naturalgasworld.com/u.s.-permits-sempra-to-re-export-lng-from-mexico-102750`),
+  verified to carry the post-Ukraine-invasion re-export framing. Swapped in on
+  both pages (`website=Natural Gas World (Reuters)`, `name=":5"` kept).
+- [x] ~~**Progreso LNG Terminal — NGV Journal "Korean energy company will build
+  LNG terminal in Yucatan"** (Aug 18 2016)~~ **Resolved 2026-07-27** (rev
+  1202678): replaced with Offshore Energy's coverage of the same Kogas plan
+  (`offshore-energy.biz/kogas-plans-mexico-lng-import-terminal/`, Aug 12 2016),
+  which confirms the feasibility-study step the sentence rests on.
 
 ### Brazil batch (compiled 2026-07-27) — dead refs, no archive
 
-Four dead links on the Brazil pages could not be repaired: no usable Wayback
-capture exists (or only an error-page capture) and no working relocated copy
-was found. Everything else on the 25 Brazil pages was fixed (revs 1202646–1202665)
-or is a live-for-readers block left as-is — most notably all 20 `epbr.com.br`
-refs, which return a Cloudflare 522 gateway-timeout to datacenter IPs (via both
-local curl and WebFetch's separate network path) but are a live Brazilian energy
+Two of the four Brazil dead links were recovered on the 2026-07-27 follow-up
+pass (below); the other two (Tergás, Terminal Gás Sul) were unrecoverable/
+mismatched and were closed by the researcher on 2026-07-27. Everything
+else on the 25 Brazil pages was fixed (revs 1202646–1202665) or is a
+live-for-readers block left as-is — most notably all 20 `epbr.com.br` refs,
+which return a Cloudflare 522 gateway-timeout to datacenter IPs (via both local
+curl and WebFetch's separate network path) but are a live Brazilian energy
 publisher, not down.
 
-- [ ] **Bahia FSRU — Nasdaq/Reuters "Brazil's Petrobras disqualifies
-  Excelerate Energy's bid on LNG lease"** (Jun 21 2021;
-  `nasdaq.com/articles/brazils-petrobras-disqualifies-excelerate-energys-bid-on-lng-lease-2021-06-21`,
-  404). Nasdaq `/articles/` URLs are not archived (Wayback has nothing). Needs a
-  live Reuters original or another syndication. Ready-made searches:
-  - `Petrobras disqualifies Excelerate Energy LNG lease bid 2021 Reuters`
-  - `"Excelerate" Petrobras Bahia LNG lease disqualified June 2021`
-- [ ] **Presidente Kennedy FSRU — ABOL Brasil "Polimix planeja iniciar obra de
-  US$ 650 milhões em porto no ES"** (`abolbrasil.org.br/posts/polimix-planeja-iniciar-obra-de-us-650-milhoes-em-porto-no-es`,
-  404; the only Wayback capture is a 403 error page). Ready-made searches:
-  - `Polimix porto Presidente Kennedy US$ 650 milhões`
-  - `Polimix terminal GNL Presidente Kennedy Espírito Santo`
-- [ ] **Tergás Rio Grande LNG Terminal — SEMA/RS "FEPAM recebe EIA-RIMA para
-  obras do terminal de gás e termelétrica em Rio Grande"**
-  (`sema.rs.gov.br/fepam-recebe-eia-rima-para-obras-do-terminal-de-gas-e-termeletrica-em-rio-grande-5862c670daf5e`,
-  404, never archived). State-government press page; likely reorganized.
-  Ready-made searches:
-  - `FEPAM EIA-RIMA terminal gás termelétrica Rio Grande`
-  - `SEMA RS terminal GNL Rio Grande EIA RIMA`
-- [ ] **Terminal Gás Sul FSRU — Itajaí Naval "Autorizada a construção do
-  Terminal Gás Sul na Baía da Babitonga"**
-  (`itajainaval.com.br/autorizada-a-construcao-do-terminal-gas-sul-na-baia-da-babitonga`,
-  times out / never archived). Ready-made searches:
-  - `Terminal Gás Sul construção autorizada Baía da Babitonga`
-  - `TGS terminal GNL São Francisco do Sul autorização construção`
+- [x] ~~**Bahia FSRU — Nasdaq/Reuters "Brazil's Petrobras disqualifies
+  Excelerate Energy's bid on LNG lease"** (Jun 21 2021)~~ **Resolved 2026-07-27**
+  (rev 1202679): replaced with JPT (Journal of Petroleum Technology), "Petrobras
+  Disqualifies Excelerate's Bid on LNG Terminal" (Jun 22 2021, reporting Reuters;
+  `jpt.spe.org/petrobras-disqualifies-excelerates-bid-on-lng-terminal`), which
+  confirms the disqualification and Excelerate being the sole bidder. This was a
+  bare `[url text]` link, so the display text and byline were rewritten to
+  attribute JPT honestly rather than keep the old Reuters headline.
+- [x] ~~**Presidente Kennedy FSRU — ABOL Brasil "Polimix planeja iniciar obra de
+  US$ 650 milhões em porto no ES"**~~ **Resolved 2026-07-27** (rev 1202680): not
+  gone, just relocated — the same article is live at
+  `abolbrasil.org.br/noticias/noticias/polimix-planeja-iniciar-obra-de-us-650-milhoes-em-porto-no-es`
+  (identical title/date). Straight URL swap; the `/posts/` path was retired.
+- [x] **Tergás Rio Grande LNG Terminal — SEMA/RS "FEPAM recebe EIA-RIMA…"** —
+  **Resolved by the researcher 2026-07-27.** For the record: sema.rs.gov.br was
+  404 + never archived + not relocated (all `estado.rs.gov.br` slug variants
+  404). The one live candidate — tnpetroleo, "Rio Grande sediará primeiro
+  terminal de GNL on-shore do Brasil" (Dec 17 2008) — was on-topic but stated a
+  **>US$1.2 billion** projected investment vs the wiki sentence's "in 2009 an
+  R$3 billion investment was allegedly projected", so the automated pass left it
+  for a figure-reconciliation call rather than swap in a mismatched number.
+- [x] **Terminal Gás Sul FSRU — Itajaí Naval "Autorizada a construção…"** —
+  **Resolved by the researcher 2026-07-27.** For the record: itajainaval timed
+  out / never archived, and no clean source for the specific Nov-2021 ANP
+  *construction* authorization surfaced — the live candidates (megawhat, ndmais)
+  both cover a *later, different* event (the Jan 31 2024 ANP authorization to
+  *import* 15M m³/day, published in the DOU). The sentence's core "construction
+  began Nov 2021" fact is separately carried by a live co-ref (oec-eng.com,
+  "Tenenge starts construction…", Nov 17 2021).
 
 ### Argentina / Chile batch (compiled 2026-07-27) — dead refs, no archive
 
-Four dead links across the Argentina and Chile pages have no usable Wayback
-capture and no working relocated copy. Everything else on those pages was fixed
+All four Argentina/Chile dead links were recovered on the 2026-07-27 follow-up
+pass and are now resolved (below). Everything else on those pages was fixed
 (revs 1202666–1202675) or is a live-for-readers bot-wall/paywall left as-is.
 
-- [ ] **TGS Puerto Galván LNG Terminal — Petrol News "noticia.php?r=46829"**
-  (`petrolnews.net/noticia.php?r=46829`, host won't connect; never archived — the
-  numeric article ID gives no way to guess the topic). Ready-made searches:
-  - `Petrol News TGS Puerto Galván GNL`
-  - `TGS Puerto Galván terminal GNL Bahía Blanca`
-- [ ] **TGS Puerto Galván LNG Terminal — Financial Post "TGS halts Argentina LNG
-  plant as state-run project seeks backers"**
-  (`financialpost.com/pmn/business-pmn/tgs-halts-argentina-lng-plant-as-state-run-project-seeks-backers`,
-  410 Gone; the only Wayback capture is a 403 error page). It's a Reuters/Bloomberg
-  wire piece syndicated by Financial Post — a live original likely exists. Ready-made
-  searches:
-  - `"TGS halts Argentina LNG plant" state-run project backers`
-  - `Transportadora de Gas del Sur halts LNG plant 2024 Reuters`
-- [ ] **Talcahuano FSRU — GNL Global "Corte Suprema de Chile obliga a Gasoducto
-  del Pacífico…"** (`gnlglobal.com/mercados/america-latina-y-el-caribe/corte-suprema-de-chile-obliga-a-gasoducto-del-pacifico-a-dar-respuesta-fundada-a-gnl-talcahuano-para-no-aceptar-conexion/`,
-  404, never archived). Ready-made searches:
-  - `Corte Suprema Gasoducto del Pacífico GNL Talcahuano conexión`
-  - `GNL Talcahuano Gasoducto del Pacífico fallo Corte Suprema`
-- [ ] **Talcahuano FSRU — Canal 9 Bío Bío "GNL Talcahuano irá a la Corte Suprema
-  para salvar proyecto…"** (`canal9.cl/programas/noticias/2021/11/19/gnl-talcahuano-ira-a-la-corte-suprema-para-salvar-proyecto-de-gas-natural.shtml`;
-  original path 404s, the site moved content to `/episodios/…` which also 404s; never
-  archived). Ready-made searches:
-  - `GNL Talcahuano Corte Suprema salvar proyecto Canal 9`
-  - `GNL Talcahuano recurso Corte Suprema noviembre 2021`
+- [x] ~~**TGS Puerto Galván LNG Terminal — Petrol News "noticia.php?r=46829"**~~
+  **Resolved 2026-07-27** (rev 1202681, `name=":2"`): the same story is live at
+  El Cronista, "GNL: Excelerate se aleja de su proyecto con TGS y sueña con el
+  negocio que abrirá la planta de YPF" (May 31 2024;
+  `cronista.com/negocios/gnl-excelerate-se-aleja-de-su-proyecto-con-tgs-…`),
+  which carries the Excelerate-leaves-TGS-for-YPF/Petronas narrative the
+  sentence rests on.
+- [x] ~~**TGS Puerto Galván LNG Terminal — Financial Post "TGS halts Argentina
+  LNG plant as state-run project seeks backers"**~~ **Resolved 2026-07-27** (rev
+  1202681): replaced with Bloomberg Línea's official copy of the same wire piece
+  (May 8 2024;
+  `bloomberglinea.com/latinoamerica/argentina/tgs-paraliza-proyecto-de-gnl-en-argentina-mientras-ypf-busca-patrocinadores/`).
+- [x] ~~**Talcahuano FSRU — GNL Global "Corte Suprema de Chile obliga a Gasoducto
+  del Pacífico…"**~~ **Resolved 2026-07-27** (rev 1202682): not gone, just
+  relocated — the same article is live at
+  `gnlglobal.com/corte-suprema-de-chile-obliga-a-gasoducto-del-pacifico-a-dar-respuesta-fundada-a-gnl-talcahuano-para-no-aceptar-conexion/`
+  (the `/mercados/america-latina-y-el-caribe/` path prefix was dropped). Straight
+  URL swap, same title/date.
+- [x] ~~**Talcahuano FSRU — Canal 9 Bío Bío "GNL Talcahuano irá a la Corte
+  Suprema para salvar proyecto…"**~~ **Resolved 2026-07-27** (rev 1202682):
+  canal9.cl 404s, but OLCA syndicated the same Canal 9 article verbatim (same
+  title/date, credits Canal 9;`olca.cl/articulo/nota.php?id=109072`). Swapped in
+  as `website=Canal 9 Bío Bío Televisión (vía OLCA)`.
 
 ## Note
 

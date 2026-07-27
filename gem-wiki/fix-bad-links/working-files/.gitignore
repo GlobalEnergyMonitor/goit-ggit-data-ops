@@ -12,3 +12,11 @@
 
 # per-batch diagnostic dumps (india/bangladesh left these behind)
 _diag_*/
+
+# per-batch scratch: pickled diffs/plans and the save/wayback/plan/recheck
+# drivers. Only the fix_<country>.py specs are the durable record.
+*.pkl
+save_*.py
+wb_*.py
+plan_*.py
+recheck_*.py
