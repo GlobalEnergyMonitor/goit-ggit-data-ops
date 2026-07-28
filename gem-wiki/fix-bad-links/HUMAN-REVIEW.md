@@ -9,8 +9,13 @@ source that supports the sentence, which is researcher judgment.
 For each item: if the article loads and matches the citation, check it off (no
 wiki edit needed). If it's gone, tell Claude and the ref gets repaired like any
 other. Sections 1–2 compiled 2026-07-23 and fully resolved; section 3 (Latin
-America, compiled 2026-07-27) is now fully resolved too — the whole queue is
-clear as of 2026-07-27.
+America, compiled 2026-07-27) is fully resolved too. **Section 4 (Italy, Spain,
+Germany, compiled 2026-07-28) is open.** Its items are a different shape from
+the earlier sections: most are not dead links at all but *claim-vs-source
+mismatches* — a figure or date in the wiki sentence that no reachable source
+states. Those need a researcher decision (correct the prose, or find the source),
+not a URL swap, and Claude's repair tooling only rewrites `<ref>` spans, so it
+cannot touch the sentence itself.
 
 **Don't identify a ref by a bare `[n]`.** Any `[n]` in sections 1–2 is a
 *scanner* index — the nth `<ref>` inside the Background section, reuses
@@ -266,6 +271,109 @@ pass and are now resolved (below). Everything else on those pages was fixed
   canal9.cl 404s, but OLCA syndicated the same Canal 9 article verbatim (same
   title/date, credits Canal 9;`olca.cl/articulo/nota.php?id=109072`). Swapped in
   as `website=Canal 9 Bío Bío Televisión (vía OLCA)`.
+
+## 4. Italy / Spain / Germany (compiled 2026-07-28)
+
+Identify each ref by URL and the sentence it supports, not by a number — see the
+warning above.
+
+### 4a. Claim-vs-source mismatches (prose decision, not a link swap)
+
+- [ ] **Falconara Marittima LNG Terminal — "The project would cost about $250
+  million."** The dead Api Nova Energia page that backed this was never
+  archived. Its replacement, LNG Industry (20 July 2011), puts the project at
+  **€200 million**; the Italian ministry's own project page gives no figure.
+  Either correct the sentence to €200m or find the $250m source.
+  Queries: `Falconara "Api Nova Energia" rigassificatore "200 milioni"` ·
+  `"Api Nova Energia" FSRU Falconara cost million` ·
+  `Falconara rigassificatore offshore costo investimento 2011`
+- [ ] **Priolo Augusta LNG Terminal — "$500 million" project cost.** Not stated
+  by any surviving ref on the page.
+  Queries: `Priolo Gargallo rigassificatore ERG Shell "500 milioni"` ·
+  `"Priolo" LNG terminal Shell ERG investment cost` ·
+  `rigassificatore Priolo Augusta costo progetto milioni`
+- [ ] **Priolo Augusta LNG Terminal — Shell's withdrawal dated December 2012.**
+  The two sources that replaced the wrong Reuters ref (Milano Finanza,
+  LiveSicilia) both date it to **November 2012**.
+  Queries: `Shell abbandona rigassificatore Priolo novembre 2012` ·
+  `"Shell" "Priolo" rigassificatore ritiro dicembre 2012` ·
+  `ERG Shell Priolo LNG withdrawal December 2012`
+- [ ] **Gioia Tauro LNG Terminal — €6.8M vs €6.9M** for the Medgas Italia
+  29.22% stake. The page says "€6.8 million"; the one reachable source, the
+  Staffetta Quotidiana ref already on the page, says the opposite way round —
+  *"base d'asta di poco meno di **6,9 milioni** di euro e rialzi di almeno
+  100.000 euro"*. No live source anywhere states 6.8. This is a one-word prose
+  fix (`€6.8 million` → `just under €6.9 million`); the tooling here only
+  rewrites `<ref>` spans, which is why it is queued rather than done.
+- [x] ~~**Oristano FSRU — "methanization of Sardinia … increasing storage capacity
+  by approximately ten times".**~~ **Resolved 2026-07-28** (rev 1206803). The LNG
+  Prime article is live but subscriber-walled past its two-sentence lead, which
+  does not contain the clause; Snam's own 8 Oct 2025 release states both the
+  methanization/ten-times clause and the transmission-network/provinces sentence
+  word for word and was added alongside. (Verifying that URL needs a trick:
+  snam.it is an Adobe AEM single-page app whose static HTML is an empty shell —
+  swap `.html` for `.model.json` on the same path to get the rendered body.)
+- [ ] **Huelva LNG Terminal — "expansions completed in 1992, 2002, 2004, 2006,
+  and 2013".** The abarrelfull ref that carried this is banned and gone. Its
+  replacement (AIQBE's Enagás plant page) confirms only the 1985 construction
+  start, first LNG June 1988, and five tanks totalling 619,500 m³. Of the five
+  expansion years: 2004 (a BOE filing) and 2006 (an Enagás release) may be the
+  **same fourth-tank project counted twice**; **1992 and 2013 were not found at
+  all**. Verify the list before it stays in the article.
+  Queries: `planta regasificación Huelva Enagás ampliación tanque 2006` ·
+  `Enagás Huelva "cuarto tanque" 150.000 m3 puesta en servicio` ·
+  `Huelva regasificación historia ampliaciones 1992 2002 2013`
+- [ ] **El Musel LNG Terminal — "opposition from local political groups"
+  clause.** The Bunkerspot article that backed the Gijón LNG-bunkering sentence
+  is dead and its only snapshot is a stub; the Bunker Index substitute covers
+  the gazette approval but **not** the opposition clause.
+  Queries: `Gijón El Musel GNL bunkering oposición grupos políticos 2017` ·
+  `"El Musel" regasificadora oposición Xixón IU Podemos` ·
+  `Gijón LNG bunkering opposition local political groups`
+- [ ] **Tenerife LNG Terminal — Loadstar article dated 12 Nov 2014.** The live
+  relocated copy is dated **11 Dec 2014**. Straightforward date correction.
+- [ ] **Wilhelmshaven FSRU — 2005 capacity given as "8 mtpa".** Energy
+  Intelligence's figure for the same 2005 proposal is **10 bcm/y (≈7.25 mtpa)**.
+  Queries: `Wilhelmshaven LNG terminal 2005 E.ON 10 bcm proposal` ·
+  `Wilhelmshaven LNG 2005 "8 million tonnes" capacity` ·
+  `Wilhelmshaven Flüssigerdgas Terminal 2005 Kapazität Milliarden Kubikmeter`
+- [ ] **Lubmin FSRU — the *Neptune* "arrived at the terminal site" in November
+  2022.** The AP wire (23 Nov 2022) puts the *Neptune* off **Mukran**, not
+  Lubmin; Maritime Executive and Offshore Energy both put its **Lubmin** arrival
+  on **16 December 2022**. Likely a conflation of the two legs of the same
+  voyage — the sentence needs splitting or redating.
+  Queries: `Neptune FSRU Lubmin arrival 16 December 2022` ·
+  `Deutsche ReGas Neptune Lubmin Ankunft Dezember 2022` ·
+  `Neptune FSRU Mukran November 2022 Rügen arrival`
+
+### 4b. Confirmed dead, no usable archive, no substitute found
+
+- [x] ~~**Gioia Tauro LNG Terminal — `pvp.giustizia.it` auction notice
+  (LOTTO UNICO, Oct 2020).**~~ **Resolved 2026-07-28** (rev 1206802) — dropped as
+  redundant. The notice is dead and a CDX sweep confirms it was never archived,
+  but the first reading of its companion ref was wrong: Staffetta Quotidiana
+  (`articolo.aspx?id=345982`) is not headline-only. It serves a full teaser
+  paragraph ahead of the subscriber gate, and that teaser carries the 29.22%
+  stake, the auction date, the €100,000 minimum increments and the bankruptcy
+  docket (262/2018) — everything the dead notice was cited for except the
+  amount, which it gives as 6,9 rather than 6,8 (see 4a). Lesson recorded in
+  README step 4: read what the companion actually serves, not just its
+  `<title>`, before calling redundancy impossible.
+- [ ] **Brunsbüttel LNG Terminal — the Krebber quote is now unsourced.** Its
+  citation pointed at a Montel URL
+  (`/es/story/rwe-expects-lignite-closure-deal-by-year-end/`) about an unrelated
+  RWE lignite story with **zero Wayback snapshots** — the citation was
+  mismatched when it was laid down, not merely rotted. The Uniper-withdrawal
+  half of the sentence was re-sourced to NS Energy (9 Nov 2020); the quote
+  itself still needs a source or removal.
+  Queries: `Krebber RWE Brunsbüttel LNG quote 2020` ·
+  `RWE CEO Krebber LNG terminal Germany statement 2020` ·
+  `Uniper Wilhelmshaven LNG withdrawal Krebber reaction`
+
+### 4c. Quick browser checks
+
+- [ ] **Stade LNG Terminal — Bloomberg article** (bot-walled to scripts). One
+  click settles whether it is alive and on-topic.
 
 ## Note
 
