@@ -1,0 +1,30 @@
+# Working data for the citation sweep, not source. The repo root already
+# ignores *.json (scan/diag/verify output); these are the rest of the churn:
+# page dumps, extracted Background text, run logs, and console captures.
+# Per-country fix specs (fix_<country>.py) stay visible — they are the record
+# of what each batch changed — as do the shared fixlib.py / scan_*.py.
+*.wiki
+*_bg.txt
+*.jsonl
+*.log
+*.err
+*.bak
+*.html
+worklist_*.txt
+
+# per-batch diagnostic dumps (india/bangladesh left these behind)
+_diag_*/
+
+# per-batch scratch: pickled diffs/plans and the save/wayback/plan/recheck
+# drivers. Only the fix_<country>.py specs are the durable record.
+*.pkl
+save_*.py
+wb_*.py
+plan_*.py
+recheck_*.py
+
+# ...except these two, which outgrew their prefixes and are now in the
+# README's reusable-tools table. A tool the docs point at has to be in the
+# repo, so the pattern gets an exception rather than the docs getting a lie.
+!save_isg.py
+!recheck_archives.py

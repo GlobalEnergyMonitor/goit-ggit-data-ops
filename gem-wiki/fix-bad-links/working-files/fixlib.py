@@ -28,10 +28,10 @@ diff was built. After saving, run cite_errors() and require 0.
 import re
 import sys
 
-sys.path.insert(0, sys.path[0] + "/..")
+sys.path.insert(0, sys.path[0] + "/../..")
 import gemwiki as gw
 
-REF_RE = re.compile(r"<ref[^>/]*?(?:/>|>.*?</ref>)", re.DOTALL)
+REF_RE = re.compile(r"<ref[^>/]*?(?:/>|>.*?</ref>)", re.DOTALL | re.IGNORECASE)
 
 # GIIGNL annual report PDFs (Webflow CDN behind giignl.org/annual-report)
 CDN = "https://cdn.prod.website-files.com/67bdb9fc993751711c5f54fd/"
@@ -65,7 +65,7 @@ def build(s, title, fixes, outdir="."):
     """Apply fixes to the live text; write <slug>_old/_new.wiki; return
     (old, new). Each fix: (label, marker, ("swap", old_url, new_url) |
     ("full", new_ref_text))."""
-    slug = re.sub(r"[ \-]", "_", title)
+    slug = re.sub(r"[ \-/]", "_", title)
     old = gw.page_text(s, title)
     new = old
     print("=" * 70)

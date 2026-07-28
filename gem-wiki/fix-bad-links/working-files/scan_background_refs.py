@@ -22,7 +22,7 @@ import re
 import sys
 import unicodedata
 
-sys.path.insert(0, sys.path[0] + "/..")
+sys.path.insert(0, sys.path[0] + "/../..")
 import gemwiki as gw
 
 import requests
@@ -42,7 +42,7 @@ LNG_WORDS = ["lng", "liquefied natural gas", "gnl", "regasification",
              "regasificat", "fsru", "floating storage"]
 STOPWORDS = {"lng", "terminal", "fsru", "of", "the", "de", "port", "energy"}
 
-REF_RE = re.compile(r"<ref[^>/]*?(/>|>.*?</ref>)", re.DOTALL)
+REF_RE = re.compile(r"<ref[^>/]*?(/>|>.*?</ref>)", re.DOTALL | re.IGNORECASE)
 URL_RE = re.compile(r"https?://[^\s|<>\]\}\"']+")
 TAG_RE = re.compile(r"<[^>]+>")
 
