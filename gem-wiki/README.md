@@ -23,7 +23,15 @@ repo: edit-history digging, cite-error cleanups, batch text fixes, etc.
   the LNG terminal pages (411 flagged by the 2026-07-20 crawl; root cause:
   tracker-update bot passes destroying ref definitions in Project Details).
   Own README + STATUS.md there; uses its own keychain credential
-  (`citation-fixer`), not this folder's `.env`.
+  (`citation-fixer`), not this folder's `.env`. Complete — all 411 fixed.
+- `fix-bad-links/` — the other half of the same problem: the LNG terminal
+  pages' **Background citations**, checked link by link and repaired
+  (relocate → content-validated archive → drop as redundant → re-source).
+  Ongoing, country by country. `SCOPE.md` is the denominator — every country
+  in the LNG update assignments sheet, swept or not; `COVERAGE.md` is what
+  each batch did; `HUMAN-REVIEW.md` collects what the tooling can't settle,
+  mostly claim-vs-source mismatches that need a prose decision. Its own
+  README carries the workflow and the accumulated gotchas.
 
 ## Auth
 
@@ -46,6 +54,12 @@ independently revocable.
   Sheets in this repo: preview exactly what would change (page, old text,
   new text, edit summary) and get explicit approval before calling
   `edit_page`. Read-only queries are always fine.
+  **Standing exception (2026-07-21): `fix-bad-links/` runs autonomously** —
+  per-edit approval doesn't scale to a sweep of hundreds of refs, and the
+  edits are narrow (a `<ref>` span, never prose) and machine-gated (the save
+  aborts if the page moved under it, and refuses to leave a cite error
+  behind). It still escalates for anything needing a real browser, and
+  anything unsettled goes to `HUMAN-REVIEW.md` rather than being guessed at.
 - One-off analysis outputs (CSVs etc.) are gitignored like everywhere else
   in the repo; keep durable findings in a committed markdown note here if
   they're worth keeping.
