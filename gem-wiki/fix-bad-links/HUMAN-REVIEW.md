@@ -14,14 +14,15 @@ Germany, compiled 2026-07-28) is a different shape from the earlier sections:
 most of its items are not dead links at all but *claim-vs-source mismatches* — a
 figure or date in the wiki sentence that no reachable source states.
 
-**Only three items are still open, all of them section 4, and all deliberately
-parked** (user instruction, 2026-07-29): they are claims with *no source at all*,
-where the fix is either finding one or deleting the sentence, and neither is
-worth guessing at. Everything in section 4 that was *one-way* — where the sources
-agreed with each other and disagreed with the sentence, leaving exactly one
-direction the correction could go — was applied on 2026-07-29 and is checked off
-below, half by hand and half by `fix_prose_isg.py`. None of them required a
-change to the GEM database; the reasoning is recorded per item.
+**Nothing is open.** Section 4's *one-way* items — where the sources agreed with
+each other and disagreed with the sentence, leaving exactly one direction the
+correction could go — were applied on 2026-07-29, half by hand and half by
+`fix_prose_isg.py`. The three that were parked that day as claims with *no source
+at all* were then searched out and closed the same day by `fix_prose_open3.py`:
+two of them turned out to have sources nobody had gone looking for, and the third
+had a real source that supported the substance but not the quotation, so the
+quotation went. None of the section-4 corrections required a change to the GEM
+database; the reasoning is recorded per item.
 
 (Prose is no longer out of reach for the tooling, but it stays deliberately
 narrow: `fixlib.build_prose` will rewrite a sentence only where a fix is one-way
@@ -295,11 +296,18 @@ warning above.
   matching the LNG Industry (20 July 2011) replacement ref. The GEM database was
   already right (`Cost` = 200,000,000 EUR, `CostYear` 2011, cited to the same
   article), so the wiki was the lone outlier.
-- [ ] **Priolo Augusta LNG Terminal — "$500 million" project cost.** Not stated
-  by any surviving ref on the page.
-  Queries: `Priolo Gargallo rigassificatore ERG Shell "500 milioni"` ·
-  `"Priolo" LNG terminal Shell ERG investment cost` ·
-  `rigassificatore Priolo Augusta costo progetto milioni`
+- [x] ~~**Priolo Augusta LNG Terminal — "$500 million" project cost.**~~
+  **Resolved 2026-07-29** (rev 1206816) — now **€400 million**, cited to
+  [Informare](https://www.informare.it/news/gennews/2005/20050354.asp), 23 Feb.
+  2005: *"un investimento di circa 400 milioni di euro"*, alongside the 8 bcm/y
+  capacity that matches GEM's record. The ICIS ref the figure hung on serves
+  only a 212-byte Incapsula bot-challenge stub and has no Wayback snapshot, so
+  it could never have supported $500m; it is kept anyway, because bot-walled is
+  not dead and it still stands behind the 2005 announcement in the same
+  sentence. Worth knowing that the number drifts in later reporting —
+  MilanoFinanza has €500m in 2009, €450m in Sept. 2012 and €800m in Nov. 2012 —
+  so the sentence is now explicitly the announcement-time figure. No database
+  change: GEM has no `Cost` for Priolo at all.
 - [x] ~~**Priolo Augusta LNG Terminal — Shell's withdrawal dated December 2012.**~~
   **Resolved 2026-07-29** (rev 1206811) — now November 2012. Milano Finanza's
   piece *reporting* the withdrawal is dated 6 Nov. 2012, so December was not
@@ -325,13 +333,22 @@ warning above.
   fourth-tank project counted twice, and 1992 and 2013 were not found at all.)
   No database impact: GEM carries `ActualStartYear` 1988 and no second or third
   start year, so the disputed years were never in the tracker.
-- [ ] **El Musel LNG Terminal — "opposition from local political groups"
-  clause.** The Bunkerspot article that backed the Gijón LNG-bunkering sentence
-  is dead and its only snapshot is a stub; the Bunker Index substitute covers
-  the gazette approval but **not** the opposition clause.
-  Queries: `Gijón El Musel GNL bunkering oposición grupos políticos 2017` ·
-  `"El Musel" regasificadora oposición Xixón IU Podemos` ·
-  `Gijón LNG bunkering opposition local political groups`
+- [x] ~~**El Musel LNG Terminal — "opposition from local political groups"
+  clause.**~~ **Resolved 2026-07-29** (rev 1206817) — the Bunkerspot article that
+  backed the sentence is dead and its only snapshot is a stub, and the Bunker
+  Index substitute covers the gazette approval but not the opposition; two
+  sources that cover the opposition were found and the clause now names the
+  groups, because the sources do.
+  [Europa Press](https://www.europapress.es/asturias/noticia-xsp-lamenta-autorizacion-bunkering-musel-pone-bandeja-legalizacion-regasificadora-20170307132752.html)
+  (7 Mar. 2017, the wire original) has Xixón Sí Puede's David Alonso saying the
+  Port Authority *"ha puesto en bandeja al Consejo de Ministros la legalización
+  de la regasificadora … declarada ilegal por el Tribunal Supremo"*;
+  [El Comercio](https://www.elcomercio.es/gijon/201703/08/xixon-puede-creen-paso-20170308000450-v.html)
+  (8 Mar. 2017) adds Izquierda Unida and the *"primer paso"* framing. Both are
+  independent and both serve the full body — El Comercio's is in its JSON-LD
+  even though the rendered page looks walled. The *eleconomista* copy is 403
+  behind Akamai with no snapshot and was not needed. No database change: an
+  objection by a city council group maps to no GEM field.
 - [x] ~~**Tenerife LNG Terminal — Loadstar article dated 12 Nov 2014.**~~
   **Resolved by hand 2026-07-29** (rev 1206810) — the sentence now reads December
   2014, which the article supports for the right reason: 11 Dec 2014 is its
@@ -365,16 +382,30 @@ warning above.
   amount, which it gives as 6,9 rather than 6,8 (see 4a). Lesson recorded in
   README step 4: read what the companion actually serves, not just its
   `<title>`, before calling redundancy impossible.
-- [ ] **Brunsbüttel LNG Terminal — the Krebber quote is now unsourced.** Its
-  citation pointed at a Montel URL
+- [x] ~~**Brunsbüttel LNG Terminal — the Krebber quote is now unsourced.**~~
+  **Resolved 2026-07-29** (rev 1206818) — the quotation is gone and the
+  substance behind it is sourced. Its citation had pointed at a Montel URL
   (`/es/story/rwe-expects-lignite-closure-deal-by-year-end/`) about an unrelated
-  RWE lignite story with **zero Wayback snapshots** — the citation was
-  mismatched when it was laid down, not merely rotted. The Uniper-withdrawal
-  half of the sentence was re-sourced to NS Energy (9 Nov 2020); the quote
-  itself still needs a source or removal.
-  Queries: `Krebber RWE Brunsbüttel LNG quote 2020` ·
-  `RWE CEO Krebber LNG terminal Germany statement 2020` ·
-  `Uniper Wilhelmshaven LNG withdrawal Krebber reaction`
+  RWE lignite story with **zero Wayback snapshots**: mismatched when it was laid
+  down, not merely rotted. Searching on the quotation's own wording returns
+  exactly one page on the indexed web — gem.wiki itself — so it has no
+  independent home and could not be cited. What does survive is the occasion it
+  came from, RWE's Q3 2020 earnings call:
+  [Dow Jones Newswires](https://www.finanznachrichten.de/nachrichten-2020-11/51226518-rwe-will-ueber-lng-terminal-brunsbuettel-nun-erst-2021-entscheiden-015.htm)
+  (12 Nov. 2020) has Krebber on the Covid-19 slip, the H1-2021 decision, being
+  *"sehr optimistisch"* of getting *"genug Lieferverträge … um das Projekt über
+  die Ziellinie zu bringen"*, and all partners still expecting Germany's first
+  import terminal;
+  [Global LNG Info](https://www.globallnginfo.com/ShowNews.aspx?NewsID=ANTA0ODQ5NTc0ODQ4NDg0ODQ4NTE1MQ==)
+  (update of 18 Nov. 2020) corroborates the delay and the H1-2021 FID in
+  English. The sentence is now reported speech rather than a quotation, because
+  the only verifiable wording is German and putting a back-translation inside
+  quotation marks would be inventing a quote — and because the German carries
+  supply contracts only, never the "offtake contracts" the old quote claimed.
+  Both sources also call him **CFO**, which is the second fix here: Krebber did
+  not become CEO until May 2021, so "RWE's CEO" was wrong independently of the
+  sourcing. No database change: GEM's `Cost` for Brunsbüttel is an unrelated
+  2024 figure, and an executive's remarks map to no field.
 
 ### 4c. Quick browser checks
 

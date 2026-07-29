@@ -219,9 +219,19 @@ contradicts. Its fixes are `(label, old_text, new_text)` and `old_text` must
 occur exactly once on the page, which is the only guard against a date fix
 landing somewhere else entirely; quote enough of the sentence to be sure.
 
-Everything softer still goes to HUMAN-REVIEW.md. In particular a claim with **no
-source at all** is not one-way — the fix is either finding a source or deleting
-the sentence, and that is a researcher's call, not a script's.
+Everything softer still goes to HUMAN-REVIEW.md — but "no source at all" is not
+by itself a reason to park something. Go looking first: of the three such claims
+in section 4, two had perfectly good sources that nobody had searched for. Park
+it only once the search has actually failed.
+
+When it does fail, say what failing means. If a **direct quotation**'s only home
+on the indexed web is gem.wiki itself, that is a finding, not a dead end: the
+quote cannot be cited and must go, but the occasion it came from usually can be
+sourced, so rewrite it as reported speech rather than deleting the paragraph. Do
+not translate a foreign-language source back into English and leave the result
+inside quotation marks — that manufactures a quote. And read the found source
+for *everything* it settles, not just the clause you went in for: the Brunsbüttel
+hunt turned up a CEO/CFO error in the same sentence that no one had flagged.
 
 One thing worth checking whenever a prose figure turns out to be wrong: whether
 the same figure is also in the tracker database. Often it is not (the wiki
@@ -250,6 +260,15 @@ it open.
   the reviewer 2–3 ready-made Google queries (headline fragments, dollar
   figures, both figure variants if sources disagree) so a quick browser
   search can catch what the API missed.
+- **When the WebSearch budget runs out, search anyway.** `WebFetch` against
+  `https://html.duckduckgo.com/html/?q=…` or `https://lite.duckduckgo.com/lite/?q=…`
+  returns parsed results and does not draw on that budget; plain `curl` to the
+  same URLs does not work (DDG answers 202 with a challenge) and Mojeek comes
+  back empty. This is also a *different* index, so it is worth a try even when
+  WebSearch is available — the Dow Jones report that closed the Brunsbüttel
+  quote surfaced on the DDG lite endpoint after WebSearch had found nothing.
+  Try the claim's own distinctive wording first: if the only hit is gem.wiki,
+  the claim has no independent source and you have your answer.
 - Edits authenticate via the bot password in `../../.env` relative to
   `working-files/` (i.e. `gem-wiki/.env`, never committed).
 - Per-edit approval exception (user-approved 2026-07-21): this project runs

@@ -96,7 +96,29 @@ outlier. Priolo's month move leaves `ShelvedYear` 2012 untouched, and Huelva's
 removed expansion years were never in the tracker (`ActualStartYear` 1988, no
 second or third start year).
 
-Three items stay open in §4a/§4b, all deliberately: the Priolo "$500 million"
-cost, El Musel's "opposition from local political groups" clause, and
-Brunsbüttel's Krebber quote have **no source at all**, so the fix is either
-finding one or deleting the sentence — a researcher's call, not a script's.
+## Follow-up: the last three unsourced claims (2026-07-29)
+
+The three §4a/§4b items with **no source at all** — Priolo's "$500 million"
+cost, El Musel's "opposition from local political groups" clause, Brunsbüttel's
+Krebber quote — were parked as a researcher's call, then searched out and closed
+the same day by `fix_prose_open3.py` (revs 1206816–1206818, 0 cite errors each).
+Two of them simply had sources nobody had gone looking for: **Priolo** is
+€400 million, not $500 million, per Informare's report of the same February 2005
+announcement (the ICIS ref it hung on serves only a bot-challenge stub and could
+never have supported either figure); **El Musel**'s opposition is Xixón Sí Puede
+and Izquierda Unida, per Europa Press's wire original and El Comercio's next-day
+write-up, so the clause now names them.
+
+**Brunsbüttel** went the other way, and is the one worth remembering. A search
+on the quotation's own wording returns exactly one page on the indexed web:
+gem.wiki itself. A quote with no independent home cannot be cited, and the only
+verifiable record of the occasion — Dow Jones's report of RWE's 12 Nov. 2020 Q3
+call — is in German, so the sentence became reported speech rather than a
+back-translation dressed up in quotation marks. It also carries supply contracts
+only, never the "offtake contracts" the old quote claimed. Both that source and
+Global LNG Info call Krebber **CFO**, which fixed a second error nobody had
+flagged: he did not become CEO until May 2021.
+
+Again **no GEM database change** — Priolo has no `Cost` at all, El Musel's
+objection maps to no field, and Brunsbüttel's `Cost` is an unrelated 2024
+figure. HUMAN-REVIEW.md now has nothing open.
