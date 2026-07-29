@@ -91,6 +91,38 @@ def build(s, title, fixes, outdir="."):
     return old, new
 
 
+def build_prose(s, title, fixes, outdir="."):
+    """Like build(), but for the prose itself rather than a <ref> span.
+
+    Use ONLY for a claim the sources contradict outright -- a wrong date, a
+    wrong figure -- where the citation is fine and the sentence is not. Every
+    other kind of mismatch belongs in HUMAN-REVIEW.md; this is not a licence
+    to rewrite text the tooling cannot verify.
+
+    Each fix is (label, old_text, new_text). old_text must occur exactly once
+    in the page, so quote enough of the sentence to be unambiguous -- the
+    uniqueness check is the only thing standing between a date fix and a
+    silent edit somewhere else on the page.
+    """
+    slug = re.sub(r"[ \-/]", "_", title)
+    old = gw.page_text(s, title)
+    new = old
+    print("=" * 70)
+    print(f"PAGE: {title}  ({len(fixes)} prose fixes)")
+    for label, o, n in fixes:
+        c = new.count(o)
+        if c != 1:
+            raise SystemExit(f"prose text not unique ({c} hits): {label}")
+        new = new.replace(o, n, 1)
+        print(f"\n--- {label}\n  OLD: {o}\n  NEW: {n}")
+    with open(f"{outdir}/{slug}_old.wiki", "w") as f:
+        f.write(old)
+    with open(f"{outdir}/{slug}_new.wiki", "w") as f:
+        f.write(new)
+    print()
+    return old, new
+
+
 def guarded_save(s, title, old, new, summary):
     """Save only if the live page still matches `old`."""
     current = gw.page_text(s, title)

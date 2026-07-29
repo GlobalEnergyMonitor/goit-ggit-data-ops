@@ -206,10 +206,29 @@ The earlier `wb_acv.py`, `wb_brazil.py`, `verify_latam_snaps.py` and
 `verify_snapshots.py` are superseded by `wb_fill.py` and `verify_snaps.py` —
 kept for provenance, not for reuse.
 
-`fixlib.build` only rewrites `<ref>` spans; it **cannot edit prose**. A
-claim-vs-source mismatch is therefore never a Claude fix — it goes to
-HUMAN-REVIEW.md, which is why section 4 of that file is mostly mismatches
-rather than dead links.
+`fixlib.build` only rewrites `<ref>` spans. That was the whole reason section 4
+of HUMAN-REVIEW.md filled up with claim-vs-source mismatches rather than dead
+links — the tooling could see that a sentence disagreed with its own citation
+and could do nothing about it.
+
+`fixlib.build_prose` (added 2026-07-29) closes that gap, deliberately narrowly.
+Use it **only where the fix is one-way**: the sources agree with each other and
+disagree with the sentence, so there is exactly one direction the correction can
+go — a date the cited article predates, a figure the only reachable source
+contradicts. Its fixes are `(label, old_text, new_text)` and `old_text` must
+occur exactly once on the page, which is the only guard against a date fix
+landing somewhere else entirely; quote enough of the sentence to be sure.
+
+Everything softer still goes to HUMAN-REVIEW.md. In particular a claim with **no
+source at all** is not one-way — the fix is either finding a source or deleting
+the sentence, and that is a researcher's call, not a script's.
+
+One thing worth checking whenever a prose figure turns out to be wrong: whether
+the same figure is also in the tracker database. Often it is not (the wiki
+Background carries history the tracker has no field for — an EU grant, a vessel's
+arrival, a 2005 proposal with no GEM record), and sometimes the database was
+right all along and the wiki was the lone outlier. Say which, rather than leaving
+it open.
 
 ## Scope and policies
 
