@@ -659,16 +659,24 @@ def release_base_name(out_dir, config, pipeline_type,
     return base_name
 
 
-def derive_map_fields(gdf_export):
+# Columns not in the data release but appended to the map geojson when the
+# sheet has them (copied from gdf_full; currently only the Gas sheet has
+# RouteCreator — 'CB' marks AI-created routes, flagged in the map popup)
+MAP_ONLY_COLUMNS = ['RouteCreator']
+
+
+def derive_map_fields(gdf_export, gdf_full=None):
     """Adapt the handoff GeoDataFrame for the interim maps.
 
-    The map file is deliberately the handoff file with TWO divergences:
+    The map file is deliberately the handoff file with THREE divergences:
       - rows without geometry are dropped (the handoff keeps 'no route'
         rows with null geometry via enforce_no_route_null_geometry; the
         web map can't draw them)
       - CountriesOrAreas becomes '; '-separated instead of ', ' — the map
         app's country filter (goit-ggit-interim-maps src/site.js) splits on
         semicolons
+      - MAP_ONLY_COLUMNS present in the sheet (but excluded from the data
+        release) are appended from gdf_full
     Columns are otherwise identical, so the map configs in
     goit-ggit-interim-maps read handoff column names directly.
     """
@@ -678,16 +686,21 @@ def derive_map_fields(gdf_export):
         print(f"  Map output: dropped {dropped} null-geometry row(s)")
     if 'CountriesOrAreas' in gdf.columns:
         gdf['CountriesOrAreas'] = gdf['CountriesOrAreas'].str.replace(', ', '; ', regex=False)
+    if gdf_full is not None:
+        for col in MAP_ONLY_COLUMNS:
+            if col in gdf_full.columns and col not in gdf.columns:
+                gdf[col] = gdf_full.loc[gdf.index, col]
+                print(f"  Map output: appended map-only column {col}")
     return gdf
 
 
-def write_map_geojson(gdf_export, map_output):
+def write_map_geojson(gdf_export, map_output, gdf_full=None):
     """Write the map geojson with publish guardrails.
 
     Raises if the output looks degraded (too few features / too small a
     file) so CI never overwrites the public map file with a broken build.
     """
-    gdf = derive_map_fields(gdf_export)
+    gdf = derive_map_fields(gdf_export, gdf_full=gdf_full)
 
     map_output = Path(map_output)
     map_output.parent.mkdir(parents=True, exist_ok=True)
@@ -731,7 +744,7 @@ def main(argv=None):
                         choices=list(ALL_FORMATS),
                         help='release formats to write (default: all)')
     parser.add_argument('--map-output', default=None,
-                        help='also write the map geojson (handoff columns, null geometries dropped) to this path')
+                        help='also write the map geojson (handoff columns + map-only columns, null geometries dropped) to this path')
     parser.add_argument('--map-only', action='store_true',
                         help='skip the release exports; requires --map-output')
     parser.add_argument('--refresh-routes', action='store_true',
@@ -765,7 +778,8 @@ def main(argv=None):
                      formats=tuple(args.formats))
 
     if args.map_output:
-        write_map_geojson(release['gdf_export'], args.map_output)
+        write_map_geojson(release['gdf_export'], args.map_output,
+                          gdf_full=release['gdf_full'])
 
     return 0
 
