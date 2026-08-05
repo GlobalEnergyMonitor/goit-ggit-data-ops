@@ -42,9 +42,14 @@ README.md for the folder map and the typical release workflow.
   match QC totals. Old release notebooks may still pin `v0.x` tags from the
   pre-merge standalone repo (`bairdlangenbrunner/gem-tracker-constants`).
 - Data files (`.xlsx`, `.csv`, `.geojson`, `.json`) are gitignored repo-wide.
-  Exception: `releases/downloads/data-files/` commits `.gpkg`/`.zip`
-  release artifacts deliberately — see the CLAUDE.md in that folder. Don't
-  add data files to commits unless asked — releases are the user's call.
+  Don't add data files to commits unless asked — releases are the user's call.
+  `releases/downloads/data-files/` was documented as committing `.gpkg`/`.zip`
+  release artifacts deliberately, but that has never actually worked: the
+  Python-boilerplate `downloads/` rule at `.gitignore:62` swallows the whole
+  tree, and the five artifacts that were tracked survived only because they
+  predated it (they were deleted 2026-08-05 and the folder now tracks
+  nothing). To ship artifacts from git again, add a negation for that path —
+  and mind GitHub's 100 MB per-file limit.
 - `gem-wiki/` holds GEM.wiki (MediaWiki) API work — `gemwiki.py` helpers +
   `wiki_query.py` CLI. Reads are anonymous; edits need the bot password in
   `gem-wiki/.env` (never committed). Same policy as Google Sheets: never
