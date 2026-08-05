@@ -1,7 +1,7 @@
 # one-time setup: pip install pre-commit && pre-commit install
 #
 # Notebook-outputs policy: committed outputs are deliberate only for
-# release-record notebooks (summary sheets, estimate-length, etc.).
+# release-record notebooks (summary sheets, etc.).
 # updates/ cycle notebooks are working dashboards and must be committed
 # output-free — this hook strips them automatically at commit time.
 repos:

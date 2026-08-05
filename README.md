@@ -23,12 +23,22 @@ conda activate goit-ggit-data-ops
 pip install pre-commit && pre-commit install   # strips outputs from updates/ notebooks at commit
 ```
 
-Google Sheets access needs the `GDRIVE_API_CREDENTIALS` env var holding the
-service-account credentials JSON, and each sheet shared (viewer is enough for
-read-only work) with `gem-analysis@gem-analysis.iam.gserviceaccount.com`.
-Shared auth helpers and the canonical live-sheet key live in
-`gem_tracker_constants.sheets` (`get_sheet(key)`) — use those in new notebooks
-instead of re-declaring the pygsheets boilerplate.
+### Google Sheets access — unsettled (2026-07-31)
+
+The `gem-analysis` service account was **deleted**, so `GDRIVE_API_CREDENTIALS`,
+`gem_tracker_constants.sheets`, and every `pygsheets.authorize` call in this repo
+no longer work.
+
+- **Interactive reads** go through the `gws` CLI against the work profile
+  (`~/.config/gws-gem`, read-only scopes). `route-lengths/sheets_client.py` is the
+  pattern new code should follow — it isolates auth behind one function.
+- **Writes** still require explicit per-edit approval, as always.
+- **Writes** go through `gws-gem-write` and are used by exactly one thing:
+  `route-lengths/`, which writes its two backend tabs. That works because it is
+  run by hand — the token never leaves the machine.
+- **Headless/CI access has no replacement credential.** Until one is chosen,
+  `.github/workflows/build-map-data.yml`, `releases/downloads/pipeline_exports.py`,
+  the `updates/` cycle notebooks, and the `dashboards/` apps are broken.
 
 ## Folder map
 
@@ -42,7 +52,6 @@ updates/                              annual update cycles (the research phase b
 └── YYYY-qN-<tracker>/                one folder per cycle (docs + progress/QC notebooks)
 releases/                              the release phase (freeze, export, QC, publish)
 ├── RELEASE-CHECKLIST.md              reusable release checklist
-├── estimate-length/                  pipeline length calculations
 ├── owner-parent/                     owner/parent attribution for pipelines + terminals
 ├── downloads/                        export tracker sheets to release download files
 │   └── data-files/                   release artifacts (.gpkg/.zip committed)
@@ -60,10 +69,14 @@ releases/                              the release phase (freeze, export, QC, pu
     ├── 2025-q4-gas-pipelines/
     ├── 2026-q2-oil-pipelines/
     └── _archive/                     2022–2023 releases (pre-folder-per-release convention)
+route-lengths/                        pipeline length + per-country ratio calculation
+                                      (writes two backend tracker tabs; run by hand)
 writing-and-analysis/                 per-release briefings, announcements, figures
 └── <release-subfolder>/              e.g. june-2026-goit-release/
 gem-wiki/                             GEM.wiki API queries + edits (edit history,
                                       cite-error cleanups; see gem-wiki/README.md)
+subnational/                          aligning tracker locations with the GEM subnational
+                                      standard (lookup-microservice client; see its README)
 maps/                                 local working area for tracker test maps
                                       (see maps/README.md; maps/interim-maps/ is a
                                       separate gitignored clone of the data team's repo)
@@ -85,11 +98,13 @@ copy it into the release folder and check items off so progress is visible.
 The high-level sequence:
 
 1. **Backend QC sweep** — check the tracker Google Sheet and `goit-ggit-pipeline-routes` for data errors before anything reads from them.
-2. **Length estimation** — `releases/estimate-length/estimate-length.ipynb`
+2. **Length estimation** — `route-lengths/` (`python route_lengths.py`, or the
+   `estimate-length.ipynb` wrapper). Writes its two backend tabs directly, so
+   step 4 no longer involves pasting lengths in; see `route-lengths/README.md`
 3. **Owner/parent attribution** — pick the relevant CURRENT notebook in `releases/owner-parent/`:
    - `GOIT-GGIT-owner-parent-importing-ownership-tracker-CURRENT.ipynb` (pipelines)
    - `GGIT-terminals-owner-parent-scripts-CURRENT.ipynb` (LNG terminals)
-4. **Import + snapshot** — paste the length and owner/parent results back into the tracker sheet, then copy the sheet into the release's Google Drive folder and share it with the service account. The remaining steps read from that snapshot.
+4. **Import + snapshot** — paste the length and owner/parent results back into the tracker sheet, then copy the sheet into the release's Google Drive folder. The remaining steps read from that snapshot.
 5. **Release downloads** — export the download files (xlsx/geojson/gpkg/shp) with `releases/downloads/convert-ggit-goit-to-tracker-release-downloads.ipynb` (see that folder's README).
 6. **Release download QC** — run `releases/qc/data-release-qc.py` against the download files (see that folder's README). Fix anything it flags at the source and re-export until clean.
 7. **Summary sheets** — create a new `releases/summary-sheets/YYYY-qN-<tracker>/` folder, copy the most recent prior release notebook as the starting point, and run it against the snapshot.

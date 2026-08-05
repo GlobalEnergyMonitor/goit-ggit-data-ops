@@ -11,6 +11,11 @@ Layout:
 - `ggit/` — GGIT (gas pipelines + LNG terminals) dashboard app and the May 2023
   notebook it grew out of.
 
+**Both apps are broken as of 2026-07-31**: they authenticate with
+`pygsheets.authorize(service_account_env_var='GDRIVE_API_CREDENTIALS')`, and that
+service account (`gem-analysis`) was deleted. Repointing them at the `gws` read
+path (see `route-lengths/sheets_client.py`) is unstarted.
+
 Both `app.py` files read pre-aggregated *summary tables* from Google Sheets; the raw
 per-project aggregation logic (e.g. the status-by-year "buildout" series) lives in
 `ggit/notebooks/app-May2023-ggit-dashboard-using-summary-tables.ipynb`

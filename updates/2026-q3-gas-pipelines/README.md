@@ -37,6 +37,8 @@ Work through [CHECKLIST.md](CHECKLIST.md) (copied from
   cycle. Run at least monthly and after bulk changes. **Read-only** — fix
   findings in the live sheet by hand.
 
-Both notebooks need `GDRIVE_API_CREDENTIALS` pointing at the service-account
-JSON (same setup as RELEASE-CHECKLIST.md step 1) and
+Both notebooks still authenticate with `GDRIVE_API_CREDENTIALS` and the
+`gem-analysis` service account, **which was deleted on 2026-07-31** — they will
+fail until repointed at the `gws` CLI read path (see RELEASE-CHECKLIST.md step 1
+and `route-lengths/sheets_client.py`). They also need
 `pip install -e ../../gem-tracker-constants` (their first cell does this).

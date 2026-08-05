@@ -26,15 +26,21 @@ so the release stays frozen even if the live sheet keeps moving.
 
 Skip this section if you've run a release from this machine before.
 
-- [ ] Python environment with `pandas`, `geopandas`, `shapely`, `pygsheets`, `openpyxl`
+- [ ] Python environment with `pandas`, `geopandas`, `shapely`, `openpyxl`
+      (plus `pygsheets` for the notebooks not yet repointed off the dead
+      service account — see below)
 - [ ] `gem-tracker-constants` installed editable from this repo:
       `pip install -e ./gem-tracker-constants` (run from the repo root)
 - [ ] Local checkout of `goit-ggit-pipeline-routes` (route geometries,
       one `<ProjectID>.geojson` per pipeline)
-- [ ] `GDRIVE_API_CREDENTIALS` env var pointing at a Google service-account
-      JSON that has read access to the tracker sheets
-- [ ] Confirm sheet access works: run the first few cells of
-      `releases/downloads/convert-ggit-goit-to-tracker-release-downloads.ipynb`
+- [ ] Google Sheets access. **The `gem-analysis` service account was deleted on
+      2026-07-31**, so `GDRIVE_API_CREDENTIALS` and `gem_tracker_constants.sheets`
+      no longer work and the notebooks below that still call `pygsheets` will
+      fail until they are repointed. Working path today: the `gws` CLI against
+      the work profile (`gws-gem`, read-only) — see
+      `route-lengths/sheets_client.py`
+- [ ] Confirm sheet access works: run `route-lengths/route_lengths.py --dry-run`,
+      which reads the tracker sheet through that path
 
 ## 2. Pre-flight (per release)
 
@@ -69,21 +75,27 @@ to fix now than after export.
 - [ ] Reconcile routes against `goit-ggit-pipeline-routes`:
   - [ ] Mapped routes in the sheet with no `<ProjectID>.geojson` on GitHub
   - [ ] Route files on GitHub missing from the sheet (stale or misnamed)
-  - (the estimate-length notebook in step 4 prints both reconciliation
-    lists — it's fine to use those as the sweep)
+  - (the step 4 run reports both — it's fine to use that as the sweep)
 - [ ] Fix everything found **in the source** (sheet or routes repo) before
       moving on
 
 ## 4. Length estimation
 
-Notebook: `releases/estimate-length/estimate-length.ipynb`
+`route-lengths/` — `python route_lengths.py --out-dir <dir>`, or the
+`estimate-length.ipynb` wrapper. See `route-lengths/README.md`.
 
-- [ ] Point the notebook at the release's tracker sheet
-- [ ] Run all cells
-- [ ] Review the two reconciliation lists the notebook prints (any leftovers
-      from the step 3 sweep) and chase them down until both are clean
-- [ ] Outputs produced: `estimate-length-results-by-pipeline.xlsx` and
-      `estimate-length-results-by-country.xlsx`
+- [ ] Boundary layer present (`python prepare_boundaries.py`, or the prepped
+      `.gpkg` from the *Automation inputs* folder on the work Drive)
+- [ ] Point it at the release's tracker sheet (`--sheet-key`)
+- [ ] Run it; review the reconciliation report and chase down anything under
+      PROBLEMS until it is clean
+- [ ] Check the coverage diagnostics: `unattributed_km` should be ~0;
+      `overlap_km` is expected on pipelines crossing a named joint area
+- [ ] Outputs produced: `length-estimates-by-pipeline.csv` and
+      `country-ratios-by-pipeline.csv`
+- [ ] Re-run with `--write` to push both tabs into the tracker sheet (it
+      verifies the row extents and formula block afterwards). Step 6 no longer
+      involves pasting lengths in by hand
 
 ## 5. Owner/parent attribution
 
@@ -101,16 +113,16 @@ Notebook: `releases/owner-parent/GOIT-GGIT-owner-parent-importing-ownership-trac
 Copy the step 4–5 outputs back into the live tracker sheet, verify, and only
 then take the release snapshot.
 
-- [ ] Paste the new lengths into the sheet (per-pipeline estimates and the
-      per-country ratios tab)
+- [ ] Lengths are already in the sheet if step 4 was run with `--write`;
+      otherwise run it now
 - [ ] Import the formatted owner/parent output
 - [ ] Spot-check a few pipelines: known length vs. estimate vs. merged length
       (a `LengthKnown = 0` in the sheet will wrongly win over the estimate —
       blank it instead)
 - [ ] The sheet is now final for this release. Copy it into the release's
       data-release Google Drive folder
-- [ ] Share the copy so the python scripts can read it (the service account
-      in `GDRIVE_API_CREDENTIALS`)
+- [ ] Share the copy with whatever identity the scripts authenticate as
+      (the work account, via `gws-gem` — **not** the deleted service account)
 - [ ] Record the snapshot's URL/key in the header block above — **everything
       below reads from the snapshot**, not the live sheet
 

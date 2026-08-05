@@ -1,0 +1,334 @@
+UNION,POL_TYPE,ISO_TER1,ISO_SOV1,gem_entity,resolution_rule,Region,SubRegion,PipelineBubbleRegion,region_rule
+"Abu musa, Greater and Lesser Tunb",Overlapping claim,,ARE,"Disputed (Iran, United Arab Emirates)",a-dictionary-alias,Asia,Western Asia,,own-dictionary-row
+Afghanistan,Landlocked country,AFG,AFG,Afghanistan,a-dictionary-name,Asia,Southern Asia,Middle East,own-dictionary-row
+Aland Islands,Union EEZ and country,ALA,FIN,Aland Islands,carve-out-natural-earth,Europe,Northern Europe,Europe,nearest-Finland
+Alaska,Union EEZ and country,,USA,United States,c-iso-sov1,Americas,Northern America,North America,own-dictionary-row
+Albania,Union EEZ and country,ALB,ALB,Albania,a-dictionary-name,Europe,Southern Europe,Europe,own-dictionary-row
+Algeria,Union EEZ and country,DZA,DZA,Algeria,a-dictionary-name,Africa,Northern Africa,Middle East,own-dictionary-row
+Alhucemas Islands,Overlapping claim,,ESP,Alhucemas Islands,a-dictionary-name,Africa,Northern Africa,Africa,spanish-north-africa
+American Samoa,Union EEZ and country,ASM,USA,American Samoa,a-dictionary-name,Oceania,Polynesia,,own-dictionary-row
+Amsterdam and Saint Paul Islands,Union EEZ and country,ATF,FRA,French Southern Territories,b-iso-ter1,Africa,Sub-Saharan Africa,,own-dictionary-row
+Andaman and Nicobar,Union EEZ and country,,IND,India,c-iso-sov1,Asia,Southern Asia,Asia Pacific,own-dictionary-row
+Andorra,Landlocked country,AND,AND,Andorra,a-dictionary-name,Europe,Southern Europe,,own-dictionary-row
+Angola,Union EEZ and country,AGO,AGO,Angola,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Anguilla,Union EEZ and country,AIA,GBR,Anguilla,a-dictionary-name,Americas,Latin America and the Caribbean,,own-dictionary-row
+Antarctica,Union EEZ and country,,,Antarctica,a-dictionary-name,--,--,,own-dictionary-row
+Antigua and Barbuda,Union EEZ and country,ATG,ATG,Antigua and Barbuda,a-dictionary-name,Americas,Latin America and the Caribbean,,own-dictionary-row
+Argentina,Union EEZ and country,ARG,ARG,Argentina,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Armenia,Landlocked country,ARM,ARM,Armenia,a-dictionary-name,Asia,Western Asia,Eurasia,own-dictionary-row
+Aruba,Union EEZ and country,ABW,NLD,Aruba,a-dictionary-name,Americas,Latin America and the Caribbean,,own-dictionary-row
+Ascension,Union EEZ and country,SHN,GBR,"Saint Helena, Ascension, and Tristan da Cunha",b-iso-ter1,Africa,Sub-Saharan Africa,,own-dictionary-row
+Australia,Union EEZ and country,AUS,AUS,Australia,a-dictionary-name,Oceania,Australia and New Zealand,Asia Pacific,own-dictionary-row
+Austria,Landlocked country,AUT,AUT,Austria,a-dictionary-name,Europe,Western Europe,Europe,own-dictionary-row
+Azerbaijan,Union EEZ and country,AZE,AZE,Azerbaijan,a-dictionary-name,Asia,Western Asia,Eurasia,own-dictionary-row
+Azores,Union EEZ and country,,PRT,Portugal,c-iso-sov1,Europe,Southern Europe,Europe,own-dictionary-row
+Bahamas,Union EEZ and country,BHS,BHS,Bahamas,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Bahrain,Union EEZ and country,BHR,BHR,Bahrain,a-dictionary-name,Asia,Western Asia,Middle East,own-dictionary-row
+Bajo Nuevo Bank,Union EEZ and country,,COL,Colombia,c-iso-sov1,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Bangladesh,Union EEZ and country,BGD,BGD,Bangladesh,a-dictionary-name,Asia,Southern Asia,Asia Pacific,own-dictionary-row
+Barbados,Union EEZ and country,BRB,BRB,Barbados,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Bassas da India,Union EEZ and country,ATF,FRA,French Southern Territories,b-iso-ter1,Africa,Sub-Saharan Africa,,own-dictionary-row
+Belarus,Landlocked country,BLR,BLR,Belarus,a-dictionary-name,Europe,Eastern Europe,Europe,own-dictionary-row
+Belgium,Union EEZ and country,BEL,BEL,Belgium,a-dictionary-name,Europe,Western Europe,Europe,own-dictionary-row
+Belize,Union EEZ and country,BLZ,BLZ,Belize,a-dictionary-name,Americas,Latin America and the Caribbean,,own-dictionary-row
+Benin,Union EEZ and country,BEN,BEN,Benin,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Bermuda,Union EEZ and country,BMU,GBR,Bermuda,a-dictionary-name,Americas,Northern America,,own-dictionary-row
+Bhutan,Landlocked country,BTN,BTN,Bhutan,a-dictionary-name,Asia,Southern Asia,Asia Pacific,own-dictionary-row
+Bolivia,Landlocked country,BOL,BOL,Bolivia,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Bonaire,Union EEZ and country,BES,NLD,"Bonaire, Sint Eustatius, and Saba",b-iso-ter1,Americas,Latin America and the Caribbean,,own-dictionary-row
+Bosnia and Herzegovina,Union EEZ and country,BIH,BIH,Bosnia and Herzegovina,a-dictionary-name,Europe,Southern Europe,Europe,own-dictionary-row
+Botswana,Landlocked country,BWA,BWA,Botswana,a-dictionary-name,Africa,Sub-Saharan Africa,,own-dictionary-row
+Bouvet,Union EEZ and country,BVT,NOR,Bouvet Island,b-iso-ter1,Americas,Latin America and the Caribbean,,own-dictionary-row
+Brazil,Union EEZ and country,BRA,BRA,Brazil,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+British Indian Ocean Territory,Union EEZ and country,IOT,GBR,British Indian Ocean Territory,carve-out-natural-earth,Africa,Sub-Saharan Africa,,own-dictionary-row
+British Virgin Islands,Union EEZ and country,VGB,GBR,Virgin Islands (British),b-iso-ter1,Americas,Latin America and the Caribbean,,own-dictionary-row
+Brunei,Union EEZ and country,BRN,BRN,Brunei,a-dictionary-name,Asia,South-eastern Asia,Asia Pacific,own-dictionary-row
+Bulgaria,Union EEZ and country,BGR,BGR,Bulgaria,a-dictionary-name,Europe,Eastern Europe,Europe,own-dictionary-row
+Burkina Faso,Landlocked country,BFA,BFA,Burkina Faso,a-dictionary-name,Africa,Sub-Saharan Africa,,own-dictionary-row
+Burundi,Landlocked country,BDI,BDI,Burundi,a-dictionary-name,Africa,Sub-Saharan Africa,,own-dictionary-row
+Cambodia,Union EEZ and country,KHM,KHM,Cambodia,a-dictionary-name,Asia,South-eastern Asia,Asia Pacific,own-dictionary-row
+Cameroon,Union EEZ and country,CMR,CMR,Cameroon,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Canada,Union EEZ and country,CAN,CAN,Canada,a-dictionary-name,Americas,Northern America,North America,own-dictionary-row
+Canary Islands,Union EEZ and country,,ESP,Canary Islands,a-dictionary-name,Africa,Northern Africa,Africa,own-dictionary-row
+Cape Verde,Union EEZ and country,CPV,CPV,Cabo Verde,b-iso-ter1,Africa,Sub-Saharan Africa,,own-dictionary-row
+Cayman Islands,Union EEZ and country,CYM,GBR,Cayman Islands,a-dictionary-name,Americas,Latin America and the Caribbean,,own-dictionary-row
+Central African Republic,Landlocked country,CAF,CAF,Central African Republic,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Ceuta,Overlapping claim,,ESP,Ceuta,a-dictionary-name,Africa,Northern Africa,Africa,spanish-north-africa
+Chad,Landlocked country,TCD,TCD,Chad,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Chafarinas Islands,Overlapping claim,,ESP,Chafarinas Islands,a-dictionary-name,Africa,Northern Africa,Africa,spanish-north-africa
+Chagos Archipelago,Union EEZ and country,,MUS,Mauritius,c-iso-sov1,Africa,Sub-Saharan Africa,,own-dictionary-row
+Chile,Union EEZ and country,CHL,CHL,Chile,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+China,Union EEZ and country,CHN,CHN,China,a-dictionary-name,Asia,Eastern Asia,Asia Pacific,own-dictionary-row
+Christmas Island,Union EEZ and country,CXR,AUS,Christmas Island,a-dictionary-name,Oceania,Australia and New Zealand,,own-dictionary-row
+Clipperton Island,Union EEZ and country,,FRA,France,c-iso-sov1,Europe,Western Europe,Europe,own-dictionary-row
+Cocos Islands,Union EEZ and country,CCK,AUS,Cocos (Keeling) Islands,b-iso-ter1,Oceania,Australia and New Zealand,,own-dictionary-row
+Collectivity of Saint Martin,Union EEZ and country,MAF,FRA,Saint Martin (French part),b-iso-ter1,Americas,Latin America and the Caribbean,,own-dictionary-row
+Colombia,Union EEZ and country,COL,COL,Colombia,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Colombian Exclusive Economic Zone (Quitasueño Bank),Union EEZ and country,,COL,Colombia,c-iso-sov1,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Comores,Union EEZ and country,COM,COM,Comoros,b-iso-ter1,Africa,Sub-Saharan Africa,,own-dictionary-row
+Cook Islands,Union EEZ and country,COK,NZL,Cook Islands,a-dictionary-name,Oceania,Polynesia,,own-dictionary-row
+Costa Rica,Union EEZ and country,CRI,CRI,Costa Rica,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Croatia,Union EEZ and country,HRV,HRV,Croatia,a-dictionary-name,Europe,Southern Europe,Europe,own-dictionary-row
+Crozet Islands,Union EEZ and country,ATF,FRA,French Southern Territories,b-iso-ter1,Africa,Sub-Saharan Africa,,own-dictionary-row
+Cuba,Union EEZ and country,CUB,CUB,Cuba,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Curaçao,Union EEZ and country,CUW,NLD,Curaçao,a-dictionary-name,Americas,Latin America and the Caribbean,,own-dictionary-row
+Cyprus,Union EEZ and country,CYP,CYP,Cyprus,a-dictionary-name,Asia,Western Asia,Europe,own-dictionary-row
+Czech Republic,Landlocked country,CZE,CZE,Czech Republic,a-dictionary-name,Europe,Eastern Europe,Europe,own-dictionary-row
+Democratic Republic of the Congo,Union EEZ and country,COD,COD,DR Congo,a-dictionary-alias,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Denmark,Union EEZ and country,DNK,DNK,Denmark,a-dictionary-name,Europe,Northern Europe,Europe,own-dictionary-row
+Djibouti,Union EEZ and country,DJI,DJI,Djibouti,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Dominica,Union EEZ and country,DMA,DMA,Dominica,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Dominican Republic,Union EEZ and country,DOM,DOM,Dominican Republic,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Doumeira Islands,Overlapping claim,,ERI,Doumeira Islands,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+East Timor,Union EEZ and country,TLS,TLS,Timor-Leste,a-dictionary-alias,Asia,South-eastern Asia,Asia Pacific,own-dictionary-row
+Easter Island,Union EEZ and country,,CHL,Chile,c-iso-sov1,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Ecuador,Union EEZ and country,ECU,ECU,Ecuador,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Egypt,Union EEZ and country,EGY,EGY,Egypt,a-dictionary-name,Africa,Northern Africa,Middle East,own-dictionary-row
+El Salvador,Union EEZ and country,SLV,SLV,El Salvador,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Equatorial Guinea,Union EEZ and country,GNQ,GNQ,Equatorial Guinea,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Eritrea,Union EEZ and country,ERI,ERI,Eritrea,a-dictionary-name,Africa,Sub-Saharan Africa,,own-dictionary-row
+Estonia,Union EEZ and country,EST,EST,Estonia,a-dictionary-name,Europe,Northern Europe,Europe,own-dictionary-row
+Ethiopia,Landlocked country,ETH,ETH,Ethiopia,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Europa Island,Union EEZ and country,ATF,FRA,French Southern Territories,b-iso-ter1,Africa,Sub-Saharan Africa,,own-dictionary-row
+Faeroe,Union EEZ and country,FRO,DNK,Faroe Islands,b-iso-ter1,Europe,Northern Europe,,own-dictionary-row
+Falkland Islands,Overlapping claim,FLK,GBR,Falkland Islands,a-dictionary-name,Americas,Latin America and the Caribbean,,own-dictionary-row
+Federal Republic of Somalia,Union EEZ and country,SOM,SOM,Somalia,b-iso-ter1,Africa,Sub-Saharan Africa,,own-dictionary-row
+Fiji,Union EEZ and country,FJI,FJI,Fiji,a-dictionary-name,Oceania,Melanesia,,own-dictionary-row
+Finland,Union EEZ and country,FIN,FIN,Finland,a-dictionary-name,Europe,Northern Europe,Europe,own-dictionary-row
+France,Union EEZ and country,FRA,FRA,France,a-dictionary-name,Europe,Western Europe,Europe,own-dictionary-row
+French Guiana,Union EEZ and country,GUF,FRA,French Guiana,a-dictionary-name,Americas,Latin America and the Caribbean,,own-dictionary-row
+French Polynesia,Union EEZ and country,PYF,FRA,French Polynesia,a-dictionary-name,Oceania,Polynesia,,own-dictionary-row
+Gabon,Union EEZ and country,GAB,GAB,Gabon,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Galapagos,Union EEZ and country,,ECU,Ecuador,c-iso-sov1,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Gambia,Union EEZ and country,GMB,GMB,The Gambia,a-dictionary-alias,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Georgia,Union EEZ and country,GEO,GEO,Georgia,a-dictionary-name,Asia,Western Asia,Eurasia,own-dictionary-row
+Germany,Union EEZ and country,DEU,DEU,Germany,a-dictionary-name,Europe,Western Europe,Europe,own-dictionary-row
+Ghana,Union EEZ and country,GHA,GHA,Ghana,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Gibraltar,Overlapping claim,GIB,GIB,Gibraltar,a-dictionary-name,Europe,Southern Europe,Europe,own-dictionary-row
+Gilbert Islands,Union EEZ and country,KIR,KIR,Kiribati,b-iso-ter1,Oceania,Micronesia,,own-dictionary-row
+Glorioso Islands,Overlapping claim,,MDG,Glorioso Islands,a-dictionary-name,Africa,Sub-Saharan Africa,,own-dictionary-row
+Grand Duchy of Luxembourg,Landlocked country,LUX,LUX,Luxembourg,a-dictionary-alias,Europe,Western Europe,Europe,own-dictionary-row
+Greece,Union EEZ and country,GRC,GRC,Greece,a-dictionary-name,Europe,Southern Europe,Europe,own-dictionary-row
+Greenland,Union EEZ and country,GRL,DNK,Greenland,a-dictionary-name,Americas,Northern America,,own-dictionary-row
+Grenada,Union EEZ and country,GRD,GRD,Grenada,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Guadeloupe,Union EEZ and country,GLP,FRA,Guadeloupe,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Guam,Union EEZ and country,GUM,USA,Guam,a-dictionary-name,Oceania,Micronesia,Asia Pacific,own-dictionary-row
+Guatemala,Union EEZ and country,GTM,GTM,Guatemala,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Guernsey,Union EEZ and country,GGY,GBR,Guernsey,a-dictionary-name,Europe,Northern Europe,,own-dictionary-row
+Guinea,Union EEZ and country,GIN,GIN,Guinea,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Guinea-Bissau,Union EEZ and country,GNB,GNB,Guinea-Bissau,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Guyana,Union EEZ and country,GUY,GUY,Guyana,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Haiti,Union EEZ and country,HTI,HTI,Haiti,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Hala'ib Triangle,Overlapping claim,,SDN,Hala'ib Triangle,a-dictionary-name,Africa,Northern Africa,Africa,own-dictionary-row
+Hawaii,Union EEZ and country,,USA,United States,c-iso-sov1,Americas,Northern America,North America,own-dictionary-row
+Heard and McDonald Islands,Union EEZ and country,HMD,AUS,Heard Island and McDonald Islands,b-iso-ter1,Oceania,Australia and New Zealand,,own-dictionary-row
+Honduras,Union EEZ and country,HND,HND,Honduras,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Hong Kong,Union EEZ and country,HKG,CHN,Hong Kong,carve-out-natural-earth,Asia,Eastern Asia,Asia Pacific,own-dictionary-row
+Howland and Baker islands,Union EEZ and country,UMI,USA,United States Minor Outlying Islands,b-iso-ter1,Oceania,Micronesia,Latin America,own-dictionary-row
+Hungary,Landlocked country,HUN,HUN,Hungary,a-dictionary-name,Europe,Eastern Europe,Europe,own-dictionary-row
+Iceland,Union EEZ and country,ISL,ISL,Iceland,a-dictionary-name,Europe,Northern Europe,Europe,own-dictionary-row
+India,Union EEZ and country,IND,IND,India,a-dictionary-name,Asia,Southern Asia,Asia Pacific,own-dictionary-row
+Indonesia,Union EEZ and country,IDN,IDN,Indonesia,a-dictionary-name,Asia,South-eastern Asia,Asia Pacific,own-dictionary-row
+Iran,Union EEZ and country,IRN,IRN,Iran,a-dictionary-name,Asia,Southern Asia,Middle East,own-dictionary-row
+Iraq,Union EEZ and country,IRQ,IRQ,Iraq,a-dictionary-name,Asia,Western Asia,Middle East,own-dictionary-row
+Ireland,Union EEZ and country,IRL,IRL,Ireland,a-dictionary-name,Europe,Northern Europe,Europe,own-dictionary-row
+Islas San Félix and San Ambrosio,Union EEZ and country,CHL,CHL,Chile,b-iso-ter1,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Isle of Man,Union EEZ and country,IMN,GBR,Isle of Man,a-dictionary-name,Europe,Northern Europe,,own-dictionary-row
+Israel,Union EEZ and country,ISR,ISR,Israel,a-dictionary-name,Asia,Western Asia,Middle East,own-dictionary-row
+Italy,Union EEZ and country,ITA,ITA,Italy,a-dictionary-name,Europe,Southern Europe,Europe,own-dictionary-row
+Ivory Coast,Union EEZ and country,CIV,CIV,Côte d'Ivoire,a-dictionary-alias,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Jamaica,Union EEZ and country,JAM,JAM,Jamaica,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Jan Mayen,Union EEZ and country,SJM,NOR,Svalbard and Jan Mayen,b-iso-ter1,Europe,Northern Europe,,own-dictionary-row
+Japan,Union EEZ and country,JPN,JPN,Japan,a-dictionary-name,Asia,Eastern Asia,Asia Pacific,own-dictionary-row
+Jarvis Island,Union EEZ and country,UMI,USA,United States Minor Outlying Islands,b-iso-ter1,Oceania,Micronesia,Latin America,own-dictionary-row
+Jersey,Union EEZ and country,JEY,GBR,Jersey,a-dictionary-name,Europe,Northern Europe,,own-dictionary-row
+Johnston Atoll,Union EEZ and country,UMI,USA,United States Minor Outlying Islands,b-iso-ter1,Oceania,Micronesia,Latin America,own-dictionary-row
+Joint regime area Torres Strait Treaty: Papua New Guinea / Australia,Joint regime (EEZ),PNG,PNG,"Protected zone (Australia, Papua New Guinea)",a-dictionary-alias,Oceania,Australia and New Zealand,,own-dictionary-row
+Joint regime area: Barbados / Guyana,Joint regime (EEZ),BRB,BRB,Joint regime area: Barbados / Guyana,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Joint regime area: Costa Rica / Ecuador (Galapagos),Joint regime (EEZ),CRI,CRI,Joint regime area: Costa Rica / Ecuador (Galapagos),a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Joint regime area: Croatia / Slovenia,Joint regime (EEZ),HRV,HRV,Joint regime area: Croatia / Slovenia,a-dictionary-name,Europe,Southern Europe,Europe,own-dictionary-row
+Joint regime area: Dominican Republic / Colombia,Joint regime (EEZ),DOM,DOM,Joint regime area: Dominican Republic / Colombia,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Joint regime area: Ecuador / Colombia,Joint regime (EEZ),ECU,ECU,Joint regime area: Ecuador / Colombia,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Joint regime area: France / Italy,Joint regime (EEZ),FRA,FRA,Joint regime area: France / Italy,a-dictionary-name,Europe,Western Europe,Europe,own-dictionary-row
+Joint regime area: Honduras / United Kingdom (Cayman Islands),Joint regime (EEZ),HND,HND,Joint regime area: Honduras / United Kingdom (Cayman Islands),a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Joint regime area: Iceland / Denmark (Faeroe Islands),Joint regime (EEZ),FRO,DNK,Joint regime area: Iceland / Denmark (Faeroe Islands),a-dictionary-name,Europe,Northern Europe,,own-dictionary-row
+Joint regime area: Iceland / Norway (Jan Mayen),Joint regime (EEZ),ISL,ISL,Joint regime area: Iceland / Norway (Jan Mayen),a-dictionary-name,Europe,Northern Europe,Europe,own-dictionary-row
+Joint regime area: Jamaica / Colombia,Joint regime (EEZ),JAM,JAM,"Joint regime area (Colombia, Jamaica)",a-dictionary-alias,Americas,Latin America and the Caribbean,,own-dictionary-row
+Joint regime area: Norway / Russia,Joint regime (EEZ),NOR,NOR,Joint regime area: Norway / Russia,a-dictionary-name,Europe,Northern Europe,Europe,own-dictionary-row
+Joint regime area: Peru / Ecuador,Joint regime (EEZ),PER,PER,Joint regime area: Peru / Ecuador,a-dictionary-name,Americas,Latin America and the Caribbean,,own-dictionary-row
+Joint regime area: Sao Tome and Principe / Nigeria,Joint regime (EEZ),STP,STP,"Joint regime area (Nigeria, Sao Tome and Principe)",a-dictionary-alias,Africa,Sub-Saharan Africa,,own-dictionary-row
+Joint regime area: Senegal / Guinea-Bissau,Joint regime (EEZ),SEN,SEN,Joint regime area: Senegal / Guinea-Bissau,a-dictionary-name,Africa,Sub-Saharan Africa,,own-dictionary-row
+Joint regime area: South Korea / Japan,Joint regime (EEZ),KOR,KOR,"Joint regime area (Japan, Korea)",a-dictionary-alias,Asia,Eastern Asia,,own-dictionary-row
+Joint regime area: Spain / France,Joint regime (EEZ),FRA,FRA,Joint regime area: Spain / France,a-dictionary-name,Europe,Western Europe,Europe,own-dictionary-row
+Joint regime area: Sweden / Norway,Joint regime (EEZ),NOR,NOR,Joint regime area: Sweden / Norway,a-dictionary-name,Europe,Northern Europe,Europe,own-dictionary-row
+Joint regime area: United Kingdom / Denmark (Faeroe Islands),Joint regime (EEZ),GBR,GBR,Joint regime area: United Kingdom / Denmark (Faeroe Islands),a-dictionary-name,Europe,Northern Europe,Europe,own-dictionary-row
+Joint regime area: United States / Russia,Joint regime (EEZ),USA,USA,Joint regime area: United States / Russia,a-dictionary-name,Americas,Northern America,North America,own-dictionary-row
+Joint regime area: Uruguay / Argentina,Joint regime (EEZ),URY,URY,Joint regime area: Uruguay / Argentina,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Jordan,Union EEZ and country,JOR,JOR,Jordan,a-dictionary-name,Asia,Western Asia,Middle East,own-dictionary-row
+Juan de Nova Island,Union EEZ and country,ATF,FRA,French Southern Territories,b-iso-ter1,Africa,Sub-Saharan Africa,,own-dictionary-row
+Kazakhstan,Union EEZ and country,KAZ,KAZ,Kazakhstan,a-dictionary-name,Asia,Central Asia,Eurasia,own-dictionary-row
+Kenya,Union EEZ and country,KEN,KEN,Kenya,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Kerguélen,Union EEZ and country,ATF,FRA,French Southern Territories,b-iso-ter1,Africa,Sub-Saharan Africa,,own-dictionary-row
+Kosovo,Union EEZ and country,XXK,,Kosovo,carve-out-natural-earth,Europe,Southern Europe,Europe,own-dictionary-row
+Kuril Islands,Overlapping claim,,JPN,"Conflict zone (Japan, Russia)",a-dictionary-alias,Asia,Eastern Asia,,own-dictionary-row
+Kuwait,Union EEZ and country,KWT,KWT,Kuwait,a-dictionary-name,Asia,Western Asia,Middle East,own-dictionary-row
+Kyrgyzstan,Landlocked country,KGZ,KGZ,Kyrgyzstan,a-dictionary-name,Asia,Central Asia,Eurasia,own-dictionary-row
+Laos,Landlocked country,LAO,LAO,Laos,a-dictionary-name,Asia,South-eastern Asia,Asia Pacific,own-dictionary-row
+Latvia,Union EEZ and country,LVA,LVA,Latvia,a-dictionary-name,Europe,Northern Europe,Europe,own-dictionary-row
+Lebanon,Union EEZ and country,LBN,LBN,Lebanon,a-dictionary-name,Asia,Western Asia,Middle East,own-dictionary-row
+Lesotho,Landlocked country,LSO,LSO,Lesotho,a-dictionary-name,Africa,Sub-Saharan Africa,,own-dictionary-row
+Liberia,Union EEZ and country,LBR,LBR,Liberia,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Libya,Union EEZ and country,LBY,LBY,Libya,a-dictionary-name,Africa,Northern Africa,Africa,own-dictionary-row
+Liechtenstein,Landlocked country,LIE,LIE,Liechtenstein,a-dictionary-name,Europe,Western Europe,,own-dictionary-row
+Line Group,Union EEZ and country,KIR,KIR,Kiribati,b-iso-ter1,Oceania,Micronesia,,own-dictionary-row
+Lithuania,Union EEZ and country,LTU,LTU,Lithuania,a-dictionary-name,Europe,Northern Europe,Europe,own-dictionary-row
+Macao,Union EEZ and country,MAC,CHN,Macao,carve-out-natural-earth,Asia,Eastern Asia,Asia Pacific,own-dictionary-row
+Macedonia,Landlocked country,MKD,MKD,North Macedonia,a-dictionary-alias,Europe,Southern Europe,Europe,own-dictionary-row
+Macquarie Island,Union EEZ and country,,AUS,Australia,c-iso-sov1,Oceania,Australia and New Zealand,Asia Pacific,own-dictionary-row
+Madagascar,Union EEZ and country,MDG,MDG,Madagascar,a-dictionary-name,Africa,Sub-Saharan Africa,,own-dictionary-row
+Madeira,Union EEZ and country,,PRT,Portugal,c-iso-sov1,Europe,Southern Europe,Europe,own-dictionary-row
+Malawi,Landlocked country,MWI,MWI,Malawi,a-dictionary-name,Africa,Sub-Saharan Africa,,own-dictionary-row
+Malaysia,Union EEZ and country,MYS,MYS,Malaysia,a-dictionary-name,Asia,South-eastern Asia,Asia Pacific,own-dictionary-row
+Maldives,Union EEZ and country,MDV,MDV,Maldives,a-dictionary-name,Asia,Southern Asia,,own-dictionary-row
+Mali,Landlocked country,MLI,MLI,Mali,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Malta,Union EEZ and country,MLT,MLT,Malta,a-dictionary-name,Europe,Southern Europe,Europe,own-dictionary-row
+Marshall Islands,Union EEZ and country,MHL,MHL,Marshall Islands,a-dictionary-name,Oceania,Micronesia,,own-dictionary-row
+Martinique,Union EEZ and country,MTQ,FRA,Martinique,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Matthew and Hunter Islands,Overlapping claim,,FRA,Matthew and Hunter Islands,a-dictionary-name,Oceania,Melanesia,,own-dictionary-row
+Mauritania,Union EEZ and country,MRT,MRT,Mauritania,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Mayotte,Overlapping claim,MYT,FRA,Mayotte,a-dictionary-name,Africa,Sub-Saharan Africa,,own-dictionary-row
+Melilla,Overlapping claim,,ESP,Melilla,a-dictionary-name,Africa,Northern Africa,Africa,spanish-north-africa
+Mexico,Union EEZ and country,MEX,MEX,Mexico,a-dictionary-name,Americas,Latin America and the Caribbean,North America,own-dictionary-row
+Micronesia,Union EEZ and country,FSM,FSM,Micronesia,a-dictionary-name,Oceania,Micronesia,,own-dictionary-row
+Moldova,Landlocked country,MDA,MDA,Moldova,a-dictionary-name,Europe,Eastern Europe,Europe,own-dictionary-row
+Monaco,Union EEZ and country,MCO,MCO,Monaco,a-dictionary-name,Europe,Western Europe,,own-dictionary-row
+Mongolia,Landlocked country,MNG,MNG,Mongolia,a-dictionary-name,Asia,Eastern Asia,Asia Pacific,own-dictionary-row
+Montenegro,Union EEZ and country,MNE,MNE,Montenegro,a-dictionary-name,Europe,Southern Europe,Europe,own-dictionary-row
+Montserrat,Union EEZ and country,MSR,GBR,Montserrat,a-dictionary-name,Americas,Latin America and the Caribbean,,own-dictionary-row
+Morocco,Union EEZ and country,MAR,MAR,Morocco,a-dictionary-name,Africa,Northern Africa,Middle East,own-dictionary-row
+Mozambique,Union EEZ and country,MOZ,MOZ,Mozambique,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Myanmar,Union EEZ and country,MMR,MMR,Myanmar,a-dictionary-name,Asia,South-eastern Asia,Asia Pacific,own-dictionary-row
+Namibia,Union EEZ and country,NAM,NAM,Namibia,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Nauru,Union EEZ and country,NRU,NRU,Nauru,a-dictionary-name,Oceania,Micronesia,,own-dictionary-row
+Navassa Island,Overlapping claim,,HTI,Navassa Island,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Nepal,Landlocked country,NPL,NPL,Nepal,a-dictionary-name,Asia,Southern Asia,Asia Pacific,own-dictionary-row
+Netherlands,Union EEZ and country,NLD,NLD,Netherlands,a-dictionary-name,Europe,Western Europe,Europe,own-dictionary-row
+New Caledonia,Union EEZ and country,NCL,FRA,New Caledonia,a-dictionary-name,Oceania,Melanesia,,own-dictionary-row
+New Zealand,Union EEZ and country,NZL,NZL,New Zealand,a-dictionary-name,Oceania,Australia and New Zealand,Asia Pacific,own-dictionary-row
+Nicaragua,Union EEZ and country,NIC,NIC,Nicaragua,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Niger,Landlocked country,NER,NER,Niger,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Nigeria,Union EEZ and country,NGA,NGA,Nigeria,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Niue,Union EEZ and country,NIU,NZL,Niue,a-dictionary-name,Oceania,Polynesia,,own-dictionary-row
+Norfolk Island,Union EEZ and country,NFK,AUS,Norfolk Island,a-dictionary-name,Oceania,Australia and New Zealand,,own-dictionary-row
+North Korea,Union EEZ and country,PRK,PRK,North Korea,a-dictionary-name,Asia,Eastern Asia,Asia Pacific,own-dictionary-row
+Northern Mariana Islands,Union EEZ and country,MNP,USA,Northern Mariana Islands,a-dictionary-name,Oceania,Micronesia,,own-dictionary-row
+Norway,Union EEZ and country,NOR,NOR,Norway,a-dictionary-name,Europe,Northern Europe,Europe,own-dictionary-row
+Oecusse,Union EEZ and country,,TLS,Timor-Leste,c-iso-sov1,Asia,South-eastern Asia,Asia Pacific,own-dictionary-row
+Oman,Union EEZ and country,OMN,OMN,Oman,a-dictionary-name,Asia,Western Asia,Middle East,own-dictionary-row
+Overlapping claim Liancourt Rocks: Japan / South Korea,Overlapping claim,,JPN,"Conflict zone (Japan, South Korea)",a-dictionary-alias,Asia,Eastern Asia,,own-dictionary-row
+Overlapping claim South China Sea,Overlapping claim,CHN,CHN,Overlapping claim South China Sea,a-dictionary-name,Asia,South-eastern Asia,Asia Pacific,own-dictionary-row
+Overlapping claim: Canada / United States,Overlapping claim,CAN,CAN,Overlapping claim: Canada / United States,a-dictionary-name,Americas,Northern America,North America,own-dictionary-row
+Overlapping claim: Colombia / Dominican Republic / Venezuela,Overlapping claim,COL,COL,Overlapping claim: Colombia / Dominican Republic / Venezuela,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Overlapping claim: Egypt / Libya,Overlapping claim,EGY,EGY,Overlapping claim: Egypt / Libya,a-dictionary-name,Africa,Northern Africa,,own-dictionary-row
+Overlapping claim: Guyana / Trinidad and Tobago / Venezuela,Overlapping claim,GUY,GUY,Overlapping claim: Guyana / Trinidad and Tobago / Venezuela,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Overlapping claim: Iraq / Iran,Overlapping claim,IRQ,IRQ,Overlapping claim: Iraq / Iran,a-dictionary-name,Asia,Western Asia,Middle East,own-dictionary-row
+Overlapping claim: Malaysia / Singapore,Overlapping claim,MYS,MYS,Overlapping claim: Malaysia / Singapore,a-dictionary-name,Asia,South-eastern Asia,Asia Pacific,own-dictionary-row
+Overlapping claim: Qatar / Saudi Arabia / United Arab Emirates,Overlapping claim,QAT,QAT,Overlapping claim: Qatar / Saudi Arabia / United Arab Emirates,a-dictionary-name,Asia,Western Asia,Middle East,own-dictionary-row
+Overlapping claim: United States (Puerto Rico) / Dominican Republic,Overlapping claim,PRI,USA,Overlapping claim: United States (Puerto Rico) / Dominican Republic,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Overlapping claim: Venezuela / Netherlands (Aruba) / Dominican Republic,Overlapping claim,VEN,VEN,Overlapping claim: Venezuela / Netherlands (Aruba) / Dominican Republic,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Pakistan,Union EEZ and country,PAK,PAK,Pakistan,a-dictionary-name,Asia,Southern Asia,Asia Pacific,own-dictionary-row
+Palau,Union EEZ and country,PLW,PLW,Palau,a-dictionary-name,Oceania,Micronesia,,own-dictionary-row
+Palestine,Union EEZ and country,PSE,PSE,Palestine,a-dictionary-name,Asia,Western Asia,,own-dictionary-row
+Palmyra Atoll,Union EEZ and country,UMI,USA,United States Minor Outlying Islands,b-iso-ter1,Oceania,Micronesia,Latin America,own-dictionary-row
+Panama,Union EEZ and country,PAN,PAN,Panama,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Papua New Guinea,Union EEZ and country,PNG,PNG,Papua New Guinea,a-dictionary-name,Oceania,Melanesia,Asia Pacific,own-dictionary-row
+Paraguay,Landlocked country,PRY,PRY,Paraguay,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Perejil Island,Overlapping claim,,ESP,Perejil Island,a-dictionary-name,Africa,Northern Africa,Africa,spanish-north-africa
+Peru,Union EEZ and country,PER,PER,Peru,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Peñón de Vélez de la Gomera,Overlapping claim,,ESP,Peñón de Vélez de la Gomera,a-dictionary-name,Africa,Northern Africa,Africa,spanish-north-africa
+Philippines,Union EEZ and country,PHL,PHL,Philippines,a-dictionary-name,Asia,South-eastern Asia,Asia Pacific,own-dictionary-row
+Phoenix Group,Union EEZ and country,KIR,KIR,Kiribati,b-iso-ter1,Oceania,Micronesia,,own-dictionary-row
+Pitcairn,Union EEZ and country,PCN,GBR,Pitcairn,a-dictionary-name,Oceania,Polynesia,,own-dictionary-row
+Poland,Union EEZ and country,POL,POL,Poland,a-dictionary-name,Europe,Eastern Europe,Europe,own-dictionary-row
+Portugal,Union EEZ and country,PRT,PRT,Portugal,a-dictionary-name,Europe,Southern Europe,Europe,own-dictionary-row
+Prince Edward Islands,Union EEZ and country,,ZAF,South Africa,c-iso-sov1,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Puerto Rico,Union EEZ and country,PRI,USA,Puerto Rico,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Qatar,Union EEZ and country,QAT,QAT,Qatar,a-dictionary-name,Asia,Western Asia,Middle East,own-dictionary-row
+Republic of Mauritius,Union EEZ and country,MUS,MUS,Mauritius,b-iso-ter1,Africa,Sub-Saharan Africa,,own-dictionary-row
+Republic of the Congo,Union EEZ and country,COG,COG,Republic of the Congo,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Romania,Union EEZ and country,ROU,ROU,Romania,a-dictionary-name,Europe,Eastern Europe,Europe,own-dictionary-row
+Russia,Union EEZ and country,RUS,RUS,Russia,a-dictionary-name,Europe,Eastern Europe,Eurasia,own-dictionary-row
+Rwanda,Landlocked country,RWA,RWA,Rwanda,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Réunion,Union EEZ and country,REU,FRA,Réunion,a-dictionary-name,Africa,Sub-Saharan Africa,,own-dictionary-row
+Saba,Union EEZ and country,BES,NLD,"Bonaire, Sint Eustatius, and Saba",b-iso-ter1,Americas,Latin America and the Caribbean,,own-dictionary-row
+Saint Helena,Union EEZ and country,SHN,GBR,"Saint Helena, Ascension, and Tristan da Cunha",b-iso-ter1,Africa,Sub-Saharan Africa,,own-dictionary-row
+Saint Kitts and Nevis,Union EEZ and country,KNA,KNA,Saint Kitts and Nevis,a-dictionary-name,Americas,Latin America and the Caribbean,,own-dictionary-row
+Saint Lucia,Union EEZ and country,LCA,LCA,Saint Lucia,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Saint Vincent and the Grenadines,Union EEZ and country,VCT,VCT,Saint Vincent and the Grenadines,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Saint-Barthélemy,Union EEZ and country,BLM,FRA,Saint Barthélemy,b-iso-ter1,Americas,Latin America and the Caribbean,,own-dictionary-row
+Saint-Pierre and Miquelon,Union EEZ and country,SPM,FRA,Saint Pierre and Miquelon,b-iso-ter1,Americas,Northern America,,own-dictionary-row
+Samoa,Union EEZ and country,WSM,WSM,Samoa,a-dictionary-name,Oceania,Polynesia,,own-dictionary-row
+San Marino,Landlocked country,SMR,SMR,San Marino,a-dictionary-name,Europe,Southern Europe,Europe,own-dictionary-row
+Sao Tome and Principe,Union EEZ and country,STP,STP,Sao Tome and Principe,a-dictionary-name,Africa,Sub-Saharan Africa,,own-dictionary-row
+Sapodilla Cayes,Overlapping claim,BLZ,BLZ,Sapodilla Cayes,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Saudi Arabia,Union EEZ and country,SAU,SAU,Saudi Arabia,a-dictionary-name,Asia,Western Asia,Middle East,own-dictionary-row
+Senegal,Union EEZ and country,SEN,SEN,Senegal,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Senkaku Islands,Overlapping claim,,TWN,"Conflict zone (China, Japan, Taiwan)",a-dictionary-alias,Asia,Eastern Asia,,own-dictionary-row
+Serbia,Landlocked country,SRB,SRB,Serbia,a-dictionary-name,Europe,Southern Europe,Europe,own-dictionary-row
+Serrana Bank,Union EEZ and country,,COL,Colombia,c-iso-sov1,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Serranilla Bank,Union EEZ and country,,COL,Colombia,c-iso-sov1,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Seychelles,Union EEZ and country,SYC,SYC,Seychelles,a-dictionary-name,Africa,Sub-Saharan Africa,,own-dictionary-row
+Sierra Leone,Union EEZ and country,SLE,SLE,Sierra Leone,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Singapore,Union EEZ and country,SGP,SGP,Singapore,a-dictionary-name,Asia,South-eastern Asia,Asia Pacific,own-dictionary-row
+Sint-Eustatius,Union EEZ and country,BES,NLD,"Bonaire, Sint Eustatius, and Saba",b-iso-ter1,Americas,Latin America and the Caribbean,,own-dictionary-row
+Sint-Maarten,Union EEZ and country,SXM,NLD,Sint Maarten (Dutch part),b-iso-ter1,Americas,Latin America and the Caribbean,,own-dictionary-row
+Slovakia,Landlocked country,SVK,SVK,Slovakia,a-dictionary-name,Europe,Eastern Europe,Europe,own-dictionary-row
+Slovenia,Union EEZ and country,SVN,SVN,Slovenia,a-dictionary-name,Europe,Southern Europe,Europe,own-dictionary-row
+Solomon Islands,Union EEZ and country,SLB,SLB,Solomon Islands,a-dictionary-name,Oceania,Melanesia,,own-dictionary-row
+South Africa,Union EEZ and country,ZAF,ZAF,South Africa,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+South Georgia and the South Sandwich Islands,Overlapping claim,SGS,GBR,South Georgia and the South Sandwich Islands,a-dictionary-name,Americas,Latin America and the Caribbean,,own-dictionary-row
+South Korea,Union EEZ and country,KOR,KOR,South Korea,a-dictionary-name,Asia,Eastern Asia,Asia Pacific,own-dictionary-row
+South Sudan,Landlocked country,SSD,SSD,South Sudan,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Spain,Union EEZ and country,ESP,ESP,Spain,a-dictionary-name,Europe,Southern Europe,Europe,own-dictionary-row
+Sri Lanka,Union EEZ and country,LKA,LKA,Sri Lanka,a-dictionary-name,Asia,Southern Asia,Asia Pacific,own-dictionary-row
+Sudan,Union EEZ and country,SDN,SDN,Sudan,a-dictionary-name,Africa,Northern Africa,Africa,own-dictionary-row
+Suriname,Union EEZ and country,SUR,SUR,Suriname,a-dictionary-name,Americas,Latin America and the Caribbean,,own-dictionary-row
+Svalbard,Union EEZ and country,SJM,NOR,Svalbard and Jan Mayen,b-iso-ter1,Europe,Northern Europe,,own-dictionary-row
+Swaziland,Landlocked country,SWZ,SWZ,Eswatini,a-dictionary-alias,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Sweden,Union EEZ and country,SWE,SWE,Sweden,a-dictionary-name,Europe,Northern Europe,Europe,own-dictionary-row
+Switzerland,Landlocked country,CHE,CHE,Switzerland,a-dictionary-name,Europe,Western Europe,Europe,own-dictionary-row
+Syria,Union EEZ and country,SYR,SYR,Syria,a-dictionary-name,Asia,Western Asia,Middle East,own-dictionary-row
+Taiwan,Union EEZ and country,TWN,TWN,Taiwan,a-dictionary-name,Asia,Eastern Asia,Asia Pacific,own-dictionary-row
+Tajikistan,Landlocked country,TJK,TJK,Tajikistan,a-dictionary-name,Asia,Central Asia,Eurasia,own-dictionary-row
+Tanzania,Union EEZ and country,TZA,TZA,Tanzania,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Thailand,Union EEZ and country,THA,THA,Thailand,a-dictionary-name,Asia,South-eastern Asia,Asia Pacific,own-dictionary-row
+Togo,Union EEZ and country,TGO,TGO,Togo,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Tokelau,Union EEZ and country,TKL,NZL,Tokelau,a-dictionary-name,Oceania,Polynesia,,own-dictionary-row
+Tonga,Union EEZ and country,TON,TON,Tonga,a-dictionary-name,Oceania,Polynesia,,own-dictionary-row
+Trinidad and Tobago,Union EEZ and country,TTO,TTO,Trinidad and Tobago,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Trinidade,Union EEZ and country,,BRA,Brazil,c-iso-sov1,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Tristan Da Cunha,Union EEZ and country,SHN,GBR,"Saint Helena, Ascension, and Tristan da Cunha",b-iso-ter1,Africa,Sub-Saharan Africa,,own-dictionary-row
+Tromelin Island,Overlapping claim,,FRA,Tromelin Island,a-dictionary-name,Africa,Sub-Saharan Africa,,own-dictionary-row
+Tunisia,Union EEZ and country,TUN,TUN,Tunisia,a-dictionary-name,Africa,Northern Africa,Middle East,own-dictionary-row
+Turkey,Union EEZ and country,TUR,TUR,Türkiye,a-dictionary-alias,Asia,Western Asia,Europe,own-dictionary-row
+Turkmenistan,Union EEZ and country,TKM,TKM,Turkmenistan,a-dictionary-name,Asia,Central Asia,Eurasia,own-dictionary-row
+Turks and Caicos Islands,Union EEZ and country,TCA,GBR,Turks and Caicos Islands,a-dictionary-name,Americas,Latin America and the Caribbean,,own-dictionary-row
+Tuvalu,Union EEZ and country,TUV,TUV,Tuvalu,a-dictionary-name,Oceania,Polynesia,,own-dictionary-row
+Uganda,Landlocked country,UGA,UGA,Uganda,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Ukraine,Union EEZ and country,UKR,UKR,Ukraine,a-dictionary-name,Europe,Eastern Europe,Europe,own-dictionary-row
+United Arab Emirates,Union EEZ and country,ARE,ARE,United Arab Emirates,a-dictionary-name,Asia,Western Asia,Middle East,own-dictionary-row
+United Kingdom,Union EEZ and country,GBR,GBR,United Kingdom,a-dictionary-name,Europe,Northern Europe,Europe,own-dictionary-row
+United States,Union EEZ and country,USA,USA,United States,a-dictionary-name,Americas,Northern America,North America,own-dictionary-row
+United States Virgin Islands,Union EEZ and country,VIR,USA,Virgin Islands (U.S.),a-dictionary-alias,Americas,Latin America and the Caribbean,,own-dictionary-row
+Uruguay,Union EEZ and country,URY,URY,Uruguay,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Uzbekistan,Landlocked country,UZB,UZB,Uzbekistan,a-dictionary-name,Asia,Central Asia,Eurasia,own-dictionary-row
+Vanuatu,Union EEZ and country,VUT,VUT,Vanuatu,a-dictionary-name,Oceania,Melanesia,,own-dictionary-row
+Vatican City,Landlocked country,VAT,VAT,Holy See,b-iso-ter1,Europe,Southern Europe,,own-dictionary-row
+Venezuela,Union EEZ and country,VEN,VEN,Venezuela,a-dictionary-name,Americas,Latin America and the Caribbean,Latin America,own-dictionary-row
+Vietnam,Union EEZ and country,VNM,VNM,Vietnam,a-dictionary-name,Asia,South-eastern Asia,Asia Pacific,own-dictionary-row
+Wake Island,Union EEZ and country,UMI,USA,United States Minor Outlying Islands,b-iso-ter1,Oceania,Micronesia,Latin America,own-dictionary-row
+Wallis and Futuna,Union EEZ and country,WLF,FRA,Wallis and Futuna,a-dictionary-name,Oceania,Polynesia,,own-dictionary-row
+Western Sahara,Overlapping claim,ESH,ESH,Western Sahara,a-dictionary-name,Africa,Northern Africa,Middle East,own-dictionary-row
+Yemen,Union EEZ and country,YEM,YEM,Yemen,a-dictionary-name,Asia,Western Asia,Middle East,own-dictionary-row
+Zambia,Landlocked country,ZMB,ZMB,Zambia,a-dictionary-name,Africa,Sub-Saharan Africa,Africa,own-dictionary-row
+Zimbabwe,Landlocked country,ZWE,ZWE,Zimbabwe,a-dictionary-name,Africa,Sub-Saharan Africa,,own-dictionary-row

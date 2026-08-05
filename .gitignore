@@ -11,6 +11,13 @@ sheets.googleapis.com-*.json
 # never `git add` it into this one)
 maps/interim-maps/
 
+# route-lengths: the boundary layer itself is a build artifact (rebuild with
+# prepare_boundaries.py, or fetch the prepped copy from Drive), but its two
+# provenance sidecars are committed deliberately — they are the record of which
+# EEZ/Natural Earth release the numbers came from and how every polygon was
+# attributed. Negations must come after the blanket *.json / *.csv rules below.
+route-lengths/*.gpkg
+
 # added by Baird
 *.csv
 *.xlsx
@@ -23,6 +30,10 @@ maps/interim-maps/
 *.eps
 *.afdesign
 *.afpublish
+
+# route-lengths provenance sidecars — see the note near the top
+!route-lengths/boundaries.json
+!route-lengths/boundaries-attribution.csv
 
 *.bundle.*
 lib/
