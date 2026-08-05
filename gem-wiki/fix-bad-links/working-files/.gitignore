@@ -12,6 +12,19 @@
 *.html
 worklist_*.txt
 
+# console captures. The header above always meant to cover these; the US batch
+# ran its drivers with `> foo.out` and `saved_*.txt`, which no pattern caught.
+*.out
+saved_*.txt
+
+# generated review dumps. The durable record is HUMAN-REVIEW.md, which
+# gen_us_review.py splices these into; the per-domain dossiers and the
+# ref worklists are regenerable from the scripts beside them.
+us_review_dump.md
+us_section5*.md
+dossier_*/
+abarrelfull_us.txt
+
 # per-batch diagnostic dumps (india/bangladesh left these behind)
 _diag_*/
 

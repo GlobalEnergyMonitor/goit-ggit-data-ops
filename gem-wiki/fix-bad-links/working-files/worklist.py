@@ -6,6 +6,9 @@ the Wayback lookup found. Repair decisions need both in one view, per page, in
 ref order — that is all this prints.
 
   python3 worklist.py scan_italy.json > worklist_italy.txt
+  python3 worklist.py -d diag_us.json scan_us.json > worklist_us.txt
+
+`-d` may be repeated; with no `-d` the historical ISG diag set below is used.
 
 A shortlink is diagnosed twice: `diag_<batch>` keys it by the `bit.ly/...` the
 wikitext carries, `diag_shortlink_targets` by the URL it resolves to, and only
@@ -30,8 +33,18 @@ def best(diag, *urls):
 
 
 def main(argv):
+    diags, rest = [], []
+    i = 0
+    while i < len(argv):
+        if argv[i] == "-d":
+            diags.append(argv[i + 1])
+            i += 2
+        else:
+            rest.append(argv[i])
+            i += 1
+    argv = rest
     diag = {}
-    for f in DIAGS:
+    for f in (diags or DIAGS):
         try:
             diag.update(json.load(open(f)))
         except FileNotFoundError:

@@ -35,7 +35,19 @@ SOFT404_PATTERNS = re.compile(
     r"(page (you requested )?(was |could )?not (be )?found|"
     r"404[^0-9]{0,20}(error|not found)|not found[^<]{0,20}404|"
     r"page doesn.?t exist|no longer available|"
-    r"page introuvable|page non trouv|contenu introuvable)",
+    r"page introuvable|page non trouv|contenu introuvable|"
+    # Chinese soft 404s. Sohu, Sina and many .gov.cn sites answer HTTP 200 with
+    # a Chinese "this page no longer exists" body, which every English pattern
+    # above misses -- ~20 sohu.com refs in the China batch scanned as healthy
+    # 200s while serving 404,您访问的页面已经不存在 (2026-07-28). Requires the
+    # charset fix in decode_body(): against mojibake these never match.
+    # The subject varies -- 页面 "page", 文章 "article", 内容 "content", 新闻
+    # "news item" -- so match the *predicate* and let the subject be any of
+    # them. Keying on 页面 alone missed 该文章已不存在 on Sina, which is as dead
+    # a link as any (Longkou Nanshan, 2026-07-29).
+    r"(该|此|本)?(页面|文章|内容|新闻|信息|资料)(已经?)?(不存在|已删除|已被删除|已过期)|"
+    r"您访问的页面|抱歉[，,]?\s*页面|找不到(该|您要访问的)?页面|"
+    r"页面走丢|稿件不存在|文章不存在)",
     re.I,
 )
 LNG_WORDS = ["lng", "liquefied natural gas", "gnl", "regasification",
@@ -45,6 +57,27 @@ STOPWORDS = {"lng", "terminal", "fsru", "of", "the", "de", "port", "energy"}
 REF_RE = re.compile(r"<ref[^>/]*?(/>|>.*?</ref>)", re.DOTALL | re.IGNORECASE)
 URL_RE = re.compile(r"https?://[^\s|<>\]\}\"']+")
 TAG_RE = re.compile(r"<[^>]+>")
+
+# `{{Cite web}}` parameters whose value is a *label* for the source, not the
+# cited document. Chinese-language refs routinely fill `website=` with the bare
+# host (`website=https://gzw.ln.gov.cn`), and scanning that as if it were the
+# citation invents a defect: the host root 404s or bot-blocks while the real
+# `url=` deep link is fine. That was all 15 "bare-domain citations" in the China
+# batch (2026-07-28) -- zero of them real. `archive-url` is deliberately absent:
+# it is a genuine fallback copy of the document and worth checking.
+META_URL_RE = re.compile(
+    r"\|\s*(?:website|publisher|via|work|newspaper|agency)\s*=\s*[^|<>]*?"
+    r"(https?://[^\s|<>\]\}\"']+)", re.I)
+
+
+def ref_urls(ref):
+    """URLs in `ref` that are actually cited, metadata labels excluded."""
+    urls = [u.rstrip(".,);") for u in URL_RE.findall(ref)]
+    meta = {m.group(1).rstrip(".,);") for m in META_URL_RE.finditer(ref)}
+    kept = [u for u in urls if u not in meta]
+    # A ref whose *only* URL sits in a metadata field still cites something --
+    # keep it rather than silently reporting the ref as having no URL at all.
+    return kept or urls
 
 
 def background_section(text):
@@ -64,6 +97,40 @@ def norm_url(u):
     return u.rstrip("/").lower()
 
 
+CHARSET_HDR = re.compile(r"charset\s*=\s*[\"']?([\w-]+)", re.I)
+META_CHARSET = re.compile(
+    rb"""<meta[^>]+charset\s*=\s*["']?\s*([\w-]+)""", re.I)
+
+
+def decode_body(body, content_type=""):
+    """Decode `body` using the charset the server or the document declares.
+
+    Forcing utf-8 here silently corrupts every non-utf-8 page. That is not an
+    edge case outside the Latin web: people.com.cn, sina and a good share of
+    Chinese government sites still serve GB2312/GBK, and mojibake defeats both
+    the soft-404 patterns and any keyword check, so a live, on-topic article
+    reads as DRIFT (China batch, 2026-07-28). GB2312/GBK are decoded as
+    gb18030, which is a strict superset of both.
+    """
+    if not body:
+        return ""
+    enc = None
+    m = CHARSET_HDR.search(content_type or "")
+    if m:
+        enc = m.group(1)
+    if not enc:
+        m = META_CHARSET.search(body[:4096])
+        if m:
+            enc = m.group(1).decode("ascii", "ignore")
+    enc = (enc or "utf-8").lower()
+    if enc in ("gb2312", "gbk", "gb-2312", "euc-cn"):
+        enc = "gb18030"
+    try:
+        return body.decode(enc, "replace")
+    except LookupError:
+        return body.decode("utf-8", "replace")
+
+
 def fetch(url):
     try:
         r = requests.get(url, headers={"User-Agent": BROWSER_UA}, timeout=30,
@@ -71,11 +138,21 @@ def fetch(url):
         ctype = r.headers.get("content-type", "").split(";")[0]
         body = b""
         if "html" in ctype:
-            body = r.raw.read(400000, decode_content=True)
+            # A truncated response raises urllib3's ProtocolError here, which is
+            # NOT a requests.RequestException -- uncaught it escapes fetch() and
+            # kills the whole page scan over one bad ref (Qidong LNG Terminal,
+            # 2026-07-28). Keep whatever bytes arrived and judge on those.
+            try:
+                body = r.raw.read(400000, decode_content=True)
+            except Exception:
+                body = b""
         r.close()
-        return r.status_code, r.url, ctype, body.decode("utf-8", "replace")
+        return (r.status_code, r.url, ctype,
+                decode_body(body, r.headers.get("content-type", "")))
     except requests.RequestException as e:
         return None, url, "", str(e)[:120]
+    except Exception as e:                      # urllib3 / ssl / decode escapes
+        return None, url, "", f"{type(e).__name__}: {str(e)[:100]}"
 
 
 def scan_page(s, title):
@@ -94,7 +171,7 @@ def scan_page(s, title):
         if ref.endswith("/>"):
             results.append({"n": i, "verdict": "REUSE", "context": context})
             continue
-        urls = [u.rstrip(".,);") for u in URL_RE.findall(ref)]
+        urls = ref_urls(ref)
         if not urls:
             results.append({"n": i, "verdict": "MALFORMED",
                             "wikitext": ref[:200], "context": context})

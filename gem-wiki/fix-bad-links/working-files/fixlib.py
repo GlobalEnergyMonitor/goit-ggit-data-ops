@@ -61,17 +61,73 @@ def find_ref(text, marker):
     return hits[0]
 
 
+def drop_ref(text, ref):
+    """Remove `ref` from `text`, closing the gap it leaves behind.
+
+    Used for the drop-as-redundant repair and for banned sources (the
+    abarrelfull/wikidot mirrors). Refuses a named ref that is reused
+    elsewhere as `<ref name=x />`: removing the definition would turn every
+    reuse into a cite error, which is exactly what the post-save check exists
+    to catch -- better to fail here.
+    """
+    m = re.match(r'<ref\s+name\s*=\s*"?([^"\s>]+)"?\s*>', ref, re.I)
+    if m:
+        name = re.escape(m.group(1))
+        reuses = re.findall(r'<ref\s+name\s*=\s*"?' + name + r'"?\s*/\s*>',
+                            text, re.I)
+        if reuses:
+            raise SystemExit(f"ref name={m.group(1)!r} is reused {len(reuses)}x"
+                             " -- move the definition instead of dropping it")
+    i = text.index(ref)
+    head, tail = text[:i], text[i + len(ref):]
+    # A dropped ref usually sat between a sentence end and the next sentence, so
+    # the removal leaves a double space (or a trailing space before a newline).
+    # Only the seam is touched -- a page-wide whitespace pass would collapse the
+    # aligned spacing wiki tables use.
+    if head.endswith((" ", "\t")) and tail[:1] in (" ", "\t"):
+        tail = tail.lstrip(" \t")
+    stripped = tail.lstrip(" \t")
+    if stripped[:1] in ("\n", ""):          # ref was last on its line
+        head, tail = head.rstrip(" \t"), stripped
+    return head + tail
+
+
 def build(s, title, fixes, outdir="."):
     """Apply fixes to the live text; write <slug>_old/_new.wiki; return
     (old, new). Each fix: (label, marker, ("swap", old_url, new_url) |
-    ("full", new_ref_text))."""
+    ("swap_all", old_url, new_url) | ("full", new_ref_text) | ("drop",))."""
     slug = re.sub(r"[ \-/]", "_", title)
     old = gw.page_text(s, title)
     new = old
     print("=" * 70)
     print(f"PAGE: {title}  ({len(fixes)} fixes)")
     for label, marker, action in fixes:
+        if action[0] == "swap_all":
+            # For a host migration where the SAME dead url is defined by more
+            # than one <ref> on the page (find_ref would refuse it). Rewrites
+            # the url inside every non-autoref ref and NOWHERE else: the same
+            # url often also appears in an autoref in the ownership table, which
+            # the tracker bot overwrites and this project must not touch.
+            _, u_old, u_new = action
+            hits = [m.group(0) for m in REF_RE.finditer(new)
+                    if u_old in m.group(0) and "autoref_" not in m.group(0)[:40]]
+            if not hits:
+                raise SystemExit(f"url in no editable ref: {label}")
+            for h in hits:
+                new = new.replace(h, h.replace(u_old, u_new), 1)
+            skipped = new.count(u_old)
+            print(f"\n--- {label}\n  OLD: {u_old}\n  NEW: {u_new} "
+                  f"({len(hits)} ref(s)" +
+                  (f", {skipped} autoref occurrence(s) left alone)" if skipped
+                   else ")"))
+            continue
         ref = find_ref(new, marker)
+        if new.count(ref) != 1:
+            raise SystemExit(f"ref text not unique in page: {label}")
+        if action[0] == "drop":
+            new = drop_ref(new, ref)
+            print(f"\n--- {label}\n  OLD: {ref[:400]}\n  NEW: (dropped)")
+            continue
         if action[0] == "swap":
             _, u_old, u_new = action
             if u_old not in ref:
@@ -79,8 +135,6 @@ def build(s, title, fixes, outdir="."):
             new_ref = ref.replace(u_old, u_new)
         else:
             new_ref = action[1]
-        if new.count(ref) != 1:
-            raise SystemExit(f"ref text not unique in page: {label}")
         new = new.replace(ref, new_ref, 1)
         print(f"\n--- {label}\n  OLD: {ref[:400]}\n  NEW: {new_ref[:400]}")
     with open(f"{outdir}/{slug}_old.wiki", "w") as f:
