@@ -17,8 +17,10 @@ name: build map data
 #  - workflow_dispatch: manual runs; `upload: false` builds without
 #    publishing, `dest_branch` can point at a test branch
 #
-# Secrets: GDRIVE_API_CREDENTIALS (Google service-account JSON, read by
-# pygsheets). Publishing needs no secret — GITHUB_TOKEN pushes to this repo.
+# BROKEN as of 2026-07-31: the gem-analysis service account behind the
+# GDRIVE_API_CREDENTIALS secret was deleted, so the sheet-reading steps below
+# fail. Needs a replacement headless credential — see README.md.
+# Publishing needs no secret — GITHUB_TOKEN pushes to this repo.
 
 on:
   repository_dispatch:

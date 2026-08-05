@@ -20,7 +20,9 @@ dumps. Run scripts from inside `working-files/`.
 1. **Enumerate pages** from the **union** of `Category:LNG Terminals in
    <Country>` (`scan_background_refs.py` expands a category title) and the
    `Wiki` column of a fresh LNG export (`python3
-   ../../../gem-db-ops/gem_query.py --all-fields lng -o gem_lng.csv`).
+   ../../../../gem-db-ops/gem_query.py --all-fields lng -o gem_lng.csv` —
+   `gem-db-ops` is a sibling *repo*, four levels up from `working-files/`, not
+   a folder inside this one).
    The category alone under-counts — an uncategorized page is invisible to it.
    That gap hid Oristano FSRU and Taranto LNG Terminal (Italy) and left five
    pages unchecked inside "done" countries: Vlora (Albania), Cong Thanh / Dung
@@ -31,6 +33,64 @@ dumps. Run scripts from inside `working-files/`.
    HTTP verdict (OK / SOFT404 / BROKEN / CHECK / MALFORMED / REUSE), plus
    relevance flags (DRIFT / WEAK — page loads but no longer mentions the
    terminal) and same-URL duplicate refs.
+   - **Work the relevance flags even when the HTTP verdict is clean — that is
+     where dead links hide.** A ref that redirects to a publisher's front page,
+     to an unrelated portal, or to a *parked domain* answers 200 and scans `OK`;
+     only the missing terminal name gives it away. Reading the 10 China refs that
+     returned real text and still had no name match turned up one true drift (a
+     Yantai PetroChina capacity claim sourced to a Henan company's website) and
+     **three dead refs the HTTP verdict had passed**, including `cnenergy.org`,
+     now a domain listed for sale (2026-07-29). Check whether a newly-dead host
+     carries other refs in the batch before repairing only the one.
+   - **Verdicts are only as good as the scanner's decoding.** Three defects
+     found in the China batch (2026-07-28) had been silently corrupting *every*
+     prior batch, so a re-scan is worth it if an old batch is ever revisited:
+     (a) `fetch()` caught only `requests.RequestException`, and urllib3's
+     `ProtocolError` on a truncated response is not one — it escaped and killed
+     the whole page's scan, losing all 24 of Qidong's refs with no error in the
+     output; (b) bodies were forced to utf-8, so any GB2312/GBK page
+     (people.com.cn, many `.gov.cn`) decoded to mojibake and a live, on-topic
+     article read as DRIFT; (c) the soft-404 patterns were English-only, so
+     ~20 sohu.com refs serving `404,您访问的页面已经不存在` at HTTP 200 scanned
+     as healthy. (b) and (c) compound: Chinese patterns cannot match mojibake.
+   - **Pattern-match the URLs themselves, not just their HTTP verdicts.**
+     A resolve-or-not scanner is blind to a citation that is malformed rather
+     than dead. China turned up 30: 5 sohu URLs repeating the host in the path
+     (`sohu.com/a/www.sohu.com/a/<id>` — dead since pasted), 2
+     `translate.google.com` wrappers, 2 `webcache.googleusercontent.com` refs
+     (Google retired its cache, so these can never resolve again), 2 qcc.com
+     login-wall URLs, 2 raw-IP government citations (`url=http://117.60.146.119/…`
+     — a government portal's unstable numeric address, not a hostname). The
+     repair is usually recoverable from the malformed URL alone.
+   - **Scan the cited URL, not every URL in the ref.** `{{Cite web}}` takes a
+     `website=`/`publisher=` label that Chinese-language refs routinely fill
+     with the bare host, so a ref carries two URLs and the scanner judged both.
+     The host root then 404s or bot-blocks while the real `url=` deep link is
+     fine — 16 phantom records in China, 8 of them scored BROKEN/CHECK/SOFT404,
+     every one a false positive. `ref_urls()` now drops URLs that appear only in
+     a metadata parameter; `archive-url` is deliberately kept, being a real copy
+     of the document. Worth re-checking in any earlier batch that reported
+     defects at a bare hostname.
+   - **Non-Latin-script pages need their relevance flags re-judged, not
+     believed.** `name_keywords()` folds the *page title* to ascii, so a
+     Chinese-language source that writes the terminal as 曹妃甸 can never match
+     "caofeidian" — 182 of 334 flagged-OK China refs were flagged for the
+     language of the source, not the health of the citation. `cjk_relevance.py`
+     re-tests them against `LocalNames`/`OtherNames` from the tracker export,
+     dropping generic vocabulary by frequency rather than by a hand-written
+     stoplist. Same fix would be needed for Japan, Russia and Taiwan.
+   - **The tracker's Chinese name is `<operator><place>`, and only the place is
+     usable.** 国家管网漳州 is "PipeChina Zhangzhou"; the article says 漳州 and
+     never the operator, so matching on the full token confirms almost nothing.
+     Deriving the place by *prefix* is exactly backwards — a prefix is the
+     operator. `cjk_relevance.py` strips frequency-identified operators, takes
+     longest common **suffixes** between two names of one terminal, and — for a
+     one-off operator like 粤电惠州 where neither works — romanizes substrings
+     and keeps the one matching the wiki title's own ascii words (惠州 ==
+     "huizhou", via `pypinyin`). Only that last one proves its token. Getting
+     this wrong is not a small miss: it made the first run's 165 "still off
+     topic" verdicts worthless, and spot-checking the *titles* of the pages it
+     flagged is what exposed it — nearly every one was plainly on topic.
 3. **Diagnose each flag** — `python3 diagnose_flags.py -o diag_<batch>.json
    scan_<country>.json ...` (browser-header retry + a fast Wayback lookup per
    flagged URL; always pass the batch's own scan files, the bare form
@@ -63,9 +123,34 @@ dumps. Run scripts from inside `working-files/`.
      string in page furniture (trinidadexpress), while the articles were live
      with correct titles (2026-07-27). Treat SOFT404 as "look at this", not as
      a repair trigger.
+   - **Settle a suspected soft 404 by asking the host for an id that cannot
+     exist.** Re-request the same URL with the article id replaced by `1` and
+     by `999999999`; if the response is byte-identical to the real one, the
+     "not found" string is template markup and proves nothing, and if it
+     differs, the cited document is genuinely there. That test cleared both new
+     hits in the China batch (2026-07-29): jfdaily.com returns the same
+     11,355-byte JS shell for every id, 此文章不存在或已下线 included, while the
+     Sina bulletin returned 24,003 bytes for the cited id against 21,408 for
+     bogus ones — the ref was fine and an earlier hit had been a transient
+     error page. Cheap, decisive, and it needs no judgement about the language.
+     The same probe invalidates `OK` verdicts, not just soft-404s: qcc.com
+     answers 200 with the same 23,670-byte, CJK-free shell for a company id
+     invented on the spot, so all 11 qcc refs in the China batch scanned
+     "healthy" on a response that would be identical if the URL were fabricated.
+     A verdict is only worth what the probe leaves standing — contrast
+     eastmoney, where a bogus id really does 404, so its identical-length
+     article pages are a JS shell over something that genuinely exists.
    - A URL that failed once may just have been having a bad day — re-check
      live before repairing (Andrés's aesmcac.com went 503 → 200).
-   - **Cap archive.org consumers at three, total.** Two concurrent CDX jobs is
+   - **Cap archive.org consumers at three, total — across every batch running,
+     not per batch.** That budget is what serializes two overlapping countries,
+     so run the publisher-side work first and queue the archive phase:
+     `diagnose_parallel.py --no-wb` does phase 1 (browser-header retry,
+     relocation checks, relevance re-judging) without touching archive.org, and
+     `wb_fill.py` adds the archives afterwards. The China batch's scan,
+     diagnosis, relocation and CJK passes all ran at full speed while the US
+     batch held the whole archive budget (2026-07-28).
+   - Two concurrent CDX jobs is
      already enough to start collecting `THROTTLED` results, which then have to
      be re-run — so parallelism past ~3 makes the sweep slower, not faster.
      `cdx_leftover.py` runs the residue pass at `max_workers=2`;
@@ -125,6 +210,16 @@ dumps. Run scripts from inside `working-files/`.
      "the article you are searching for was not found" page. Both look like
      healthy 200s. A JS-rendered page archives as its boilerplate — every
      bayern-innovativ capture in the Germany batch replays only the Impressum.
+   - **A publisher migration can reassign IDs, not just move them.** Zhejiang
+     Online's articles (`zj.zjol.com.cn/news.html?id=…`, `thehour.cn/news/…`)
+     now redirect to the Tide News front page, and Tide News has a
+     `tidenews.com.cn/news.html?id=…` form that answers 200 for the same
+     numbers — but serves a *different article* (id=1977261 is a piece on
+     homestays in Wenling, not the Sinopec Liuheng approval it once was). The
+     shape of the URL survived; the numbering did not. Nothing about the
+     response distinguishes this from a successful relocation, so a headline
+     check against the old ref's `title=` is the only thing standing between
+     the batch and a citation that silently supports nothing (2026-07-29).
    - **Live sites soft-404 too, and some do it for any slug.** euro-petrole
      returns HTTP 200 for a URL invented on the spot and serves an unrelated
      article, so a "working" euro-petrole link proves nothing; bnnbloomberg.ca

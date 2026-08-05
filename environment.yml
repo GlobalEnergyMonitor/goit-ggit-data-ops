@@ -2,8 +2,9 @@
 #   conda env create -f environment.yml
 #   conda activate goit-ggit-data-ops
 # (or install the same packages into an existing env, e.g. `gem`).
-# Google Sheets access additionally needs the GDRIVE_API_CREDENTIALS env var
-# holding the service-account JSON — see README.md.
+# Google Sheets access is unsettled — the gem-analysis service account was
+# deleted 2026-07-31 and GDRIVE_API_CREDENTIALS no longer works. See README.md.
+# (pygsheets below is kept only for notebooks that have not been repointed yet.)
 name: goit-ggit-data-ops
 channels:
   - conda-forge

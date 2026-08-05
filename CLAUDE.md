@@ -7,22 +7,33 @@ README.md for the folder map and the typical release workflow.
 
 ## Key facts
 
-- This repo stays private on GitHub, so the global "never name individual
-  researchers in committed content" rule does not apply here (user-approved
-  2026-07-21) — researcher names and similar personal info are fine in
-  commits, docs, and notes in this repo.
+- **This repo is PUBLIC on GitHub** (verified 2026-07-28; it was private when
+  the 2026-07-21 exception was granted, and that exception no longer holds).
+  The global "never name individual researchers in committed content" rule
+  applies in full: use initials, not full names, in commits, docs, and notes.
+  Researchers are referred to by initials in
+  `gem-wiki/fix-bad-links/SCOPE.md`; the initials↔person mapping is
+  deliberately not in this repo. Get surnames from the `gem-desk` repo if you
+  need to derive initials — the LNG assignments sheet has first names only,
+  and inventing a surname initial from it is how SCOPE.md ended up
+  misattributing seven of nine researchers (corrected 2026-07-28).
 - Notebooks are often open in Jupyter while a Claude session runs — re-read
   a notebook from disk before editing, and prefer telling the user about
   needed edits over NotebookEdit if they are actively running it (a Jupyter
   save would clobber file edits).
 - Committed notebook outputs are deliberate only for release-record notebooks
-  (summary sheets, estimate-length). `updates/` cycle notebooks must be
+  (summary sheets). `updates/` cycle notebooks must be
   committed output-free — a `.pre-commit-config.yaml` nbstripout hook enforces
   this for anyone who has run `pre-commit install`.
-- Shared pygsheets auth + the canonical live pipelines-sheet key live in
-  `gem_tracker_constants.sheets` (`get_sheet(key)`, `PIPELINES_SHEET_KEY`,
-  `SERVICE_ACCOUNT_EMAIL`) — use these in new notebooks instead of
-  re-declaring the auth boilerplate or hardcoding the key again.
+- **Google Sheets auth is broken repo-wide** (2026-07-31): the `gem-analysis`
+  service account was deleted, taking `GDRIVE_API_CREDENTIALS`,
+  `gem_tracker_constants.sheets`, and every `pygsheets.authorize` call with it.
+  New code reads via the `gws` CLI (`~/.config/gws-gem`, read-only) —
+  `route-lengths/sheets_client.py` is the pattern to copy, and it keeps auth
+  behind one function so the eventual CI credential is a one-place change.
+  `gem_tracker_constants.sheets` is still the home of `PIPELINES_SHEET_KEY`;
+  its `authorize`/`get_sheet` are dead. Existing notebooks are unfixed —
+  repoint one when you next touch it, don't do a blanket rewrite.
 - Fuel buckets and status lists come from the `gem-tracker-constants` package,
   which lives in this repo at `gem-tracker-constants/` (install with
   `pip install -e ./gem-tracker-constants`). Never re-declare fuel lists
@@ -31,9 +42,14 @@ README.md for the folder map and the typical release workflow.
   match QC totals. Old release notebooks may still pin `v0.x` tags from the
   pre-merge standalone repo (`bairdlangenbrunner/gem-tracker-constants`).
 - Data files (`.xlsx`, `.csv`, `.geojson`, `.json`) are gitignored repo-wide.
-  Exception: `releases/downloads/data-files/` commits `.gpkg`/`.zip`
-  release artifacts deliberately — see the CLAUDE.md in that folder. Don't
-  add data files to commits unless asked — releases are the user's call.
+  Don't add data files to commits unless asked — releases are the user's call.
+  `releases/downloads/data-files/` was documented as committing `.gpkg`/`.zip`
+  release artifacts deliberately, but that has never actually worked: the
+  Python-boilerplate `downloads/` rule at `.gitignore:62` swallows the whole
+  tree, and the five artifacts that were tracked survived only because they
+  predated it (they were deleted 2026-08-05 and the folder now tracks
+  nothing). To ship artifacts from git again, add a negation for that path —
+  and mind GitHub's 100 MB per-file limit.
 - `gem-wiki/` holds GEM.wiki (MediaWiki) API work — `gemwiki.py` helpers +
   `wiki_query.py` CLI. Reads are anonymous; edits need the bot password in
   `gem-wiki/.env` (never committed). Same policy as Google Sheets: never

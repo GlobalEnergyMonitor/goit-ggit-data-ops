@@ -15,40 +15,53 @@ page counts.
 **Page universe = GEM DB export ∪ wiki category.** Enumerating
 `Category:LNG Terminals in <Country>` alone under-counts: a page can exist with
 no category. Cross-check the category list against the `Wiki` column of a fresh
-LNG export (`python3 ../../../gem-db-ops/gem_query.py --all-fields lng -o
+LNG export (`python3 ../../../../gem-db-ops/gem_query.py --all-fields lng -o
 gem_lng.csv`) and sweep the union. That check found Oristano FSRU and Taranto
 LNG Terminal (Italy) plus five pages missed by "done" batches — Vlora
 (Albania), Cong Thanh / Dung Quat / Hiep Phuoc (Vietnam), Summit Matarbari
 (Bangladesh) — all picked up in the 2026-07-28 batch.
 
-Counts below are gem.wiki pages, deduped from a 2026-07-28 export (1,274 unit
-rows → 838 distinct pages). Researchers are initials — this repo is public.
+Counts below are gem.wiki pages, deduped from a 2026-07-29 export (1,274 unit
+rows → 843 distinct pages). Researchers are initials — this repo is public.
+
+**Read the assignments sheet with `gws-gem`, not the Drive MCP connector.** The
+connector served a stale copy on 2026-07-29 — rows 113–115 came back empty
+while `gws sheets +read --spreadsheet <key> --range 'A:G'` returned them
+populated minutes later. That staleness is what makes a "missing from the
+sheet" finding untrustworthy.
 
 ## Totals
 
 | | Countries | Pages |
 |---|--:|--:|
-| In scope | 111 | 838 |
-| Swept | 43 | 250 |
-| **Remaining** | **68** | **588** |
+| In scope | 114 | 844 |
+| Swept | 44 | 358 |
+| **Remaining** | **70** | **486** |
 
-Remaining pages by researcher: A.K. 111 · A.M. 109 · R.B. 109 · M.D. 98 ·
-I.S. 85 · A.T. 54 · W.H. 22 · G.C. 0 · N.B. 0.
+Remaining pages by researcher: A.V. 111 · A.L. 109 · M.Z. 99 ·
+I.M. 86 · A.M. 55 · W.A. 22 · R.R. 1 · G.C. 0 · N.F. 0 · unassigned 3.
 
-## Not in the assignments sheet
+China's count is 91, not the export's 90: the union with the wiki category adds
+one page the export's `Wiki` column misses. Counts here are export-derived, so
+other rows may be short by the same kind of gap until a batch reaches them.
 
-Three countries have GEM LNG terminals but no owner in the sheet — unassigned,
-still in scope for link repair:
+## Sheet vs database — reconciled 2026-07-29
 
-| Country | Pages |
-|---|--:|
-| New Zealand | 1 |
-| Puerto Rico | 3 |
-| Sierra Leone | 1 |
+The assignments sheet now covers the LNG database exactly: **114 countries on
+both sides, nothing missing in either direction.** New Zealand, Puerto Rico and
+Sierra Leone — previously flagged here as absent — were added as rows 113–115,
+appended below the sorted block with Region/Subregion left blank, so they sort
+to the bottom rather than into their regions.
+
+One country in the sheet still has **no researcher**:
+
+| Country | Pages | Researcher |
+|---|--:|---|
+| Puerto Rico | 3 | *(blank in the sheet)* |
 
 ## By researcher
 
-### N.B. — 13/13 countries swept (67 of 67 pages)
+### N.F. — 13/13 countries swept (67 of 67 pages)
 
 | Country | Pages | Swept | Notes |
 |---|--:|---|---|
@@ -92,7 +105,7 @@ still in scope for link repair:
 | Uruguay | 1 | ✅ 2026-07-27 |
 | Venezuela | 4 | ✅ 2026-07-27 |
 
-### A.M. — 7/26 countries swept (58 of 167 pages)
+### A.L. — 7/26 countries swept (58 of 167 pages)
 
 | Country | Pages | Swept | Notes |
 |---|--:|---|---|
@@ -123,7 +136,7 @@ still in scope for link repair:
 | Western Sahara | 1 | ❌ | |
 | Yemen | 1 | ❌ | |
 
-### W.H. — 2/5 countries swept (40 of 62 pages)
+### W.A. — 2/5 countries swept (40 of 62 pages)
 
 | Country | Pages | Swept | Notes |
 |---|--:|---|---|
@@ -133,7 +146,7 @@ still in scope for link repair:
 | Pakistan | 11 | ❌ | |
 | Sri Lanka | 4 | ❌ | |
 
-### A.K. — 0/13 countries swept (0 of 111 pages)
+### A.V. — 0/13 countries swept (0 of 111 pages)
 
 | Country | Pages | Swept |
 |---|--:|---|
@@ -151,7 +164,7 @@ still in scope for link repair:
 | Ukraine | 2 | ❌ |
 | United Kingdom | 10 | ❌ |
 
-### A.T. — 0/21 countries swept (0 of 54 pages)
+### A.M. — 0/22 countries swept (0 of 55 pages)
 
 | Country | Pages | Swept |
 |---|--:|---|
@@ -176,30 +189,32 @@ still in scope for link repair:
 | Mozambique | 7 | ❌ |
 | Namibia | 1 | ❌ |
 | Nigeria | 9 | ❌ |
+| Sierra Leone | 1 | ❌ |
 
-### I.S. — 0/7 countries swept (0 of 85 pages)
+### I.M. — 0/8 countries swept (0 of 86 pages)
 
 | Country | Pages | Swept |
 |---|--:|---|
 | Australia | 28 | ❌ |
 | Canada | 36 | ❌ |
+| New Zealand | 1 | ❌ |
 | Papua New Guinea | 7 | ❌ |
 | Republic of the Congo | 3 | ❌ |
 | Senegal | 3 | ❌ |
 | South Africa | 7 | ❌ |
 | Tanzania | 1 | ❌ |
 
-### M.D. — 0/3 countries swept (0 of 98 pages)
+### M.Z. — 0/3 countries swept (0 of 99 pages)
 
 | Country | Pages | Swept |
 |---|--:|---|
-| China | 90 | ❌ |
+| China | 91 | 🚧 2026-07-28 — swept (811 refs); first repair wave saved (5 pages, revs 1206908–1206912, 0 cite errors). Diagnosis complete and human-review items written up (HUMAN-REVIEW.md §6); archive wave running |
 | Hong Kong | 1 | ❌ |
 | Taiwan | 7 | ❌ |
 
-### R.B. — 0/2 countries swept (0 of 109 pages)
+### R.R. — 1/2 countries swept (108 of 109 pages)
 
 | Country | Pages | Swept |
 |---|--:|---|
 | Turkmenistan | 1 | ❌ |
-| United States | 108 | ❌ |
+| United States | 108 | ✅ 2026-07-29 — 6 repair waves saved (68 pages, 99 saves, revs 1206820–1206907 + 1206935–1206952, 0 cite errors). Repair work complete; human items in [HUMAN-REVIEW.md](HUMAN-REVIEW.md) §5 — but 73 of the 112 archive-queue URLs need **no** repair (42 bot walls, 10 live paywalls/shells), so the open work is 21 dead URLs needing sources + 2 decisions |

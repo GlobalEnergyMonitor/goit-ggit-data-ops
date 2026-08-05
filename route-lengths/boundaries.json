@@ -1,0 +1,66 @@
+{
+  "layer": "countries",
+  "gpkg": "boundaries-eez-land-union-v4-202410.gpkg",
+  "gpkg_sha256": "2a1e16730bac6b42d3ff0161ef73efb01d9dc63a9bc778d28a8309f1485a16a5",
+  "polygon_count": 333,
+  "overlap_policy": "keep",
+  "built_by": "route-lengths/prepare_boundaries.py",
+  "sources": {
+    "eez_land_union": {
+      "name": "Marine Regions EEZ Land Union",
+      "version": "v4_202410",
+      "released": "2024-10",
+      "doi": "https://doi.org/10.14284/698",
+      "url": "https://www.marineregions.org/downloads.php",
+      "built_on": "World EEZ v12 (20231025)",
+      "note": "Requires accepting the Marine Regions licence; not auto-downloadable.",
+      "path": "/Users/baird/Dropbox/_gis-data/eez/EEZ_land_union_v4_202410/EEZ_land_union_v4_202410.shp",
+      "sha256": {
+        "EEZ_land_union_v4_202410.shp": "75aefbf949733235a2eda9d3b4d223c0898945005b8ed10f83d44ba3a58f6cdf",
+        "EEZ_land_union_v4_202410.shx": "1da258f6e05658a42b875bf06f44bdf340d95344457bce3e62b6c8e675776756",
+        "EEZ_land_union_v4_202410.dbf": "13afc71275e244f62d390f3285f7f64adf318ede4058982f14c1f99c68ef2ee9",
+        "EEZ_land_union_v4_202410.prj": "a02a27b1d1982c8516d83398e85a3c8b1aef1713c13ef4d84d7bde17430c07c4",
+        "EEZ_land_union_v4_202410.cpg": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824"
+      }
+    },
+    "natural_earth": {
+      "name": "Natural Earth 10m Admin 0 Countries",
+      "version": "v5.1.2",
+      "released": "2022-05-13",
+      "url": "https://github.com/nvkelso/natural-earth-vector/tree/v5.1.2",
+      "note": "Used only to carve out entities that have no EEZ polygon of their own.",
+      "path": "/Users/baird/Dropbox/_gis-data/_natural_earth_data/ne_10m_admin_0_countries_v5.1.2/ne_10m_admin_0_countries.shp",
+      "sha256": {
+        "ne_10m_admin_0_countries.shp": "7ce119ef6342e43cff7c0c3004e0911ab7ec1988a14734372031d2012180e7bc",
+        "ne_10m_admin_0_countries.shx": "ca19ec112d054c77bc8f7ac00e3b110d5dff32cc9bcf4cd1b8b66bdd0f611d32",
+        "ne_10m_admin_0_countries.dbf": "c5dbd3dd5fd7e2ef49051fc88562c03819e8ea63a382642df6eadd1243bf4b49",
+        "ne_10m_admin_0_countries.prj": "a02a27b1d1982c8516d83398e85a3c8b1aef1713c13ef4d84d7bde17430c07c4",
+        "ne_10m_admin_0_countries.cpg": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824"
+      }
+    },
+    "country_dictionary": {
+      "spreadsheet": "1foPLE6K-uqFlaYgLPAUxzeXfDO5wOOqE7tibNHeqTek",
+      "tabs": [
+        "Country dictionary",
+        "Country dictionary (imported for ref.)"
+      ],
+      "row_count": 299
+    }
+  },
+  "resolution_counts": {
+    "a-dictionary-name": 257,
+    "b-iso-ter1": 37,
+    "a-dictionary-alias": 17,
+    "c-iso-sov1": 17
+  },
+  "carve_outs": [
+    "Hong Kong",
+    "Macao",
+    "Aland Islands",
+    "British Indian Ocean Territory",
+    "Kosovo"
+  ],
+  "no_geometry_anywhere": {
+    "WQJ": "Joint Petroleum Development Area -- lapsed 2019, no polygon in any source"
+  }
+}

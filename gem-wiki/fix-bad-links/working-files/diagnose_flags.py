@@ -68,12 +68,13 @@ def retry(url):
         return None, url, "", str(e)[:120]
 
 
-def main(argv):
-    out_path = "diagnosis.json"
-    if len(argv) >= 2 and argv[0] == "-o":
-        out_path, argv = argv[1], argv[2:]
-    files = argv or sorted(glob.glob("scan_*.json"))
-    targets = {}  # url -> list of (country, page, n, verdict, flag, keywords)
+def collect_targets(files):
+    """url -> list of (country, page, n, verdict, flag, keywords) for every flag.
+
+    Factored out so diagnose_parallel.py selects the same target set from the
+    same scan files; keep the two in step.
+    """
+    targets = {}
     for f in files:
         if f == "scan_queue.json":
             continue
@@ -91,6 +92,15 @@ def main(argv):
                 if v in VERDICTS or fl in FLAGS or "bit.ly" in u:
                     targets.setdefault(u, []).append(
                         (country, page, r["n"], v, fl, kw))
+    return targets
+
+
+def main(argv):
+    out_path = "diagnosis.json"
+    if len(argv) >= 2 and argv[0] == "-o":
+        out_path, argv = argv[1], argv[2:]
+    files = argv or sorted(glob.glob("scan_*.json"))
+    targets = collect_targets(files)
     print(f"{len(targets)} unique URLs to diagnose", file=sys.stderr)
     out = {}
     for i, (u, cites) in enumerate(sorted(targets.items()), 1):

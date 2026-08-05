@@ -1,0 +1,18 @@
+# route-lengths
+# Install:  pip install -r route-lengths/requirements.txt
+
+geopandas>=1.0        # gpd.overlay(keep_geom_type=), sjoin_nearest
+shapely>=2.0
+pyproj>=3.4           # Geod.geometry_length
+pandas>=2.0
+numpy>=1.24
+pyogrio>=0.7          # GeoPackage read/write engine
+
+# Sheets. The read path shells out to the gws CLI and needs none of these; they
+# are for the write path, which is still blocked on the CI auth decision.
+google-api-python-client>=2.100
+google-auth>=2.23
+google-auth-oauthlib>=1.1
+
+# Only for the notebook wrapper
+jupyter
