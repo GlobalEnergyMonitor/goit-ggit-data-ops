@@ -8,7 +8,8 @@ repo: edit-history digging, cite-error cleanups, batch text fixes, etc.
 
 - `gemwiki.py` — shared helpers: API session (anonymous or bot-password
   login), continuation-aware queries (`page_revisions`, `user_contribs`,
-  `recent_changes`, `page_text`, `search`), and `edit_page` for writes.
+  `recent_changes`, `page_text`, `search`), and `edit_page` / `move_page`
+  for writes. `move_page` leaves a redirect at the old title by default.
 - `wiki_query.py` — read-only CLI for quick lookups:
 
   ```
@@ -42,6 +43,31 @@ the grants listed in `.env.example`, and put the resulting
 `<YourWikiUsername>@gem-wiki-api` username + generated password in
 `gem-wiki/.env`. Edits made this way are attributed to your wiki account.
 
+### Cloudflare managed challenge (blocking all scripted access as of 2026-08-07)
+
+Every gem.wiki path — `/w/api.php`, article HTML, even `/robots.txt` — returns
+**HTTP 403 with `cf-mitigated: challenge`** and a "Just a moment…" Turnstile page.
+It is **not** an auth problem: it fires before MediaWiki sees the request, so no
+bot password helps. Diagnostics, so nobody re-runs them:
+
+- A full browser header set (UA, `Sec-CH-UA`, `Sec-Fetch-*`, …) still 403s — the
+  challenge fingerprints the **TLS handshake** and requires JS, so header spoofing
+  cannot work, and neither can `requests`/`urllib`/`curl`.
+- A fresh browser-minted `cf_clearance` cookie **also** 403s from `curl`, so on this
+  zone the cookie is bound to the TLS fingerprint as well as IP + User-Agent. Carrying
+  the cookie into a normal HTTP client is a dead end.
+- Anthropic's WebFetch (different IPs) is blocked too → zone-wide setting, not IP
+  reputation. `globalenergymonitor.org` is unaffected → gem.wiki's zone specifically.
+- It is new: `fix-bad-links/` was saving edits through this same tooling on 2026-07-28.
+
+**The fix is a Cloudflare config change on the gem.wiki zone**, most likely Bot Fight
+Mode (or a "block AI bots" toggle) having been switched on — those break every
+non-browser client, MediaWiki API bots included. Cleanest repair is a WAF **Skip**
+custom rule scoped to the API rather than opening the whole site, e.g.
+`http.request.uri.path eq "/w/api.php" and http.request.headers["x-gem-api-key"][0] eq "<secret>"`
+→ *Skip → all remaining custom rules + Bot Fight Mode*. Until that lands, wiki writes
+have to be done by hand in a browser.
+
 A bot password is revocable on the same page and scoped by its grants.
 `gem-wiki-api` is the general-purpose key for scripted/API access from this
 and other repos; the terminals-researcher bot password remains separate and
@@ -53,7 +79,8 @@ independently revocable.
 - **Wiki edits are the user's call, per edit** — same policy as Google
   Sheets in this repo: preview exactly what would change (page, old text,
   new text, edit summary) and get explicit approval before calling
-  `edit_page`. Read-only queries are always fine.
+  `edit_page` or `move_page` (for a move: page, old title, new title,
+  summary). Read-only queries are always fine.
   **Standing exception (2026-07-21): `fix-bad-links/` runs autonomously** —
   per-edit approval doesn't scale to a sweep of hundreds of refs, and the
   edits are narrow (a `<ref>` span, never prose) and machine-gated (the save

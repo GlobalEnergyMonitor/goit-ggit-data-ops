@@ -179,3 +179,25 @@ def edit_page(s, title, text=None, summary="", minor=False, bot=True,
     if result.get("edit", {}).get("result") != "Success":
         raise WikiError(f"edit failed: {result}")
     return result["edit"]
+
+
+def move_page(s, old, new, reason="", movetalk=True, movesubpages=True,
+              leave_redirect=True):
+    """Rename a page. Session must be logged in.
+
+    A redirect is left at the old title by default — drop it only when you are
+    sure nothing links to the old name (`noredirect` also needs the suppressredirect
+    right). Returns the API's move dict: {"from": ..., "to": ..., "reason": ...}.
+    """
+    data = {"action": "move", "from": old, "to": new, "reason": reason,
+            "token": csrf_token(s)}
+    if movetalk:
+        data["movetalk"] = "1"
+    if movesubpages:
+        data["movesubpages"] = "1"
+    if not leave_redirect:
+        data["noredirect"] = "1"
+    result = post(s, **data)
+    if "move" not in result:
+        raise WikiError(f"move failed: {result}")
+    return result["move"]
