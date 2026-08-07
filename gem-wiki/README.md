@@ -47,16 +47,43 @@ the grants listed in `.env.example`, and put the resulting
 `<YourWikiUsername>@gem-wiki-api` username + generated password in
 `gem-wiki/.env`. Edits made this way are attributed to your wiki account.
 
-### Cloudflare managed challenge (blocking all scripted access as of 2026-08-07)
+### Cloudflare Under Attack Mode (blocked all scripted access 2026-08-07)
 
 Every gem.wiki path — `/w/api.php`, article HTML, even `/robots.txt` — returns
 **HTTP 403 with `cf-mitigated: challenge`** and a "Just a moment…" Turnstile page.
 It is **not** an auth problem: it fires before MediaWiki sees the request, so no
-bot password helps. Diagnostics, so nobody re-runs them:
+bot password helps.
+
+**Cause, confirmed with GEM's infra admin:** Cloudflare **Under Attack Mode** was
+switched on for the zone after gem.wiki was taken down by a traffic flood earlier
+that week. It is a deliberate, justified setting, not a misconfiguration — UAM
+JS-challenges every visitor, which blocks all API clients as a side effect.
+
+**Fix, agreed with the admin:** a WAF rule that matches our **User-Agent token**
+and lets that traffic bypass UAM, paired with client-side rate limiting (the admin
+asked for ~5 req/sec; `MAX_CALLS_PER_SECOND` in `gemwiki.py` implements it). So the
+UA string is load-bearing — **keep `baird-wiki` as the leading token** in any UA that
+talks to gem.wiki, in both client stacks (`GEMWIKI_USER_AGENT` overrides it without a
+code edit). An IP-based hole was offered as an alternative; the UA route was preferred
+as portable across networks.
+
+The token deliberately avoids the word "bot": these are attributed, human-supervised
+edits from an account that is *not* in MediaWiki's `bot` group, and Cloudflare tends to
+score UAs containing "bot" more suspiciously unless they are a verified crawler. Naming
+the person also keeps the firewall rule self-auditing — it reads as stale if the person
+moves on, where a codebase-named rule would quietly outlive everyone who knew why it
+existed.
+
+Diagnostics from before the cause was known, so nobody re-runs them:
 
 - A full browser header set (UA, `Sec-CH-UA`, `Sec-Fetch-*`, …) still 403s — the
   challenge fingerprints the **TLS handshake** and requires JS, so header spoofing
   cannot work, and neither can `requests`/`urllib`/`curl`.
+- **`mwclient` 0.11.0 403s identically** (tested 2026-08-07), as does a bare `requests`
+  call sent under mwclient's own UA. Switching libraries is not a way through — it
+  wraps `requests` and presents the same TLS fingerprint. Note this only shows that
+  *changing* the UA achieves nothing while UAM challenges everything; it does **not**
+  contradict the WAF-bypass fix above, which works by matching the UA in a rule.
 - A fresh browser-minted `cf_clearance` cookie **also** 403s from `curl`, so on this
   zone the cookie is bound to the TLS fingerprint as well as IP + User-Agent. Carrying
   the cookie into a normal HTTP client is a dead end.
@@ -64,13 +91,34 @@ bot password helps. Diagnostics, so nobody re-runs them:
   reputation. `globalenergymonitor.org` is unaffected → gem.wiki's zone specifically.
 - It is new: `fix-bad-links/` was saving edits through this same tooling on 2026-07-28.
 
-**The fix is a Cloudflare config change on the gem.wiki zone**, most likely Bot Fight
-Mode (or a "block AI bots" toggle) having been switched on — those break every
-non-browser client, MediaWiki API bots included. Cleanest repair is a WAF **Skip**
-custom rule scoped to the API rather than opening the whole site, e.g.
-`http.request.uri.path eq "/w/api.php" and http.request.headers["x-gem-api-key"][0] eq "<secret>"`
-→ *Skip → all remaining custom rules + Bot Fight Mode*. Until that lands, wiki writes
-have to be done by hand in a browser.
+**The bypass rule is live and verified** (2026-08-07): the same API read 403s under the
+old UA and returns 200 under a `baird-wiki` one, and five page moves went through on it.
+`move_page()` needed no changes. If scripted access 403s again, check the UA first —
+it is the single load-bearing string.
+
+### Account rights (what the bot password can and can't do)
+
+The bot password inherits the *account's* rights, and the account is in `user` +
+`autoconfirmed` only — so `move` and `move-subpages` yes, but **`suppressredirect`,
+`delete` and `bot` no**. Consequences worth knowing before planning a run:
+
+- Every move **leaves a redirect** at the old title; `leave_redirect=False` would be
+  rejected. Without `delete` the stub can't be cleaned up afterwards either.
+- `edit_page` sends `bot=1`, but MediaWiki ignores it without the right, so bulk
+  passes show up unflagged in Recent Changes.
+
+Check current rights with `action=query&meta=userinfo&uiprop=groups|rights` rather than
+assuming — they are granted per account by the wiki admins.
+
+**API gotcha:** never pass `redirects=0` to `action=query`. MediaWiki treats the mere
+*presence* of the parameter as true, so it silently resolves redirects and dedupes the
+old titles out of the response — which looks exactly like "the page doesn't exist".
+Omit the parameter entirely to inspect redirect stubs.
+
+A UA token is trivially spoofable, so treat the bypass as a convenience gate rather
+than a security control — scoping the rule to `/w/api.php` keeps it off the rest of
+the site, and a secret request header would be the stronger version if the admin
+ever wants one.
 
 A bot password is revocable on the same page and scoped by its grants.
 `gem-wiki-api` is the general-purpose key for scripted/API access from this
