@@ -10,6 +10,10 @@ repo: edit-history digging, cite-error cleanups, batch text fixes, etc.
   login), continuation-aware queries (`page_revisions`, `user_contribs`,
   `recent_changes`, `page_text`, `search`), and `edit_page` / `move_page`
   for writes. `move_page` leaves a redirect at the old title by default.
+  Every call is throttled to `MAX_CALLS_PER_SECOND` (5/s) by a locked
+  module-level gate in `get`/`post`, so the ceiling is process-wide and
+  holds even under `scan_parallel.py`'s thread pool. Lower the constant for
+  long write runs — 5/s is a read pace.
 - `wiki_query.py` — read-only CLI for quick lookups:
 
   ```

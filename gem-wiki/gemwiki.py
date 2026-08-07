@@ -5,6 +5,8 @@ higher query limits. Credentials come from gem-wiki/.env (bot password from
 Special:BotPasswords) — see README.md in this folder.
 """
 
+import threading
+import time
 from pathlib import Path
 
 import requests
@@ -19,6 +21,29 @@ ENV_PATH = Path(__file__).resolve().parent / ".env"
 
 class WikiError(RuntimeError):
     pass
+
+
+# ------------------------------------------------------------- throttling --
+
+MAX_CALLS_PER_SECOND = 5.0
+_throttle_lock = threading.Lock()
+_last_call = 0.0
+
+
+def _throttle():
+    """Hold every API call to MAX_CALLS_PER_SECOND, process-wide.
+
+    Locked because scan_parallel.py drives gemwiki from a thread pool: the
+    sessions are per-thread but the ceiling has to be shared, or N workers
+    would each get their own N calls/sec.
+    """
+    global _last_call
+    with _throttle_lock:
+        interval = 1.0 / MAX_CALLS_PER_SECOND
+        wait = _last_call + interval - time.monotonic()
+        if wait > 0:
+            time.sleep(wait)
+        _last_call = time.monotonic()
 
 
 def load_env(path=ENV_PATH):
@@ -67,6 +92,7 @@ def _check(data):
 def get(s, **params):
     params.setdefault("format", "json")
     params.setdefault("formatversion", "2")
+    _throttle()
     r = s.get(API, params=params, timeout=60)
     r.raise_for_status()
     return _check(r.json())
@@ -75,6 +101,7 @@ def get(s, **params):
 def post(s, **data):
     data.setdefault("format", "json")
     data.setdefault("formatversion", "2")
+    _throttle()
     r = s.post(API, data=data, timeout=60)
     r.raise_for_status()
     return _check(r.json())
