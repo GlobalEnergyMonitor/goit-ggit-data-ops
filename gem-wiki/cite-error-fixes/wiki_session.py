@@ -1,60 +1,50 @@
-"""Authenticated gem.wiki API session using the keychain bot password. Token never printed."""
-import http.cookiejar
-import json
-import subprocess
-import urllib.parse
-import urllib.request
+"""Authenticated gem.wiki API session. Thin shim over ../gemwiki.py.
 
-API = "https://www.gem.wiki/w/api.php"
-UA = "GEM-LNG-citation-fixer/1.0 (baird.langenbrunner@globalenergymonitor.org)"
+This used to carry its own urllib+cookiejar stack, its own keychain lookup and
+its own User-Agent. It now delegates all of that to gemwiki, so this folder
+inherits the single UA, the shared 5 req/sec throttle (which this stack never
+had) and one credential resolver. The class is kept because batch_repair.py and
+repair_orphan_refs.py are a completed project's record — repointing them at
+gemwiki's own get/post would mean rewriting their response parsing.
 
+Response shape: .call() sends formatversion=1, which is what those two scripts
+parse (`data["query"]["pages"].values()`, revision text under `["*"]`).
+gemwiki.get/post default to formatversion=2, where `pages` is a list and text
+lives under `["content"]` — do not "simplify" this shim by dropping the
+formatversion, and prefer gemwiki directly in anything new.
 
-def _keychain_secret():
-    return subprocess.run(
-        ["security", "find-generic-password", "-s", "gem.wiki-botpassword", "-w"],
-        capture_output=True, text=True, check=True,
-    ).stdout.strip()
+One deliberate behaviour change: gemwiki raises WikiError on an API `error`
+response, where the old .call() returned the error dict for the caller to print.
+So a failed save now raises instead of printing a non-Success result. That is
+the safer default for an edit path; it is the only semantic difference.
+"""
+import sys
+from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+import gemwiki as gw  # noqa: E402
 
-def _keychain_account():
-    out = subprocess.run(
-        ["security", "find-generic-password", "-s", "gem.wiki-botpassword"],
-        capture_output=True, text=True, check=True,
-    ).stdout
-    for line in out.splitlines():
-        if '"acct"' in line:
-            return line.split("=", 1)[1].strip().strip('"')
-    raise RuntimeError("no acct field in keychain entry")
+API = gw.API
+UA = gw.USER_AGENT
 
 
 class WikiSession:
     def __init__(self):
-        self.jar = http.cookiejar.CookieJar()
-        self.opener = urllib.request.build_opener(
-            urllib.request.HTTPCookieProcessor(self.jar)
-        )
+        self.s = gw.session()
 
     def call(self, **params):
-        params.setdefault("format", "json")
-        data = urllib.parse.urlencode(params).encode()
-        req = urllib.request.Request(API, data=data, headers={"User-Agent": UA})
-        with self.opener.open(req, timeout=60) as r:
-            return json.load(r)
+        """POST to the API under formatversion=1. Throttled by gemwiki."""
+        params.setdefault("formatversion", "1")
+        return gw.post(self.s, **params)
 
     def login(self):
-        user = _keychain_account()
-        pw = _keychain_secret()
-        tok = self.call(action="query", meta="tokens", type="login")
-        lgtoken = tok["query"]["tokens"]["logintoken"]
-        res = self.call(action="login", lgname=user, lgpassword=pw, lgtoken=lgtoken)
-        status = res.get("login", {}).get("result")
-        if status != "Success":
-            raise RuntimeError(f"login failed: {status} ({res.get('login', {}).get('reason', '')})")
-        return res["login"]["lgusername"]
+        """Log in with the shared bot password; returns the username."""
+        self.s = gw.session(login=True)
+        return self.userinfo()["name"]
 
     def userinfo(self):
-        return self.call(action="query", meta="userinfo", uiprop="rights|groups")[
-            "query"]["userinfo"]
+        return self.call(action="query", meta="userinfo",
+                         uiprop="rights|groups")["query"]["userinfo"]
 
     def csrf_token(self):
         return self.call(action="query", meta="tokens")["query"]["tokens"]["csrftoken"]
@@ -67,7 +57,7 @@ if __name__ == "__main__":
     rights = set(ui.get("rights", []))
     print(f"logged in as: {name} (id {ui['id']})")
     print(f"groups: {ui.get('groups')}")
-    need = ["edit", "writeapi"]
-    for r in need:
+    print(f"user-agent: {UA}")
+    print(f"throttle: {gw.MAX_CALLS_PER_SECOND}/sec (shared with all gemwiki clients)")
+    for r in ["edit", "writeapi"]:
         print(f"right '{r}': {'YES' if r in rights else 'MISSING'}")
-    print(f"createpage right (should be irrelevant, we use nocreate): {'yes' if 'createpage' in rights else 'no'}")

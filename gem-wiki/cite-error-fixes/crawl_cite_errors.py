@@ -7,13 +7,21 @@ import re
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from pathlib import Path
 from urllib.parse import quote
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError, URLError
 
 EXPORT = sys.argv[1] if len(sys.argv) > 1 else "gem_export.csv"
 OUT = sys.argv[2] if len(sys.argv) > 2 else "cite_error_results.json"
-UA = "GEM-LNG-researcher-cite-error-audit/1.0 (baird.langenbrunner@globalenergymonitor.org)"
+# This crawler hits gem.wiki article HTML rather than the API, but the firewall
+# treats it the same: it needs the shared UA (the "baird-wiki" token is what the
+# Cloudflare bypass rule matches) and it must respect the same rate limit. Both
+# come from ../gemwiki.py — see ../README.md.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+import gemwiki as gw  # noqa: E402
+
+UA = gw.USER_AGENT
 
 ERR_SPAN = re.compile(
     r'<span[^>]*mw-ext-cite-error[^>]*>(.*?)</span>', re.DOTALL
@@ -39,6 +47,7 @@ def fetch(url, retries=2):
     last = None
     for attempt in range(retries + 1):
         try:
+            gw.throttle()  # shared ceiling; this runs under a thread pool
             req = Request(safe_url, headers={"User-Agent": UA})
             with urlopen(req, timeout=30) as resp:
                 return resp.status, resp.read().decode("utf-8", "replace")

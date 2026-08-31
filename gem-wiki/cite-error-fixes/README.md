@@ -29,7 +29,8 @@ repo, `batches/run_records/2026-07-20_wiki-cite-error-crawl.md`.
   the lng-terminals-researcher repo: `gem_query.py --all-fields lng`),
   fetches every unique `wiki` URL, flags rendered `mw-ext-cite-error` spans.
   `python crawl_cite_errors.py <export.csv> cite_error_results.json`
-- `wiki_session.py` — authenticated API session (see Auth below).
+- `wiki_session.py` — authenticated API session; a thin shim over
+  `../gemwiki.py` (see Auth below).
 - `repair_orphan_refs.py` — single-page repair, dry-run by default:
   `python repair_orphan_refs.py "<Page Title>"` writes before/after/diff
   artifacts and a render preview; `--save` submits only after the preview
@@ -38,7 +39,9 @@ repo, `batches/run_records/2026-07-20_wiki-cite-error-crawl.md`.
   `python batch_repair.py 50 batch50d_log.csv`. Skips everything already in
   a `batch*_log.csv` or the hardcoded pilot list; per-page gates (donor
   found, prose anchor match, insertions-only splice, 0-error preview);
-  5s throttle; re-verifies the live page after each save.
+  a 5-second pause between pages (on top of the shared 5 req/sec ceiling in
+  `../gemwiki.py` — different limits, both apply); re-verifies the live page
+  after each save.
 - `cite_error_results.json` / `batch*_log.csv` — crawl results and per-batch
   audit logs (gitignored like all data files in this repo, but they are the
   batch driver's done-list state — keep them in this folder locally).
@@ -66,12 +69,32 @@ rule for wiki writes, scoped to this repair recipe only.
 
 ## Auth
 
-`wiki_session.py` reads the **`citation-fixer`** bot password from the macOS
-keychain (`security find-generic-password -s gem.wiki-botpassword`; the
-account field holds the login name, `-w` prints the secret). This is
-deliberately separate from the general-purpose `gem-wiki-api` credential in
-`../.env` (see `../README.md`) and independently revocable at
-`Special:BotPasswords`. Never print or commit the token.
+`wiki_session.py` no longer owns any of this. It is a thin shim over
+`../gemwiki.py`, so this folder shares the repo's single User-Agent, the
+process-wide 5 req/sec throttle (which this stack previously had **no** version
+of) and one credential resolver, `gemwiki.credentials()`. Never print or commit
+the token.
+
+That resolver reads `../.env` first and the macOS keychain second, so these
+scripts now authenticate as **`gem-wiki-api`**, not the `citation-fixer`
+keychain credential they used during the 2026-07 run. The two differ only in
+grants — `gem-wiki-api` is a strict superset of `citation-fixer`'s edit-only
+grant — so nothing this folder does is affected. `../README.md` has the grant
+table and the plan to retire `citation-fixer`.
+
+Two things the shim preserves deliberately, so don't "simplify" them away:
+
+- **`formatversion=1`.** `repair_orphan_refs.py` parses
+  `data["query"]["pages"].values()` and revision text under `["*"]`; `gemwiki`'s
+  own `get`/`post` default to `formatversion=2`, where `pages` is a list and the
+  text lives under `["content"]`.
+- **`crawl_cite_errors.py` keeps its own urllib fetcher** because it scrapes
+  rendered article HTML rather than the API — but it calls `gemwiki.throttle()`
+  so its thread pool shares the same ceiling.
+
+One behaviour change from the rewire: `gemwiki` raises `WikiError` on an API
+`error` response, where the old `.call()` returned the error dict for the caller
+to print. A failed save now raises instead of reporting a non-Success result.
 
 Edit summary used on every save:
 `restore orphaned ref definitions lost in the 2025-10-16 tracker update (fix cite errors)`

@@ -1,10 +1,17 @@
 """Shared helpers for the GEM.wiki MediaWiki API (https://www.gem.wiki/w/api.php).
 
+This is the one client for gem.wiki in this repo: every other script here goes
+through it, so the User-Agent, the 5 req/sec throttle and the credential lookup
+live in exactly one place rather than per tool. Code that must fetch gem.wiki
+outside the API helpers still shares the rate limit by calling throttle().
+
 Reads are anonymous by default; pass login=True to session() for edits or
-higher query limits. Credentials come from gem-wiki/.env (bot password from
-Special:BotPasswords) — see README.md in this folder.
+higher query limits. Credentials resolve via credentials() — see README.md in
+this folder for the credential stores and the account's actual rights.
 """
 
+import os
+import subprocess
 import threading
 import time
 from pathlib import Path
@@ -12,11 +19,25 @@ from pathlib import Path
 import requests
 
 API = "https://www.gem.wiki/w/api.php"
-USER_AGENT = (
-    "goit-ggit-data-ops/gem-wiki "
-    "(baird.langenbrunner@globalenergymonitor.org)"
+
+# GEM's infra admin matches the leading token in a Cloudflare WAF rule that
+# lets this traffic bypass Under Attack Mode. UAM is off again (2026-08-11),
+# but keep "baird-wiki" in any User-Agent that talks to gem.wiki — it's the
+# identity in GEM's firewall logs and the bypass if UAM comes back.
+# This is the single UA for every gem.wiki client in the repo — the scripts in
+# cite-error-fixes/ import it rather than defining their own, so the firewall
+# sees one string. The admin only asked that it be identifiable (2026-08-07),
+# so the old per-tool suffix is gone; the version and contact address stay as
+# ordinary MediaWiki UA etiquette. Verified: the bypass rule matches on the
+# "baird-wiki" token alone, so the rest is free to change.
+USER_AGENT = os.environ.get(
+    "GEMWIKI_USER_AGENT",
+    "baird-wiki/1.0 (baird.langenbrunner@globalenergymonitor.org)",
 )
 ENV_PATH = Path(__file__).resolve().parent / ".env"
+# Bot password (Special:BotPasswords) in the login keychain; see credentials().
+KEYCHAIN_SERVICE = os.environ.get("GEMWIKI_KEYCHAIN_SERVICE",
+                                  "gem.wiki-botpassword")
 
 
 class WikiError(RuntimeError):
@@ -46,6 +67,17 @@ def _throttle():
         _last_call = time.monotonic()
 
 
+def throttle():
+    """Claim one slot in the shared rate limit before a hand-rolled request.
+
+    get()/post() already do this, so API callers never need it. It is public for
+    code that must fetch gem.wiki outside the API — rendered article HTML, say —
+    which the firewall rate-limits just the same. Use it and every gem.wiki
+    request in the process shares one 5/sec ceiling, threads included.
+    """
+    _throttle()
+
+
 def load_env(path=ENV_PATH):
     """Minimal .env parser (KEY=value lines, # comments)."""
     env = {}
@@ -60,18 +92,70 @@ def load_env(path=ENV_PATH):
     return env
 
 
+def _keychain_credentials(service=KEYCHAIN_SERVICE):
+    """(user, password) from the macOS keychain, or None if absent/unavailable.
+
+    Never returns or logs the secret anywhere but the caller's hands.
+    """
+    cmd = ["security", "find-generic-password", "-s", service]
+    try:
+        password = subprocess.run(cmd + ["-w"], capture_output=True, text=True,
+                                  check=True).stdout.strip()
+        meta = subprocess.run(cmd, capture_output=True, text=True,
+                              check=True).stdout
+    except (subprocess.CalledProcessError, FileNotFoundError, OSError):
+        return None  # no such entry, or not macOS
+    for line in meta.splitlines():
+        if '"acct"' in line:
+            user = line.split("=", 1)[1].strip().strip('"')
+            if user and password:
+                return user, password
+    return None
+
+
+def credentials():
+    """(username, bot password) for the wiki account — one resolver for the repo.
+
+    gem-wiki/.env first, then the macOS keychain (service KEYCHAIN_SERVICE).
+
+    The order is deliberate and load-bearing. Both stores hold a bot password
+    from Special:BotPasswords on the same account, but with *different grants*
+    (verified 2026-08-07):
+
+        .env      "gem-wiki-api"    edit + move + move-subpages + upload + ...
+        keychain  "citation-fixer"  edit only
+
+    ".env" is a strict superset, so preferring the keychain would silently break
+    move_page() and anything else beyond a plain edit. Neither grant includes
+    delete, suppressredirect or bot — see README.md "Account rights".
+
+    The two credentials should collapse into one: put the broader secret in the
+    keychain (better than a dotfile) and revoke the redundant "citation-fixer"
+    grant. Until then this resolver keeps the working one in front.
+    """
+    env = load_env()
+    user, password = env.get("GEMWIKI_USERNAME"), env.get("GEMWIKI_BOT_PASSWORD")
+    if user and password:
+        return user, password
+    creds = _keychain_credentials()
+    if creds:
+        return creds
+    raise WikiError(
+        f"no wiki credentials: GEMWIKI_USERNAME / GEMWIKI_BOT_PASSWORD not set "
+        f"in {ENV_PATH} and keychain service {KEYCHAIN_SERVICE!r} not found"
+    )
+
+
 def session(login=False):
-    """A requests.Session for the API; logs in with the bot password if asked."""
+    """A requests.Session for the API; logs in with the bot password if asked.
+
+    Every gem.wiki client in the repo builds its session here, so the UA,
+    the throttle and the credential lookup are shared rather than per-tool.
+    """
     s = requests.Session()
     s.headers["User-Agent"] = USER_AGENT
     if login:
-        env = load_env()
-        user = env.get("GEMWIKI_USERNAME")
-        password = env.get("GEMWIKI_BOT_PASSWORD")
-        if not (user and password):
-            raise WikiError(
-                f"GEMWIKI_USERNAME / GEMWIKI_BOT_PASSWORD not set in {ENV_PATH}"
-            )
+        user, password = credentials()
         token = get(s, action="query", meta="tokens", type="login")[
             "query"]["tokens"]["logintoken"]
         result = post(s, action="login", lgname=user, lgpassword=password,

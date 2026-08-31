@@ -364,8 +364,11 @@ it open.
   quote surfaced on the DDG lite endpoint after WebSearch had found nothing.
   Try the claim's own distinctive wording first: if the only hit is gem.wiki,
   the claim has no independent source and you have your answer.
-- Edits authenticate via the bot password in `../../.env` relative to
-  `working-files/` (i.e. `gem-wiki/.env`, never committed).
+- Edits authenticate through `gemwiki.credentials()`, which reads the bot
+  password from `gem-wiki/.env` (never committed) and falls back to the macOS
+  keychain. `fixlib.py` reaches `gemwiki.py` with a `sys.path` insert, so these
+  scripts inherit the shared User-Agent and the 5 req/sec throttle for free —
+  never build a session, UA or credential lookup here.
 - Per-edit approval exception (user-approved 2026-07-21): this project runs
   autonomously — no per-edit approval needed. Escalate to the user only for
   URLs needing a human browser check or genuinely new situations.

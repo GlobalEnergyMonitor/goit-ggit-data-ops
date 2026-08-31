@@ -6,14 +6,22 @@ repo: edit-history digging, cite-error cleanups, batch text fixes, etc.
 
 ## Files
 
-- `gemwiki.py` — shared helpers: API session (anonymous or bot-password
-  login), continuation-aware queries (`page_revisions`, `user_contribs`,
-  `recent_changes`, `page_text`, `search`), and `edit_page` / `move_page`
-  for writes. `move_page` leaves a redirect at the old title by default.
+- `gemwiki.py` — **the** client for gem.wiki; everything else in this folder
+  goes through it, so the User-Agent, the rate limit and the credential lookup
+  exist once rather than per tool. Provides the API session (anonymous or
+  bot-password login), continuation-aware queries (`page_revisions`,
+  `user_contribs`, `recent_changes`, `page_text`, `search`), and `edit_page` /
+  `move_page` for writes. `move_page` leaves a redirect at the old title by
+  default.
+
   Every call is throttled to `MAX_CALLS_PER_SECOND` (5/s) by a locked
-  module-level gate in `get`/`post`, so the ceiling is process-wide and
-  holds even under `scan_parallel.py`'s thread pool. Lower the constant for
-  long write runs — 5/s is a read pace.
+  module-level gate in `get`/`post`, so the ceiling is process-wide and holds
+  even under `scan_parallel.py`'s thread pool. Lower the constant for long
+  write runs — 5/s is a read pace. Code that fetches gem.wiki *outside* the API
+  helpers (rendered article HTML, say) must call `gemwiki.throttle()` to claim a
+  slot in the same ceiling; `cite-error-fixes/crawl_cite_errors.py` is the
+  example. Anything new that talks to gem.wiki belongs on this module — do not
+  hand-roll a second session, UA or credential path.
 - `wiki_query.py` — read-only CLI for quick lookups:
 
   ```
@@ -27,8 +35,10 @@ repo: edit-history digging, cite-error cleanups, batch text fixes, etc.
 - `cite-error-fixes/` — repair of orphaned `<ref name=X />` citations across
   the LNG terminal pages (411 flagged by the 2026-07-20 crawl; root cause:
   tracker-update bot passes destroying ref definitions in Project Details).
-  Own README + STATUS.md there; uses its own keychain credential
-  (`citation-fixer`), not this folder's `.env`. Complete — all 411 fixed.
+  Own README + STATUS.md there. Complete — all 411 fixed. Its
+  `wiki_session.py` is now a thin shim over `gemwiki.py` (it used to carry its
+  own urllib stack, UA and keychain lookup); it keeps `formatversion=1` because
+  that is what its two scripts parse.
 - `fix-bad-links/` — the other half of the same problem: the LNG terminal
   pages' **Background citations**, checked link by link and repaired
   (relocate → content-validated archive → drop as redundant → re-source).
@@ -47,54 +57,81 @@ the grants listed in `.env.example`, and put the resulting
 `<YourWikiUsername>@gem-wiki-api` username + generated password in
 `gem-wiki/.env`. Edits made this way are attributed to your wiki account.
 
-### Cloudflare Under Attack Mode (blocked all scripted access 2026-08-07)
+`gemwiki.credentials()` is the single resolver for the whole folder: it reads
+`gem-wiki/.env` first, then falls back to a macOS keychain entry (service
+`gem.wiki-botpassword`, overridable with `$GEMWIKI_KEYCHAIN_SERVICE`).
 
-Every gem.wiki path — `/w/api.php`, article HTML, even `/robots.txt` — returns
-**HTTP 403 with `cf-mitigated: challenge`** and a "Just a moment…" Turnstile page.
-It is **not** an auth problem: it fires before MediaWiki sees the request, so no
-bot password helps.
+**The order matters.** Two bot passwords exist on the account and their grants
+differ — verified 2026-08-07:
 
-**Cause, confirmed with GEM's infra admin:** Cloudflare **Under Attack Mode** was
-switched on for the zone after gem.wiki was taken down by a traffic flood earlier
-that week. It is a deliberate, justified setting, not a misconfiguration — UAM
-JS-challenges every visitor, which blocks all API clients as a side effect.
+| store | bot password | grants |
+|---|---|---|
+| `.env` | `gem-wiki-api` | `edit`, `move`, `move-subpages`, `upload`, `createpage`, … |
+| keychain | `citation-fixer` | `edit` only |
 
-**Fix, agreed with the admin:** a WAF rule that matches our **User-Agent token**
-and lets that traffic bypass UAM, paired with client-side rate limiting (the admin
-asked for ~5 req/sec; `MAX_CALLS_PER_SECOND` in `gemwiki.py` implements it). So the
-UA string is load-bearing — **keep `baird-wiki` as the leading token** in any UA that
-talks to gem.wiki, in both client stacks (`GEMWIKI_USER_AGENT` overrides it without a
-code edit). An IP-based hole was offered as an alternative; the UA route was preferred
-as portable across networks.
+`gem-wiki-api` is a strict superset, so `.env` is tried first — preferring the
+keychain silently breaks `move_page()` and anything past a plain edit. Neither
+grant includes `delete`, `suppressredirect` or `bot` (see "Account rights").
 
-The token deliberately avoids the word "bot": these are attributed, human-supervised
-edits from an account that is *not* in MediaWiki's `bot` group, and Cloudflare tends to
-score UAs containing "bot" more suspiciously unless they are a verified crawler. Naming
-the person also keeps the firewall rule self-auditing — it reads as stale if the person
-moves on, where a codebase-named rule would quietly outlive everyone who knew why it
-existed.
+**Still to collapse:** `citation-fixer` is now redundant — nothing needs an
+edit-only credential once `cite-error-fixes/` shares this resolver. The tidy end
+state is one bot password, stored in the keychain rather than a dotfile, with
+`citation-fixer` revoked at `Special:BotPasswords`. Both steps are manual and
+outward-facing, so they are deliberately not automated here. GEM's infra admin
+separately flagged (2026-08-07) that bot passwords are hard to audit
+wiki-side, which is another reason to keep exactly one.
 
-Diagnostics from before the cause was known, so nobody re-runs them:
+### Cloudflare (2026-08-07 incident is over; the UA token stays)
 
-- A full browser header set (UA, `Sec-CH-UA`, `Sec-Fetch-*`, …) still 403s — the
-  challenge fingerprints the **TLS handshake** and requires JS, so header spoofing
-  cannot work, and neither can `requests`/`urllib`/`curl`.
-- **`mwclient` 0.11.0 403s identically** (tested 2026-08-07), as does a bare `requests`
-  call sent under mwclient's own UA. Switching libraries is not a way through — it
-  wraps `requests` and presents the same TLS fingerprint. Note this only shows that
-  *changing* the UA achieves nothing while UAM challenges everything; it does **not**
-  contradict the WAF-bypass fix above, which works by matching the UA in a rule.
-- A fresh browser-minted `cf_clearance` cookie **also** 403s from `curl`, so on this
-  zone the cookie is bound to the TLS fingerprint as well as IP + User-Agent. Carrying
-  the cookie into a normal HTTP client is a dead end.
-- Anthropic's WebFetch (different IPs) is blocked too → zone-wide setting, not IP
-  reputation. `globalenergymonitor.org` is unaffected → gem.wiki's zone specifically.
-- It is new: `fix-bad-links/` was saving edits through this same tooling on 2026-07-28.
+**Current state (verified 2026-08-11): Under Attack Mode is off.** The API,
+rendered article HTML and `/robots.txt` all return 200 with no `cf-mitigated`
+header under arbitrary UAs — including `python-requests/…`, which was the
+canonical 403 while UAM was on. Whether the admin also removed the
+`baird-wiki` WAF bypass rule isn't observable from outside; treat it as
+possibly still live and possibly needed again.
 
-**The bypass rule is live and verified** (2026-08-07): the same API read 403s under the
-old UA and returns 200 under a `baird-wiki` one, and five page moves went through on it.
-`move_page()` needed no changes. If scripted access 403s again, check the UA first —
-it is the single load-bearing string.
+**History:** gem.wiki was taken down by a traffic flood in early August 2026
+and GEM's infra admin switched the zone to Under Attack Mode (2026-08-07),
+which JS-challenges every visitor — all scripted access 403'd with
+`cf-mitigated: challenge` before MediaWiki saw the request, regardless of
+headers, library (`mwclient` 403'd identically) or a browser-minted
+`cf_clearance` cookie, because the challenge fingerprints the TLS handshake.
+The fix agreed with the admin was a WAF rule letting UAs carrying the
+**`baird-wiki`** token bypass UAM, paired with client-side rate limiting
+(~5 req/sec, his number). The rule matched on the bare token, zone-wide, and
+was verified live 2026-08-07; UAM was off again by 2026-08-11. The full
+diagnostics and bypass verification are in git history (`5621479`, `c3d6349`)
+if it ever comes back.
+
+**What stays load-bearing with UAM off:**
+
+- **Keep `baird-wiki` as the leading UA token.** It is the identity GEM's
+  admin knows in the firewall logs, and the bypass if UAM returns — if
+  scripted access starts 403ing again, check the UA first. The token
+  deliberately avoids the word "bot" (Cloudflare scores those more
+  suspiciously, and these are attributed, human-supervised edits) and names
+  the person so any firewall rule keyed on it stays self-auditing. The
+  version and contact address around the token are ordinary MediaWiki
+  etiquette, free to change.
+- **Keep the 5 req/sec throttle** (`MAX_CALLS_PER_SECOND` in `gemwiki.py`).
+  The admin asked for it as part of the arrangement, not as a UAM-era
+  measure. Non-API fetches of gem.wiki (rendered HTML scrapes) must still
+  call `gemwiki.throttle()` — they spend the same allowance.
+- There is exactly **one** UA for the whole repo — `USER_AGENT` in
+  `gemwiki.py` (overridable via `$GEMWIKI_USER_AGENT`), which the
+  `cite-error-fixes/` scripts import rather than defining their own.
+  Per-tool suffixes were dropped 2026-08-07: the admin needs the traffic
+  identifiable, not split by tool. Scripts that fetch **external** sites
+  (`fix-bad-links/working-files/`) use their own UAs and must not carry this
+  token.
+- **A second repo shares this exact string.** `pipelines-researcher` fetches
+  gem.wiki in `scripts/harvest_wiki_citations.py` and
+  `scripts/wiki_alignment.py`, and its `url_verifier.WIKI_UA` is
+  byte-identical to `USER_AGENT` here — deliberate (2026-08-10) so both repos
+  appear as a single client in GEM's firewall logs. **If you change the
+  string here, change it there too.** Its `CLAUDE.md` carries the same
+  warning in the other direction. The two repos also share the one
+  rate-limit allowance, so don't run wiki passes in both at once.
 
 ### Account rights (what the bot password can and can't do)
 
@@ -115,15 +152,10 @@ assuming — they are granted per account by the wiki admins.
 old titles out of the response — which looks exactly like "the page doesn't exist".
 Omit the parameter entirely to inspect redirect stubs.
 
-A UA token is trivially spoofable, so treat the bypass as a convenience gate rather
-than a security control — scoping the rule to `/w/api.php` keeps it off the rest of
-the site, and a secret request header would be the stronger version if the admin
-ever wants one.
-
-A bot password is revocable on the same page and scoped by its grants.
-`gem-wiki-api` is the general-purpose key for scripted/API access from this
-and other repos; the terminals-researcher bot password remains separate and
-independently revocable.
+A bot password is revocable at `Special:BotPasswords` and scoped by its grants.
+`gem-wiki-api` is the general-purpose key for scripted/API access from this and other
+repos, and is the one this folder now uses everywhere. `citation-fixer` still exists,
+edit-only and redundant — see "Auth" for the plan to retire it.
 
 ## Rules
 
