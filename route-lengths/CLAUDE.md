@@ -71,7 +71,25 @@ tracker sheet. See README.md for the layout and how to run it.
 - **The header row moves.** `Country dictionary` lost a banner row on
   2026-08-02, shifting its header from row 2 to row 1 and breaking a hardcoded
   `header_row=2`. `find_header_row` now locates it by looking for a known
-  column name; don't reintroduce a literal row number.
+  column name; don't reintroduce a literal row number. `Country ratios by
+  pipeline` gained a note row on 2026-08-05 so it carries the same A1 run stamp
+  as the length tab — header row 2, data from row 3, and the banding, filter
+  view and formula-source row all moved down with it. Anything reading that tab
+  must skip the note row (`start="A2"` in the summary-sheets notebooks).
+- **Read the tab's shape; never pin it to a constant.** The writer takes row and
+  column counts, the formula block's right edge, and the live extents of the
+  banded range and filter views from metadata, and moves only each range's
+  *bottom* edge to match the data. Column letters were hardcoded until
+  2026-08-05, when the ratios tab lost a column (A:AH → A:AG) and a filter view
+  was narrowed from W to V: the pinned values would have rebuilt a range running
+  off the end of the grid and silently undone the narrowing. `_resized()` is the
+  one place that decides this. If a range looks wrong, fix it in the sheet — the
+  next run will keep it.
+- **`setBasicFilter` replaces the whole filter, so read the whole filter.**
+  `METADATA_FIELDS` asked for `basicFilter(range)` only, which meant every
+  resize re-applied the filter with its sortSpecs, filterSpecs and criteria
+  dropped. It now requests the full object and carries every field but `range`
+  through untouched. Same trap applies to anything else re-sent wholesale.
 - `boundaries-*.gpkg` is a build artifact and is gitignored; `boundaries.json`
   and `boundaries-attribution.csv` are committed deliberately (explicit
   negations in the repo `.gitignore`) as the provenance record.

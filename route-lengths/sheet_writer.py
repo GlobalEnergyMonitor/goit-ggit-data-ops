@@ -14,23 +14,34 @@ Both target tabs carry structure that a naive values.update destroys.
     get resized to the new extent rather than left behind
 
 `Country ratios by pipeline` (sheetId 443997510)
-  * columns A-F are pasted values; G-AH are 28 columns of per-row, non-array
-    formulas. They must be filled by copyPaste/PASTE_FORMULA so the relative
-    row references follow -- never retyped, and never left short of the data
-  * bandedRange 1069951898 spans V2:AH<end> and is resized with the data
-  * filterView 886703151 spans A1:W<end> and is resized too
-  * 1 frozen row, 6 frozen columns
-  * column X (H2Status) contains `INDEX(#REF!, MATCH(C<n>, ...))` in *every*
-    row -- verified rows 2, 5000, 6860, 6861. It is pre-existing and uniformly
-    broken, so propagating row 2 does not spread anything new. Preserve it;
-    do not "fix" it as a side effect of a length run.
+  * row 1 is a note; row 2 is the header; 2 frozen rows; data starts at row 3.
+    A note row was inserted above the header on 2026-08-05 so this tab carries
+    the same run stamp as the length tab -- everything below shifted down one.
+  * columns A-F are pasted values; everything to their right is per-row,
+    non-array formulas (G:AG as of 2026-08-05, when a column was deleted).
+    They must be filled by copyPaste/PASTE_FORMULA so the relative row
+    references follow -- never retyped, and never left short of the data
+  * bandedRange 1069951898 and filterView 886703151 are resized with the data
+  * 6 frozen columns
+  * the H2Status column contains `INDEX(#REF!, MATCH(C<n>, ...))` in *every*
+    row -- verified rows 2, 5000, 6860, 6861 back when it was column X. It is
+    pre-existing and uniformly broken, so propagating the first data row does
+    not spread anything new. Preserve it; do not "fix" it as a side effect of
+    a length run.
+
+The tab's shape is read, never assumed. Row and column counts, the formula
+block's right edge, and the exact extents of the banded range and filter view
+all come from live metadata; the writer only moves each range's bottom edge to
+match the data. Pinning any of them to a constant means silently undoing a
+deliberate change someone made in the sheet -- or, once a column was deleted,
+building a range that runs off the end of the grid.
 
 Row-count changes go through insertDimension (inheritFromBefore: true) or
 deleteDimension so formats and banding follow, and the formula block is filled
 across the whole data range afterwards. Writing values into a range longer than
 the formula block leaves rows with data and no lookups -- which is exactly what
 the manual paste workflow had done: as of 2026-07-31 the live ratios tab had
-formulas in G:AH only through row 6754, leaving the last 107 rows without
+formulas in the block only through row 6754, leaving the last 107 rows without
 Region, SubRegion... StartCountry/EndCountry/RouteType/RouteAccuracy. The
 default fill repairs that; pass fill_formulas='new-rows' to opt out.
 
@@ -55,7 +66,6 @@ LENGTH_TAB = 'Length estimates by pipeline'
 LENGTH_SHEET_ID = 1069562947
 LENGTH_FIRST_DATA_ROW = 3
 LENGTH_NOTE_CELL = 'A1'
-LENGTH_BASIC_FILTER_FIRST_ROW = 2          # basicFilter starts on the header row
 LENGTH_FILTER_VIEW_ID = 1371853704
 
 DICT_TAB = 'Country dictionary'
@@ -73,24 +83,29 @@ DICT_BANDED_RANGE_ID = 1642471189
 
 RATIOS_TAB = 'Country ratios by pipeline'
 RATIOS_SHEET_ID = 443997510
-RATIOS_FIRST_DATA_ROW = 2
+RATIOS_FIRST_DATA_ROW = 3
+RATIOS_NOTE_CELL = 'A1'
 RATIOS_VALUE_COLUMNS = ['PipelineName', 'SegmentName', 'ProjectID', 'Country',
                         'LengthEstimateKmByCountry', 'LengthPerCountryFraction']
-RATIOS_FORMULA_FIRST_COL = 6               # G, 0-indexed
-RATIOS_FORMULA_LAST_COL = 34               # exclusive: AH is index 33
+# The formula block is everything to the right of the pasted values, out to the
+# last column the tab actually has. Both edges are derived, not pinned: a column
+# was deleted on 2026-08-05, which turned a hardcoded last column into a range
+# past the end of the grid.
+RATIOS_FORMULA_FIRST_COL = len(RATIOS_VALUE_COLUMNS)
 RATIOS_BANDED_RANGE_ID = 1069951898
-RATIOS_BANDED_FIRST_COL = 21               # V
 RATIOS_FILTER_VIEW_ID = 886703151
-RATIOS_FILTER_VIEW_LAST_COL = 23           # exclusive: through W
 
 # Rows per values.update call. Keeps each JSON body far under the argv budget
 # in sheets_client.MAX_ARG_BYTES.
 CHUNK_ROWS = 1000
 
+# The whole basicFilter, not just its range: setBasicFilter replaces the filter
+# wholesale, so anything not read back here (sortSpecs, filterSpecs, criteria)
+# would be silently dropped every time a write resizes it.
 METADATA_FIELDS = (
     'sheets(properties(sheetId,title,gridProperties),'
     'bandedRanges(bandedRangeId,range),'
-    'basicFilter(range),'
+    'basicFilter,'
     'filterViews(filterViewId,range))'
 )
 
@@ -127,6 +142,21 @@ def _rows(frame, columns):
     return [[_cell(v) for v in row] for row in frame[columns].itertuples(index=False)]
 
 
+def _resized(live_range, sheet_id, target_rows):
+    """The live range with its bottom edge moved to the data, nothing else touched.
+
+    Only the last row is the writer's business -- that is the edge that goes stale
+    as rows are added. Column extents and the top edge belong to whoever set the
+    range up in the sheet: a filter view narrowed from W to V, or a banded range
+    starting below a newly inserted note row, is a deliberate choice, and pinning
+    either to a constant here would silently undo it on the next run.
+    """
+    resized = dict(live_range or {})
+    resized['sheetId'] = sheet_id
+    resized['endRowIndex'] = target_rows
+    return resized
+
+
 def _resize_rows(sheet_id, current_rows, target_rows):
     """insertDimension / deleteDimension to make the grid exactly target_rows."""
     if target_rows == current_rows:
@@ -143,6 +173,12 @@ def _resize_rows(sheet_id, current_rows, target_rows):
     }}]
 
 
+def _note_row():
+    """The A1 run stamp both output tabs carry."""
+    stamp = _dt.date.today().isoformat()
+    return [[f'written by route-lengths/ (see its README) - {stamp}']]
+
+
 def _plan_length_tab(state, by_pipeline, update_note=True):
     grid = state['properties']['gridProperties']
     current_rows = grid['rowCount']
@@ -152,24 +188,20 @@ def _plan_length_tab(state, by_pipeline, update_note=True):
     requests = _resize_rows(LENGTH_SHEET_ID, current_rows, target_rows)
 
     # The basicFilter and the saved filter view both still point at row ranges
-    # from older, shorter versions of this tab.
+    # from older, shorter versions of this tab. Extend them to the data and leave
+    # the rest of each range exactly as the sheet has it.
     if state.get('basicFilter'):
-        requests.append({'setBasicFilter': {'filter': {
-            'range': {'sheetId': LENGTH_SHEET_ID,
-                      'startRowIndex': LENGTH_BASIC_FILTER_FIRST_ROW - 1,
-                      'endRowIndex': target_rows,
-                      'startColumnIndex': 0, 'endColumnIndex': 2},
-            'sortSpecs': state['basicFilter'].get('sortSpecs', []),
-        }}})
+        live = state['basicFilter']
+        filter_body = {k: v for k, v in live.items() if k != 'range'}
+        filter_body['range'] = _resized(live.get('range'), LENGTH_SHEET_ID, target_rows)
+        requests.append({'setBasicFilter': {'filter': filter_body}})
     for view in state.get('filterViews', []):
         if view['filterViewId'] != LENGTH_FILTER_VIEW_ID:
             continue
         requests.append({'updateFilterView': {
             'filter': {'filterViewId': LENGTH_FILTER_VIEW_ID,
-                       'range': {'sheetId': LENGTH_SHEET_ID,
-                                 'startRowIndex': LENGTH_BASIC_FILTER_FIRST_ROW - 1,
-                                 'endRowIndex': target_rows,
-                                 'startColumnIndex': 0, 'endColumnIndex': 2}},
+                       'range': _resized(view.get('range'), LENGTH_SHEET_ID,
+                                         target_rows)},
             'fields': 'range',
         }})
 
@@ -178,28 +210,34 @@ def _plan_length_tab(state, by_pipeline, update_note=True):
          _rows(by_pipeline, ['ProjectID', 'LengthEstimateKm'])),
     ]
     if update_note:
-        stamp = _dt.date.today().isoformat()
-        values.insert(0, (f"'{LENGTH_TAB}'!{LENGTH_NOTE_CELL}",
-                          [[f'written by route-lengths/ (see its README) - {stamp}']]))
+        values.insert(0, (f"'{LENGTH_TAB}'!{LENGTH_NOTE_CELL}", _note_row()))
 
     return {'tab': LENGTH_TAB, 'current_rows': current_rows,
             'target_rows': target_rows, 'data_rows': n,
             'requests': requests, 'values': values}
 
 
-def _plan_ratios_tab(state, by_country, fill_formulas='all'):
+def _plan_ratios_tab(state, by_country, fill_formulas='all', update_note=True):
     grid = state['properties']['gridProperties']
     current_rows = grid['rowCount']
+    formula_last_col = grid['columnCount']
     n = len(by_country)
     target_rows = RATIOS_FIRST_DATA_ROW - 1 + n
     first_data_index = RATIOS_FIRST_DATA_ROW - 1
+    if formula_last_col <= RATIOS_FORMULA_FIRST_COL:
+        raise WriteError(
+            f'{RATIOS_TAB!r} has only {formula_last_col} columns, which leaves no '
+            f'room for the formula block after {RATIOS_FORMULA_FIRST_COL} value '
+            f'columns -- refusing to guess at the layout'
+        )
 
     requests = _resize_rows(RATIOS_SHEET_ID, current_rows, target_rows)
 
-    # Fill G:AH by copying row 2's formulas down. copyPaste tiles a one-row
-    # source across the destination and rewrites relative references per row.
+    # Fill the block by copying the first data row's formulas down. copyPaste tiles a
+    # one-row source across the destination and rewrites relative references per
+    # row.
     if fill_formulas == 'all':
-        fill_start = first_data_index + 1        # row 3 onwards; row 2 is the source
+        fill_start = first_data_index + 1        # the first data row is the source
     elif fill_formulas == 'new-rows':
         fill_start = max(current_rows, first_data_index + 1)
     else:
@@ -210,12 +248,12 @@ def _plan_ratios_tab(state, by_country, fill_formulas='all'):
                        'startRowIndex': first_data_index,
                        'endRowIndex': first_data_index + 1,
                        'startColumnIndex': RATIOS_FORMULA_FIRST_COL,
-                       'endColumnIndex': RATIOS_FORMULA_LAST_COL},
+                       'endColumnIndex': formula_last_col},
             'destination': {'sheetId': RATIOS_SHEET_ID,
                             'startRowIndex': fill_start,
                             'endRowIndex': target_rows,
                             'startColumnIndex': RATIOS_FORMULA_FIRST_COL,
-                            'endColumnIndex': RATIOS_FORMULA_LAST_COL},
+                            'endColumnIndex': formula_last_col},
             'pasteType': 'PASTE_FORMULA',
         }})
 
@@ -224,11 +262,8 @@ def _plan_ratios_tab(state, by_country, fill_formulas='all'):
             continue
         requests.append({'updateBanding': {
             'bandedRange': {'bandedRangeId': RATIOS_BANDED_RANGE_ID,
-                            'range': {'sheetId': RATIOS_SHEET_ID,
-                                      'startRowIndex': first_data_index,
-                                      'endRowIndex': target_rows,
-                                      'startColumnIndex': RATIOS_BANDED_FIRST_COL,
-                                      'endColumnIndex': RATIOS_FORMULA_LAST_COL}},
+                            'range': _resized(band.get('range'), RATIOS_SHEET_ID,
+                                              target_rows)},
             'fields': 'range',
         }})
 
@@ -237,18 +272,20 @@ def _plan_ratios_tab(state, by_country, fill_formulas='all'):
             continue
         requests.append({'updateFilterView': {
             'filter': {'filterViewId': RATIOS_FILTER_VIEW_ID,
-                       'range': {'sheetId': RATIOS_SHEET_ID,
-                                 'startRowIndex': 0, 'endRowIndex': target_rows,
-                                 'startColumnIndex': 0,
-                                 'endColumnIndex': RATIOS_FILTER_VIEW_LAST_COL}},
+                       'range': _resized(view.get('range'), RATIOS_SHEET_ID,
+                                         target_rows)},
             'fields': 'range',
         }})
 
     values = [(f"'{RATIOS_TAB}'!A{RATIOS_FIRST_DATA_ROW}",
                _rows(by_country, RATIOS_VALUE_COLUMNS))]
+    if update_note:
+        values.insert(0, (f"'{RATIOS_TAB}'!{RATIOS_NOTE_CELL}", _note_row()))
 
     return {'tab': RATIOS_TAB, 'current_rows': current_rows,
             'target_rows': target_rows, 'data_rows': n,
+            'formula_first_col': RATIOS_FORMULA_FIRST_COL,
+            'formula_last_col': formula_last_col,
             'requests': requests, 'values': values}
 
 
@@ -637,7 +674,8 @@ def plan(by_pipeline, by_country, sheet_key=None, backend=None,
         'length': _plan_length_tab(_tab_state(metadata, LENGTH_SHEET_ID),
                                    by_pipeline, update_note=update_note),
         'ratios': _plan_ratios_tab(_tab_state(metadata, RATIOS_SHEET_ID),
-                                   by_country, fill_formulas=fill_formulas),
+                                   by_country, fill_formulas=fill_formulas,
+                                   update_note=update_note),
     }
 
 
@@ -743,9 +781,28 @@ def verify(plan_dict, backend=None):
                 )
 
     # The formula block must reach the last data row -- the failure this whole
-    # design exists to prevent.
-    tail = backend.batch_get(
-        sheet_key, [f"'{RATIOS_TAB}'!Z{want}:AH{want}"], render='FORMULA')[0]
-    if not tail or not any(str(c).startswith('=') for c in tail[0]):
-        problems.append(f'no formulas in Z:AH on the last data row ({want})')
+    # design exists to prevent. Compare the last data row against the row the
+    # formulas were copied from rather than against a fixed column letter, so a
+    # tab that gains or loses a column is still checked end to end.
+    first_col = _a1_column(plan_dict['ratios']['formula_first_col'])
+    last_col = _a1_column(plan_dict['ratios']['formula_last_col'] - 1)
+    source_row = RATIOS_FIRST_DATA_ROW
+    rows = backend.batch_get(
+        sheet_key,
+        [f"'{RATIOS_TAB}'!{first_col}{source_row}:{last_col}{source_row}",
+         f"'{RATIOS_TAB}'!{first_col}{want}:{last_col}{want}"],
+        render='FORMULA')
+
+    def _formula_count(block):
+        return sum(1 for c in (block[0] if block else []) if str(c).startswith('='))
+
+    expected, got = _formula_count(rows[0]), _formula_count(rows[1])
+    if not got:
+        problems.append(
+            f'no formulas in {first_col}:{last_col} on the last data row ({want})')
+    elif got < expected:
+        problems.append(
+            f'last data row ({want}) has {got} formula columns in '
+            f'{first_col}:{last_col}, but the source row {source_row} has {expected}'
+        )
     return problems

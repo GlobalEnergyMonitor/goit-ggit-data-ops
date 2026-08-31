@@ -62,8 +62,12 @@ run at all if the reconciliation report found problems, and re-reads the sheet
 afterwards to confirm the row extents, the banded range and the formula block all
 line up.
 
-Useful flags: `--keep-note` leaves the length tab's A1 stamp alone;
+Useful flags: `--keep-note` leaves both tabs' A1 stamps alone;
 `--fill-formulas new-rows` limits the formula fill to rows the write adds.
+
+Both output tabs carry the same run stamp in A1 — `written by route-lengths/
+(see its README) - <date>`. The ratios tab gained its note row on 2026-08-05,
+which pushed its header to row 2 and its data to row 3.
 
 ## How attribution works
 
@@ -115,17 +119,25 @@ only then fills it:
 
 1. `insertDimension` / `deleteDimension` so the grid matches the new row count
    (`inheritFromBefore: true`, so formats follow)
-2. on the ratios tab, `copyPaste` with `PASTE_FORMULA` from row 2 to fill the 28
-   formula columns G:AH — never retyped, so the relative row references follow
-3. resize the banded range and the saved filter views, which otherwise keep
-   pointing at whatever extent they were saved at
+2. on the ratios tab, `copyPaste` with `PASTE_FORMULA` from the first data row to
+   fill the formula columns — everything right of the pasted values, out to the
+   tab's last column — never retyped, so the relative row references follow
+3. move the bottom edge of the banded range and the saved filter views down to
+   the data, since they otherwise keep pointing at whatever extent they were
+   saved at
 4. `values.update` the pasted columns (A:B on lengths, A:F on ratios), chunked at
    1,000 rows because `gws` takes request bodies on argv and ARG_MAX is 1 MiB
 5. re-read and verify
 
-Column X on the ratios tab holds a broken `INDEX(#REF!, …)` in *every* row. It is
-pre-existing and left alone; the fill propagates it unchanged rather than
-introducing anything new.
+The writer reads the tab's shape rather than assuming it: row and column counts,
+the formula block's right edge, and the exact extents of the banded range and
+filter views all come from live metadata, and only their bottom edge is moved.
+Narrow a filter view or delete a column in the sheet and the next run respects
+it — nothing here is pinned to a column letter.
+
+The H2Status column on the ratios tab holds a broken `INDEX(#REF!, …)` in *every*
+row. It is pre-existing and left alone; the fill propagates it unchanged rather
+than introducing anything new.
 
 ## Auth
 

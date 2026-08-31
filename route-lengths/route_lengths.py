@@ -418,7 +418,7 @@ def main(argv=None):
                         help='build the write plan and validate every request '
                              'against gws --dry-run, without sending any of it')
     parser.add_argument('--keep-note', action='store_true',
-                        help="leave the length tab's A1 note stamp alone")
+                        help="leave both tabs' A1 note stamps alone")
     parser.add_argument('--fill-formulas', choices=['all', 'new-rows'], default='all',
                         help="'all' (default) refills G:AH on every ratios data "
                              "row, repairing rows the manual paste left short; "
