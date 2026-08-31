@@ -14,7 +14,13 @@ Layout:
 **Both apps are broken as of 2026-07-31**: they authenticate with
 `pygsheets.authorize(service_account_env_var='GDRIVE_API_CREDENTIALS')`, and that
 service account (`gem-analysis`) was deleted. Repointing them at the `gws` read
-path (see `route-lengths/sheets_client.py`) is unstarted.
+path is unstarted. When it happens, read through the sibling `gem-db-ops` repo
+rather than adding another auth path here: `python ../../gem-db-ops/gem_sheets.py
+--sheet-key <key> --tab '<tab title>' -o out.csv` handles any tab in any
+spreadsheet (`--list-tabs` to enumerate), and `route-lengths/sheets_client.py` is
+the in-process pattern. These four spreadsheets are *summary-table* sheets, not the
+pipelines main sheet, so they are addressed by `--sheet-key`, not by gem-db-ops'
+named-tab registry.
 
 Both `app.py` files read pre-aggregated *summary tables* from Google Sheets; the raw
 per-project aggregation logic (e.g. the status-by-year "buildout" series) lives in

@@ -29,16 +29,26 @@ The `gem-analysis` service account was **deleted**, so `GDRIVE_API_CREDENTIALS`,
 `gem_tracker_constants.sheets`, and every `pygsheets.authorize` call in this repo
 no longer work.
 
-- **Interactive reads** go through the `gws` CLI against the work profile
-  (`~/.config/gws-gem`, read-only scopes). `route-lengths/sheets_client.py` is the
-  pattern new code should follow — it isolates auth behind one function.
+- **Pulling tracker data is not this repo's job.** The sibling `gem-db-ops` repo is
+  the single source of truth for every read of GEM data, across both backends: the
+  pipelines Google Sheet (`ggit/pull.py` gas pipelines, `goit/pull.py` oil/NGL
+  pipelines, `--with-owners` for the operators/owners tab) and the read-only Postgres
+  project DB (`lng/pull.py`, `gogpt/pull.py`, `goget/pull.py`). Call those instead of
+  writing a fresh Sheets or Postgres read here — see `gem-db-ops/docs/CONSUMERS.md`.
+- **Interactive reads** that gem-db-ops does not cover go through the `gws` CLI against
+  the work profile (`~/.config/gws-gem`, read-only scopes). `route-lengths/sheets_client.py`
+  is the pattern new code should follow — it isolates auth behind one function.
 - **Writes** still require explicit per-edit approval, as always.
 - **Writes** go through `gws-gem-write` and are used by exactly one thing:
   `route-lengths/`, which writes its two backend tabs. That works because it is
-  run by hand — the token never leaves the machine.
+  run by hand — the token never leaves the machine. This is the read/write split:
+  `gem-db-ops` owns reads of both backends and never writes; `route-lengths/` owns
+  the only write client and stays here.
 - **Headless/CI access has no replacement credential.** Until one is chosen,
   `.github/workflows/build-map-data.yml`, `releases/downloads/pipeline_exports.py`,
-  the `updates/` cycle notebooks, and the `dashboards/` apps are broken.
+  and the `dashboards/` apps are broken. Cycle notebooks are being repointed one
+  at a time as they are touched: `updates/qc/` reads through gem-db-ops and works;
+  `progress-snapshot.ipynb` does not yet.
 
 ## Folder map
 
@@ -49,6 +59,8 @@ updates/                              annual update cycles (the research phase b
 ├── UPDATE-CHECKLIST.md               reusable cycle checklist
 ├── asana-templates.md                Asana/update-sheet/Drive spin-up templates
 ├── researcher-allocation/            researcher allocation calculations, by year
+├── qc/                               backend-sheet QC checks (tracker_qc.py), shared
+│                                     by every cycle's mid-update QC notebook
 └── YYYY-qN-<tracker>/                one folder per cycle (docs + progress/QC notebooks)
 releases/                              the release phase (freeze, export, QC, publish)
 ├── RELEASE-CHECKLIST.md              reusable release checklist
@@ -97,7 +109,7 @@ For a new quarterly release, work through [releases/RELEASE-CHECKLIST.md](releas
 copy it into the release folder and check items off so progress is visible.
 The high-level sequence:
 
-1. **Backend QC sweep** — check the tracker Google Sheet and `goit-ggit-pipeline-routes` for data errors before anything reads from them.
+1. **Backend QC sweep** — run `updates/qc/tracker_qc.py` against the live tracker Google Sheet (see that folder's README), and check `goit-ggit-pipeline-routes`, for data errors before anything reads from them.
 2. **Length estimation** — `route-lengths/` (`python route_lengths.py`, or the
    `estimate-length.ipynb` wrapper). Writes its two backend tabs directly, so
    step 4 no longer involves pasting lengths in; see `route-lengths/README.md`
