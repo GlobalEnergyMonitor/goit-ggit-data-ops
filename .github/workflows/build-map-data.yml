@@ -17,9 +17,11 @@ name: build map data
 #  - workflow_dispatch: manual runs; `upload: false` builds without
 #    publishing, `dest_branch` can point at a test branch
 #
-# BROKEN as of 2026-07-31: the gem-analysis service account behind the
-# GDRIVE_API_CREDENTIALS secret was deleted, so the sheet-reading steps below
-# fail. Needs a replacement headless credential — see README.md.
+# Sheet access: the GDRIVE_API_CREDENTIALS secret (service-account JSON, last
+# rotated 2026-07-15) still authenticates — this workflow has run green
+# continuously, including through the 2026-07-31 gem-analysis account scare that
+# an earlier version of this comment called BROKEN. Don't port these steps to the
+# `gws` CLI: it needs an interactive OAuth token that CI has no way to hold.
 # Publishing needs no secret — GITHUB_TOKEN pushes to this repo.
 
 on:

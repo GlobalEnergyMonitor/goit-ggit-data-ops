@@ -23,22 +23,30 @@ conda activate goit-ggit-data-ops
 pip install pre-commit && pre-commit install   # strips outputs from updates/ notebooks at commit
 ```
 
-### Google Sheets access — unsettled (2026-07-31)
+### Google Sheets access (2026-07-31, corrected 2026-08-06)
 
-The `gem-analysis` service account was **deleted**, so `GDRIVE_API_CREDENTIALS`,
-`gem_tracker_constants.sheets`, and every `pygsheets.authorize` call in this repo
-no longer work.
+The `gem-analysis` service account was reported deleted on 2026-07-31, and this
+section previously concluded that `GDRIVE_API_CREDENTIALS` and every
+`pygsheets.authorize` call in the repo had stopped working. **That was too broad —
+CI never broke.** Interactive auth did move to `gws`, but the stored CI secret still
+authenticates fine (evidence below).
 
 - **Interactive reads** go through the `gws` CLI against the work profile
   (`~/.config/gws-gem`, read-only scopes). `route-lengths/sheets_client.py` is the
   pattern new code should follow — it isolates auth behind one function.
-- **Writes** still require explicit per-edit approval, as always.
-- **Writes** go through `gws-gem-write` and are used by exactly one thing:
-  `route-lengths/`, which writes its two backend tabs. That works because it is
-  run by hand — the token never leaves the machine.
-- **Headless/CI access has no replacement credential.** Until one is chosen,
-  `.github/workflows/build-map-data.yml`, `releases/downloads/pipeline_exports.py`,
-  the `updates/` cycle notebooks, and the `dashboards/` apps are broken.
+- **Writes** go through `gws-gem-write`, still require explicit per-edit approval,
+  and are used by exactly one thing: `route-lengths/`, which writes its two backend
+  tabs. That works because it is run by hand — the token never leaves the machine.
+- **Headless/CI access works.** `.github/workflows/build-map-data.yml` and the
+  `releases/downloads/pipeline_exports.py` it calls have run green continuously —
+  including four successful runs on 2026-07-31 itself and daily through 2026-08-06 —
+  using the `GDRIVE_API_CREDENTIALS` repo secret, last rotated 2026-07-15. So no
+  replacement credential is needed for the map build. Don't "fix" it by porting it
+  to `gws`: `gws` needs an interactive OAuth token that CI does not have.
+- **Not re-verified:** the `updates/` cycle notebooks and the `dashboards/` apps read
+  the same service-account credential from the local environment, where no JSON is
+  installed. Check one before assuming either state; the CI evidence above says
+  nothing about them.
 
 ## Folder map
 
