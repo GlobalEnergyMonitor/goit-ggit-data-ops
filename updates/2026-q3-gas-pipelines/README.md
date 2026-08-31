@@ -32,13 +32,16 @@ Work through [CHECKLIST.md](CHECKLIST.md) (copied from
   stamps, optionally joined against the update sheet's assignments. Run
   weekly-ish. **Read-only.**
 - [mid-update-qc-sweep.ipynb](mid-update-qc-sweep.ipynb) — during-data-entry
-  QC on the live sheet: fuel/status/ProjectID sweeps
-  (`gem-tracker-constants`) plus data-entry checks on rows touched this
-  cycle. Run at least monthly and after bulk changes. **Read-only** — fix
-  findings in the live sheet by hand.
+  QC on the live sheet. All the checks live in
+  [../qc/tracker_qc.py](../qc/README.md); the notebook pulls the tab, runs
+  them, and pages through the flagged rows. Run at least monthly and after
+  bulk changes. **Read-only** — fix findings in the live sheet by hand. The
+  same checks run headless as
+  `python ../qc/tracker_qc.py --tracker ggit --cycle-start 2026-07-06`.
 
-Both notebooks still authenticate with `GDRIVE_API_CREDENTIALS` and the
-`gem-analysis` service account, **which was deleted on 2026-07-31** — they will
-fail until repointed at the `gws` CLI read path (see RELEASE-CHECKLIST.md step 1
-and `route-lengths/sheets_client.py`). They also need
+`progress-snapshot.ipynb` still authenticates with `GDRIVE_API_CREDENTIALS` and
+the `gem-analysis` service account, **which was deleted on 2026-07-31** — it
+will fail until repointed at the `gws` read path (`gem-db-ops/ggit/pull.py`, or
+`updates/qc/tracker_qc.load_live` for the pattern). `mid-update-qc-sweep.ipynb`
+was repointed on 2026-08-24 and works. Both need
 `pip install -e ../../gem-tracker-constants` (their first cell does this).

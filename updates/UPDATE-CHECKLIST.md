@@ -60,9 +60,14 @@ Run by:         <name>
       stamps; flag countries with no recent activity and re-balance
       assignments if someone is stuck or ahead
 - [ ] Run `mid-update-qc-sweep.ipynb` periodically (at least monthly, and
-      after any bulk change) — fuel/status/ProjectID sweeps plus data-entry
-      checks on recently touched rows; fix findings **in the live sheet** now,
-      while the researcher who made the change is still on the project
+      after any bulk change) — 13 tiers of checks from
+      [../qc/tracker_qc.py](qc/README.md): vocabularies, types, derived
+      columns, status logic, chronology, plausibility, duplicates,
+      references, geography, cross-field, text hygiene, staleness. Work the
+      FAILs first, then the rows stamped this cycle. Fix findings **in the
+      live sheet** now, while the researcher who made the change is still on
+      the project. Headless equivalent:
+      `python ../qc/tracker_qc.py --tracker ggit --cycle-start <start>`
 - [ ] Triage "QUESTIONS FOR BAIRD" subtasks in Asana as they accumulate
 - [ ] Keep the update sheet's progress columns honest (researchers update
       them when finishing a country; spot-check against the snapshot output)

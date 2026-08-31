@@ -21,6 +21,8 @@ updates/
 ├── researcher-allocation/     per-year allocation notebooks (days-per-country
 │                              math that feeds the update sheet); formerly
 │                              scripts/researcher-requests-scripts/
+├── qc/                        tracker_qc.py — every backend-sheet QC check, shared
+│                              by the CLI and each cycle's mid-update QC notebook
 ├── 2026-q1-oil-pipelines/     GOIT oil/NGL cycle (done; released June 2026)
 └── 2026-q3-gas-pipelines/     GGIT gas cycle (active) — progress + QC notebooks
 ```
@@ -34,7 +36,9 @@ updates/
    and their Asana country tasks.
 3. **The update itself** — researchers work country tasks; PM runs
    `progress-snapshot.ipynb` and `mid-update-qc-sweep.ipynb` (in the cycle
-   folder) to track progress and catch data-entry issues early.
+   folder) to track progress and catch data-entry issues early. The QC
+   notebook is a thin front end over [qc/tracker_qc.py](qc/README.md), which
+   also runs headless.
 4. **Wind-down** — research summaries, carry-over to the future-tasks Asana
    project, data freeze, hand off to the release checklist.
 
