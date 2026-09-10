@@ -121,7 +121,7 @@ The means are computed **globally** — they ignore `REGION_NAME`. Narrowing the
 estimation to a single tracker would leave too few datapoints in each subregion, so the
 filter is only applied at the final capex pivot.
 
-**Sparse-sample fallback.** A region with fewer than `MIN_REGION_DATAPOINTS = 5` unique
+**Sparse-sample fallback.** A region with fewer than `MIN_REGION_DATAPOINTS` unique
 pipelines (or no datapoints at all) is replaced by the **global** mean
 `CostUSDPerKm`. The `DataPoints` column is preserved so you can see how many unique
 projects fed each row.
@@ -131,7 +131,7 @@ projects fed each row.
 Same method as the regional table, grouped by `SubRegion`.
 
 **Sparse-sample fallback** (after the regional fallback runs). A subregion with fewer
-than `MIN_SUBREGION_DATAPOINTS = 3` unique pipelines (or no datapoints) is replaced by
+than `MIN_SUBREGION_DATAPOINTS` unique pipelines (or no datapoints) is replaced by
 the mean for its parent region. Because the region's mean may itself have been replaced
 by the global mean in the previous step, a subregion in a sparse region effectively
 inherits the global value.
@@ -166,6 +166,93 @@ All live in the top-of-notebook config block or the cost cell:
 | `SPREADSHEET_KEY` | June 2026 GOIT key | Source Google Sheet |
 | `REGION_NAME` | `"Global"` | Country filter for the per-country/per-region tables (regional cost means stay global) |
 | `OUTPUT_DIR` | `Path.cwd()` | Where the Excel workbook is written |
-| `MIN_REGION_DATAPOINTS` | `5` | Region cost mean falls back to global below this |
-| `MIN_SUBREGION_DATAPOINTS` | `3` | Subregion cost mean falls back to region below this |
+| `RELEASE_AS_PUBLISHED` | `False` | `True` restores the `5` thresholds this release shipped at |
+| `MIN_REGION_DATAPOINTS` | `3` (shipped at `5`) | Region cost mean falls back to global below this |
+| `MIN_SUBREGION_DATAPOINTS` | `3` (shipped at `5`) | Subregion cost mean falls back to region below this |
 | `qlo_val` / `qhi_val` (inline) | `0.025` / `0.975` | Outlier trim window for `CostUSDPerKm` |
+
+## The datapoint threshold: shipped at 5, restated to 3
+
+This release **ran** both thresholds at `5`; an earlier draft of this README said `3` for
+the subregion one, which was never what the notebook executed. The standing rule is **3**
+for both (set 2026-09-02, extended to every tracker 2026-09-03; see
+`../2026-q4-gas-pipelines/README.md` section 4), and the notebook now carries `3` — so it
+no longer reproduces the shipped tables. `RELEASE_AS_PUBLISHED = True` brings the `5`s
+back. Unlike the gas side — where the 3-vs-5 choice is a no-op — it binds here:
+
+| Table | Sample size | Ran at 5 | Under the standing 3 |
+|---|---|---|---|
+| Oil, South-eastern Asia | 4 | inherits Asia (3.07) | own mean, 1.24 |
+| Oil, Southern Europe | 4 | inherits Europe (2.54) | own mean, 0.97 |
+| NGL, Northern Africa | 3 | inherits Africa (2.12) | own mean, 0.52 |
+| NGL, Eastern Europe | 4 | inherits Europe (2.12) | own mean, 0.96 |
+| NGL region, Africa | 3 | inherits global (2.12) | own mean, 0.52 |
+| NGL region, Europe | 4 | inherits global (2.12) | own mean, 0.96 |
+
+Oil Western Europe (1) and the NGL Oceania region (1), plus every 0-datapoint subregion,
+fall back under either threshold. The two restated NGL *regions* cascade: their
+0-datapoint subregions (Sub-Saharan Africa, Northern/Southern/Western Europe) inherit the
+restated regional figure rather than the global one.
+
+Note the direction. Relaxing 5 → 3 lets thin samples publish their own mean, and here every
+such sample is **cheaper** than the tier above it, so the restatement lowers capex — by
+0.6% on oil operating and 11% on NGL operating. That is the rule working as specified (a
+3-pipeline mean is publishable, a 2-pipeline mean is not), not an argument for the number 5;
+but NGL Northern Africa at US$0.52M/km off three pipelines is the thinnest published average
+in either tracker and is worth a sanity check at the next release.
+
+### Restated on 2026-09-04
+
+Verified first: with `RELEASE_AS_PUBLISHED = True` the repointed notebook (see below)
+reproduces the published wiki cost-per-km table exactly, all 22 oil values.
+
+Global capex, US$ bn, as shipped → restated:
+
+| status | Oil shipped | Oil restated | NGL shipped | NGL restated |
+|---|---|---|---|---|
+| proposed | 54.94 | 54.75 | 15.19 | 14.99 |
+| construction | 43.29 | 43.29 | 6.43 | 5.49 |
+| **in development** | **98.23** | **98.03** | **21.62** | **20.48** |
+| shelved | 18.63 | 17.08 | 0.35 | 0.35 |
+| cancelled | 186.22 | 185.91 | 2.88 | 2.31 |
+| operating | 1,053.69 | 1,047.41 | 182.92 | 162.26 |
+| idle | 12.93 | 12.74 | 0.33 | 0.33 |
+| mothballed | 14.32 | 14.32 | 3.62 | 3.62 |
+| retired | 54.74 | 54.53 | 0.15 | 0.15 |
+
+Country movements are confined to the six restated levels: on oil, Greece, Italy, Spain,
+Portugal, Albania, North Macedonia, Serbia, Brunei, Cambodia, Indonesia, Malaysia and
+Myanmar; on NGL, Algeria, Egypt, Libya, Tunisia, Belgium, France, Germany, the Netherlands
+and Russia. Everything else is unchanged to the cent.
+
+**Where the restatement landed:** the wiki's Oil section
+([GGIT and GOIT cost estimates](https://www.gem.wiki/GGIT_and_GOIT_cost_estimates)) — prose
+"fewer than five data points" → "three", plus the two changed oil subregion values.
+**Nowhere else, because there is nowhere else:** the published GOIT summary-tables workbook
+([`1OYH6D7c…`](https://docs.google.com/spreadsheets/d/1OYH6D7c-D0FsL5GzBGijtkmvQCTkBUclj-UVoOieUFo/edit))
+carries only km tabs — km by country/area, region, owner and start year — and has never
+published a capex tab, for any GOIT release. The capex tables of this release exist only in
+the per-run `.xlsx` (gitignored) and in the wiki table. The `Pipeline capex estimates by …`
+tabs in the *other* workbook (`1NbEpGt2K5nY…`) are GGIT gas, not GOIT, and were restated
+separately.
+
+## Reads go through `gem-db-ops`, not `pygsheets` (2026-09-04)
+
+The load cell used `pygsheets.authorize(service_account_env_var="GDRIVE_API_CREDENTIALS")`,
+which died with the `gem-analysis` service account on 2026-07-31 — this notebook could not
+run at all between then and the restatement. It now reads via the sibling `gem-db-ops` repo
+(read-only `gws-gem` profile): `read_tab_values(title, SPREADSHEET_KEY)`, wrapped in a
+`load_sheet` that keeps the old loader's contract (formatted-value strings, rows padded to
+the widest, all-blank trailing rows dropped).
+
+**Call the library, never the `gem_sheets.py` CLI.** The CLI silently ignores `--sheet-key`
+for its four registered tab titles — `"Oil/NGL pipelines"` among them — and hands back the
+rolling backend instead of the snapshot. The library call takes an explicit key.
+
+Repointing also surfaced a latent break: the header offsets had drifted to the **rolling
+backend** while `SPREADSHEET_KEY` still named the June 2026 snapshot. `Country ratios by
+pipeline` was being read at `start="A2"`, correct for the backend since it gained an A1
+run-stamp row on 2026-08-05 but one row low for this snapshot, which put a data row in the
+header and raised `KeyError: 'Status'` downstream. Now `start=None`. The committed notebook
+could not have reproduced its own release even with working auth. **Re-point the key and the
+offsets together, never one without the other.**

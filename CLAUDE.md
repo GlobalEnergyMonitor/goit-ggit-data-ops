@@ -43,6 +43,29 @@ README.md for the folder map and the typical release workflow.
   read; column-index maps come from `gem-db-ops/gem_colmap.py`. `route-lengths/`
   keeps the ONLY write path (`sheets_client.py` + `sheet_writer.py`, `gws-gem-write`,
   per-edit approval) — never add a write to gem-db-ops.
+- **A published cost average needs at least 3 datapoints** (standing rule, set
+  2026-09-02). In every capex/cost-per-km notebook,
+  `MIN_REGION_DATAPOINTS = MIN_SUBREGION_DATAPOINTS = 3`; a level below the
+  threshold inherits the tier above (subregion → region → global) rather than
+  publishing its own mean, and the `DataPoints` column stays in the output so
+  the sample size is auditable. Nov 2025 gas had no threshold and published
+  Melanesia at US$0.48M/km off one pipeline; June 2026 GOIT ran 5/5 while its
+  README claimed 3. It is a no-op on gas averages above the 3–4 band but it
+  binds on oil/NGL: see
+  `releases/summary-sheets/2026-q4-gas-pipelines/README.md` section 4 and the
+  oil folder's README table. The LNG notebooks already use 3
+  (`CAPEX_MIN_POINTS`). **Nov 2025 gas was restated to the rule on 2026-09-04**
+  — Melanesia now inherits Oceania (US$2.68M/km), moving Papua New Guinea
+  in-development capex 0.15 → 0.86 and the global total 554.05 → 554.76 US$ bn,
+  in the published summary tables, the wiki cost-estimates page and the
+  dashboard-refresh CSVs. **June 2026 oil/NGL was restated the same day** —
+  six sparse levels now publish their own means, lowering oil operating capex
+  1,053.7 → 1,047.4 and NGL operating 182.9 → 162.3 US$ bn. Its only published
+  surface is the wiki's Oil section (the GOIT summary-tables workbook has never
+  carried a capex tab, for any release), so that is all that was rewritten.
+  Restating it first required repointing the notebook's dead
+  `pygsheets.authorize` at `gem-db-ops` — done, and note that repointing a key
+  means checking the header offsets in the same edit (see that folder's README).
 - Fuel buckets and status lists come from the `gem-tracker-constants` package,
   which lives in this repo at `gem-tracker-constants/` (install with
   `pip install -e ./gem-tracker-constants`). Never re-declare fuel lists

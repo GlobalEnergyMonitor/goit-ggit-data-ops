@@ -31,7 +31,7 @@ export capacity edits:
 | capacity by country/area and region | September download | residuals are published-side errors only |
 | operating capacity by start year | either — unaffected by the diff | **exact on both** |
 | capacity by owner | the 2025-10-23 `owners all corrected` export | **exact on both tabs** |
-| capex | September download, via the retired Colab cost notebook | **exact on all four** |
+| capex | September download, via the retired Colab cost notebook | **restated** — see the floating fix |
 
 The three capacity edits that separate them are all United States export units, and they
 postdate the capacity pivots: Rio Grande T5 (Phase 2) `proposed 5.4` → `construction 6.0`,
@@ -174,15 +174,17 @@ tie; only the row list is shorter.
 ### Capex (4 tabs)
 
 Transcribed from the retired Colab notebook that produced the published capex tabs
-(`Summary table python code.ipynb`). **All four reproduce exactly** against the September
-snapshot — no cell differs by more than 0.001 US$ bn.
+(`Summary table python code.ipynb`). All four reproduced **exactly** against the September
+snapshot — no cell differed by more than 0.001 US$ bn — until the floating-unit fix below
+was switched on (2026-09-03). They are now a **restatement** of the published tabs, and
+`CAPEX_FIX_FLOATING = False` returns the original figures.
 
 1. derive cost-per-mtpa as `CostUSD / CapacityinMtpa`, then overwrite it wherever
    `TotKnownTerminalCostsUSD` and the matching terminal total capacity both exist;
 2. split the cost sample on `Offshore`, collapse each terminal to one datapoint carrying
    its mean, then trim each side to the 10th–90th percentile;
-3. onshore — mean cost-per-mtpa per top-level `Region`, falling back to the global mean
-   below three datapoints; offshore — global mean always;
+3. mean cost-per-mtpa per top-level `Region`, separately for onshore and floating,
+   each falling back to the global mean below three datapoints;
 4. estimate `capacity × regional cost-per-mtpa`, then override with unit `CostUSD`, then
    override again with `TotKnownTerminalCostsUSD / NumberOfUnits`.
 
@@ -199,17 +201,37 @@ Three details are load-bearing and none is obvious:
   units' shares — exactly +1.83 US$ bn on Commonwealth LNG and +0.25 on Tabeer LNG, which
   is what the last four residuals on each capex tab turned out to be.
 
-Two defects in the source method are **reproduced deliberately**, because they are what
-produced the published figures:
+### The floating-unit defect, and the fix (2026-09-03)
 
-- the step-1 override is unconditional — the source has its `& isna()` guard commented
-  out — so a terminal-level ratio replaces a unit-level one even where the unit ratio is
-  the better number. Import runs after export, so import wins on a terminal carrying both;
-- the estimate step tests `Floating == "yes"` while the column holds `True`/blank, so it
-  **never matches**. The offshore regional table is computed and then never used, and every
-  unit is costed at its onshore regional rate. `FLOATING_TRUE_TOKEN` in the config block
-  exists to flip this: set it to `True` to cost floating units properly, at the cost of no
-  longer matching 2025.
+The source's estimate step tests `Floating == "yes"` while the column holds `True`/blank, so
+it **never matched**: the floating rate table was computed and then never used, and every
+FSRU was costed at its onshore regional rate. The source compounded this by forcing the
+floating rates to the global mean while onshore used regional means — an unconditional
+assignment where a sparse-sample fallback was intended.
+
+`CAPEX_FIX_FLOATING = True` corrects both, and is now on. Floating units cost at their
+region's floating rate, with the same `CAPEX_MIN_POINTS = 3` fallback to the global mean
+that onshore uses. Set the flag to `False` to reproduce the tabs as first published; the
+notebook's comparison cell prices both either way, so the alternative is never hidden.
+
+What it moves, on the September snapshot (US$ bn, all statuses):
+
+| | as first published | with the fix |
+|---|---|---|
+| export terminal capex | 1,938.6 | **1,962.8** (+24.2) |
+| import terminal capex | 774.5 | **693.9** (−80.6) |
+
+Import falls because floating import terminals are cheap per mtpa (Asia 144.6 US$M/mtpa
+against an onshore Asia rate of 285.8) and there are many of them; export rises because
+floating export is *expensive* (Africa 1,174.4 against an onshore 412.6). In development
+alone: export 837.08 → 843.69 (Nigeria +6.17), import 155.65 → 135.97 (Brazil −4.59,
+India −3.81, LAC −8.19 as a subregion).
+
+One defect in the source method is still **reproduced deliberately**, because it is what
+produced the published figures: the step-1 override is unconditional — the source has its
+`& isna()` guard commented out — so a terminal-level ratio replaces a unit-level one even
+where the unit ratio is the better number. Import runs after export, so import wins on a
+terminal carrying both.
 
 ## The published tabs do not reconcile against themselves
 
@@ -251,15 +273,19 @@ pasted as values rounded to 1 dp, while the owner and capex tabs carry full prec
 | operating capacity by start year | **0 — exact** | **0 — exact** |
 | export capacity by owner | 27 | **0 — exact** |
 | import capacity by owner | 9 | **0 — exact** |
-| export terminal capex by country/area | **0 — exact** | 36 (the 3 US edits) |
-| export terminal capex by region | **0 — exact** | 23 (the 3 US edits) |
-| import terminal capex by country/area | **0 — exact** | **0 — exact** |
-| import terminal capex by region | **0 — exact** | **0 — exact** |
+| export terminal capex by country/area | 20 — restated | 39 (restated + the 3 US edits) |
+| export terminal capex by region | 18 — restated | 26 (restated + the 3 US edits) |
+| import terminal capex by country/area | 114 — restated | 114 — restated |
+| import terminal capex by region | 64 — restated | 64 — restated |
 
-Bold marks the snapshot each tab family should be read from. Read that way, **every one of
-the eleven tabs reproduces exactly or to published-side error only**: the start-year tab,
-the four capex tabs and both owner tabs cell-for-cell, and the four capacity tabs down to
-the three published-side error classes above.
+Bold marks the snapshot each tab family should be read from. Read that way, **the seven
+non-capex tabs reproduce exactly or to published-side error only**: the start-year tab and
+both owner tabs cell-for-cell, and the four capacity tabs down to the three published-side
+error classes above. The four capex tabs no longer match by design — the floating fix
+restates them, and all four published capex tabs were rewritten to the restated figures on
+2026-09-04 (2,997 cells across the six capex tabs in one batch, with the gas Melanesia fix;
+Changelog rows added). Flip `CAPEX_FIX_FLOATING` to `False` to re-verify the original
+reproduction.
 
 ## Tunable parameters
 
@@ -270,8 +296,9 @@ the three published-side error classes above.
 | `START_YEAR_FLOOR` | `1980` | pivot's row floor; drops ~182.7 mtpa |
 | `CAPEX_QLO`, `CAPEX_QHI` | `0.10`, `0.90` | quantile trim on the cost-per-mtpa sample |
 | `CAPEX_MIN_POINTS` | `3` | datapoints needed for a regional mean |
-| `CAPEX_FLOATING_ALWAYS_GLOBAL` | `True` | offshore never uses a regional mean |
-| `FLOATING_TRUE_TOKEN` | `"yes"` | reproduces the source's dead floating branch; `True` fixes it |
+| `CAPEX_FIX_FLOATING` | `True` | floating units cost at the floating rate, regionally |
+| `CAPEX_FLOATING_ALWAYS_GLOBAL` | derived | `not CAPEX_FIX_FLOATING` — don't set it directly |
+| `FLOATING_TRUE_TOKEN` | derived | `True` with the fix on, `"yes"` (dead branch) off |
 | `TOL_ROUNDED` / `TOL_EXACT` | `0.06` / `0.001` | validation tolerances |
 
 ## Forking for Q4 2026
@@ -284,7 +311,8 @@ the three published-side error classes above.
    the terminals it prints, though; the set will differ.
 4. Drop `REFERENCE_JSON` and the validation section, or repoint it at the 2026 published
    tabs once they exist.
-5. Decide whether to keep the two reproduced capex defects (see the capex section) —
-   fixing either changes published-comparable figures, so say so in the release notes.
+5. Keep `CAPEX_FIX_FLOATING = True` (it already is in the 2026 Q4 notebooks). The one
+   remaining reproduced defect is the unconditional step-1 override — decide on it, and
+   say so in the release notes either way, since it changes published-comparable figures.
 6. Raise with the tracker lead: the self-reconciliation failures, the start-year tab's
    title, and the `Idle`/`Idled` drift in `gem-tracker-constants`.
