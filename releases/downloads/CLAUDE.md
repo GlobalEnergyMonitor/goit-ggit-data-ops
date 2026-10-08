@@ -24,6 +24,20 @@ geojson. See this folder's README.md for setup and configuration.
   match QC totals.
 - Route geometries are read from a local checkout of
   `goit-ggit-pipeline-routes` (`PIPELINE_ROUTES_PATH` in the config cell).
+- **A "NO-ROUTE CONFLICT" warning is a sheet bug, not an exporter bug.** It
+  means a row is `RouteAccuracy = no route` while a real geometry sits in the
+  routes repo; `enforce_no_route_null_geometry()` then nulls it, so a route
+  that exists never reaches the downloader. Fix it in the sheet, not in code,
+  and change **both** `RouteType` ("Not mapped (but could be …)" →
+  "Mapped route (at any accuracy)") and `RouteAccuracy` — changing only the
+  accuracy leaves the row self-contradictory. Grade from the data
+  dictionary's own `RouteAccuracy` definitions, and mind the cap it states:
+  **unbuilt pipelines (proposed/shelved/cancelled/under construction) cap at
+  `medium`** — a georeferenced 3,000-point route on a *proposed* pipeline is
+  still `medium`, not `high`. Four gas rows were fixed this way on
+  2026-09-14 (P2995 high, P3185 low, P6531 medium-by-cap, P6623 medium).
+  The mirror-image case — no geometry on disk but an accuracy grade set —
+  gets a null-geometry stub committed to the routes repo instead.
 - `data-files/` holds release artifacts. `.gpkg`/`.zip` are
   committed deliberately (kept under GitHub's 100 MB limit); `.xlsx`,
   `.geojson`, `.csv` are gitignored. Don't add data files to commits unless

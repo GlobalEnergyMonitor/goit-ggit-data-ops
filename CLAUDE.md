@@ -25,22 +25,31 @@ README.md for the folder map and the typical release workflow.
   (summary sheets). `updates/` cycle notebooks must be
   committed output-free — a `.pre-commit-config.yaml` nbstripout hook enforces
   this for anyone who has run `pre-commit install`.
-- **Google Sheets auth is broken repo-wide** (2026-07-31): the `gem-analysis`
-  service account was deleted, taking `GDRIVE_API_CREDENTIALS`,
-  `gem_tracker_constants.sheets`, and every `pygsheets.authorize` call with it.
-  New code reads via the `gws` CLI (`~/.config/gws-gem`, read-only) —
+- **Google Sheets auth: don't build on `gem-analysis`.** The account was
+  reported deleted 2026-07-31, but `GDRIVE_API_CREDENTIALS` still
+  authenticated on 2026-09-14 — it both read and wrote the pipelines Sheet
+  during the 2026-09 gas release build. That is a reprieve, not a green
+  light: the account is expected to go away, so never point new code at it.
+  New code reads the tracker Sheets through the `gws` CLI against the work
+  shared drive (`~/.config/gws-gem`, read-only) —
   `route-lengths/sheets_client.py` is the pattern to copy, and it keeps auth
   behind one function so the eventual CI credential is a one-place change.
   `gem_tracker_constants.sheets` is still the home of `PIPELINES_SHEET_KEY`;
-  its `authorize`/`get_sheet` are dead. Existing notebooks are unfixed —
+  its `authorize`/`get_sheet` are dead. Two things still ride on the old
+  credential and must not be "fixed" casually: `releases/downloads/
+  pipeline_exports.py` and the `build-map-data.yml` CI job that imports it
+  (CI uses a *different* account in the same env var and has never been
+  broken — check `gh run list` before claiming otherwise; a GitHub runner
+  cannot do gws's interactive OAuth). Existing notebooks are unfixed —
   repoint one when you next touch it, don't do a blanket rewrite.
 - **Reads come from `gem-db-ops`; writes stay here.** The sibling `gem-db-ops` repo
-  is the single source of truth for pulling GEM data — pipelines Sheet
-  (`ggit/pull.py`, `goit/pull.py`, `--with-owners`) and read-only Postgres
-  (`lng/pull.py`, `gogpt/pull.py`, `goget/pull.py`). When repointing a notebook or
-  writing new code, call one of those (or `python ../gem-db-ops/gem_sheets.py --tab
-  ggit -o …` for an arbitrary tab) rather than hand-rolling another Sheets/Postgres
-  read; column-index maps come from `gem-db-ops/gem_colmap.py`. `route-lengths/`
+  is the single source of truth for the read-only Postgres pulls
+  (`lng/pull.py`, `gogpt/pull.py`, `goget/pull.py`); column-index maps come from
+  `gem-db-ops/gem_colmap.py`. **Pipelines are the exception (2026-09-14): read
+  the pipelines Sheet via the `gws` CLI against the shared drive, not via
+  `gem-db-ops`.** When repointing a pipelines notebook, go to `gws-gem` /
+  `route-lengths/sheets_client.py` — not to `ggit/pull.py` or `goit/pull.py`,
+  and not to a hand-rolled Sheets read. `route-lengths/`
   keeps the ONLY write path (`sheets_client.py` + `sheet_writer.py`, `gws-gem-write`,
   per-edit approval) — never add a write to gem-db-ops.
 - **A published cost average needs at least 3 datapoints** (standing rule, set
