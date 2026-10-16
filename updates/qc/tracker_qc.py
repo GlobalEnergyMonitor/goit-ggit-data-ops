@@ -99,6 +99,7 @@ VALUE_REF_PAIRS = [('Status', 'Status [ref]'), ('Fuel', 'Fuel [ref]'),
                    ('CancelledYear', 'Cancelled [ref]'),
                    ('ShelvedYear', 'Shelved [ref]'), ('StopYear', 'Stop [ref]'),
                    ('FIDYear', 'FID [ref]'), ('Delayed', 'Delay [ref]'),
+                   ('DataCenter', 'DataCenter [ref]'),
                    ('SegmentCost', 'SegmentCost [ref]'),
                    ('ProjectLevelCost', 'ProjectLevelCost [ref]'),
                    ('Cost', 'Cost [ref]')]
@@ -123,6 +124,7 @@ VOCABULARIES = {
     'ShelvedCancelledType': {'confirmed', 'inferred'},
     'EuropeTracker': {'yes'},
     'AssociatedWithUSLNGExports': {'yes'},
+    'DataCenter': {'yes'},  # gas tab; blank = not tied to a data center
     'PipelineDirectionality': {'unidirectional', 'bidirectional'},
     'LengthKnownUnits': {'km', 'mi'},
     'DiameterUnits': {'in', 'mm'},
