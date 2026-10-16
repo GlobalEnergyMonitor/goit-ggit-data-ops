@@ -7,7 +7,7 @@
 
 \f0\fs24 \cf0 #Numbers of LNG terminals by company\
 \
-owners<-read.csv("/Users/lydia/Desktop/own.csv", header=TRUE)\
+owners<-read.csv("~/Desktop/own.csv", header=TRUE)\
 owners<-subset(owners, Type=="LNG")\
 names(owners)\
 owners<-owners[c(4,5,8,11,14,17,20,23,26,29,32,35)]\
@@ -40,14 +40,14 @@ names(owners)\
 \
 #all terminals\
   ownersall<-table(owners$Owner, owners$Status)\
-  write.csv(ownersall,'/Users/lydia/Desktop/LNG Terminals by Owner.csv')\
+  write.csv(ownersall,'~/Desktop/LNG Terminals by Owner.csv')\
 \
 #import terminals \
  import<-subset(owners, Facility=="Import")\
  numimp<-table(import$Owner, import$Status)\
- write.csv(numimp,'/Users/lydia/Desktop/Import Terminals by Owner.csv')\
+ write.csv(numimp,'~/Desktop/Import Terminals by Owner.csv')\
 \
 #export terminals \
  export<-subset(owners, Facility=="Export")\
  numexp<-table(export$Owner, export$Status)\
- write.csv(numexp,'/Users/lydia/Desktop/Export Trains by Owner.csv')}
+ write.csv(numexp,'~/Desktop/Export Trains by Owner.csv')}

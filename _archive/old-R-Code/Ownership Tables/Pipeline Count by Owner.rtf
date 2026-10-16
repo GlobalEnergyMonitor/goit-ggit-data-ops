@@ -7,7 +7,7 @@
 
 \f0\fs24 \cf0 #Numbers of pipelines by company\
 \
-  owner<-read.csv("/Users/lydia/Desktop/Owners_122120.csv", header=TRUE)\
+  owner<-read.csv("~/Desktop/Owners_122120.csv", header=TRUE)\
   names(owner)\
   owner<-owner[c(3,4,7,9,10,12,13,15,16,18,19,21,22,24,25,27,28,30,31,33,34,36,37,39)]\
   names(owner)\
@@ -52,12 +52,12 @@
 \
 gas<-subset(combo, Fuel=="Gas")\
 gasnum<-table(gas$Owner, gas$Status)\
-write.csv(gasnum,'/Users/lydia/Desktop/Gas Pipelines by Owner.csv')\
+write.csv(gasnum,'~/Desktop/Gas Pipelines by Owner.csv')\
 \
 oil<-subset(combo, Fuel=="Oil")\
 oilnum<-table(oil$Owner, oil$Status)\
-write.csv(oilnum,'/Users/lydia/Desktop/Oil Pipelines by Owner.csv')\
+write.csv(oilnum,'~/Desktop/Oil Pipelines by Owner.csv')\
 \
 ngl<-subset(combo, Fuel=="NGL")\
 nglnum<-table(ngl$Owner, ngl$Status)\
-write.csv(nglnum,'/Users/lydia/Desktop/NGL Pipelines by Owner.csv')}
+write.csv(nglnum,'~/Desktop/NGL Pipelines by Owner.csv')}

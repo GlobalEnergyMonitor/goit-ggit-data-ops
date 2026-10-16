@@ -8,7 +8,7 @@
 \f0\fs24 \cf0 #Capacity by company, prorated by ownership share\
 #format mtpa (Terminals) and PercentN (Owners) columns to numbers first\
 \
-  owners<-read.csv("/Users/lydia/Desktop/own.csv", header=TRUE)\
+  owners<-read.csv("~/Desktop/own.csv", header=TRUE)\
   owners<-subset(owners, owners$Type=="LNG")\
   \
   names(owners) \
@@ -122,12 +122,12 @@
   library(reshape2)\
 \
   perall2 <- dcast(perall, Owner ~ Status, value.var = "PropCap", fun.aggregate = sum)\
-  write.csv(perall2,'/Users/lydia/Desktop/LNG Terminal Capacity by Owner.csv')\
+  write.csv(perall2,'~/Desktop/LNG Terminal Capacity by Owner.csv')\
 \
   import <- subset(perall, Facility=="Import")\
   import <- dcast(import, Owner ~ Status, value.var = "PropCap", fun.aggregate = sum)\
-  write.csv(import,'/Users/lydia/Desktop/LNG Import Terminal Capacity by Owner.csv')\
+  write.csv(import,'~/Desktop/LNG Import Terminal Capacity by Owner.csv')\
 \
   export <- subset(perall, Facility=="Export")\
   export <- dcast(export, Owner ~ Status, value.var = "PropCap", fun.aggregate = sum)\
-  write.csv(export,'/Users/lydia/Desktop/LNG Export Terminal Capacity by Owner.csv')}
+  write.csv(export,'~/Desktop/LNG Export Terminal Capacity by Owner.csv')}
