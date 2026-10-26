@@ -51,12 +51,14 @@ explain what each check means and what to do when it fires.
 These are reported, not hard-failed, because expected values differ by release:
 
 - **Fuel** — after simplification should be a small set (e.g. `Oil` / `NGL`;
-  dual-fuel strings like `Oil, NGL` simplify to `Oil`). Anything unexpected
+  dual-fuel strings like `Oil, NGL` simplify to `Oil`; GGIT is lowercase
+  `gas` from Nov 2026). Anything unexpected
   means the fuel-bucket filter in the export notebook (driven by
   `gem-tracker-constants`) and this repo's QC disagree.
 - **Status** — canonical lowercase set: `proposed, construction, operating,
-  idle, mothballed, shelved, cancelled, retired`. `N/A` must not appear (the
+  idled, mothballed, shelved, cancelled, retired` (`idle` before the October 2026 rename). `N/A` must not appear (the
   export filters it).
+- **SYSTEM/NETWORK INFO rows** (the one hard FAIL in this section) — `SegmentName` rows that summarize a whole network next to its segment rows. The export drops them, so any that appear mean the export ran on an old `gem-tracker-constants` (before 0.8.0).
 - **RouteType / RouteAccuracy** — known vocab; `no route` interacts with
   geometry checks below.
 - **Units columns** (`CapacityUnits`, `DiameterUnits`, `LengthKnownUnits`,

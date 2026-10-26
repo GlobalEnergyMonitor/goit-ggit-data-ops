@@ -35,13 +35,15 @@ README.md for the folder map and the typical release workflow.
   `route-lengths/sheets_client.py` is the pattern to copy, and it keeps auth
   behind one function so the eventual CI credential is a one-place change.
   `gem_tracker_constants.sheets` is still the home of `PIPELINES_SHEET_KEY`;
-  its `authorize`/`get_sheet` are dead. Two things still ride on the old
-  credential and must not be "fixed" casually: `releases/downloads/
-  pipeline_exports.py` and the `build-map-data.yml` CI job that imports it
-  (CI uses a *different* account in the same env var and has never been
-  broken — check `gh run list` before claiming otherwise; a GitHub runner
-  cannot do gws's interactive OAuth). Existing notebooks are unfixed —
-  repoint one when you next touch it, don't do a blanket rewrite.
+  its `authorize`/`get_sheet` are dead. `releases/downloads/pipeline_exports.py`
+  reads through `gws-gem` by default (2026-10-26); it falls back to pygsheets
+  only when `GDRIVE_API_CREDENTIALS` is set, which is how the
+  `build-map-data.yml` CI job runs (CI uses a *different* service account in
+  that secret and works — check `gh run list` before claiming otherwise; a
+  GitHub runner cannot do gws's interactive OAuth). Unset that variable in a
+  local shell, or the exporter takes the service-account path. Existing
+  notebooks are unfixed — repoint one when you next touch it, don't do a
+  blanket rewrite.
 - **Reads come from `gem-db-ops`; writes stay here.** The sibling `gem-db-ops` repo
   is the single source of truth for the read-only Postgres pulls
   (`lng/pull.py`, `gogpt/pull.py`, `goget/pull.py`); column-index maps come from

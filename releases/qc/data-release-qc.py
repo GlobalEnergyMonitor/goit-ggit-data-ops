@@ -29,7 +29,7 @@ VALUE_UNITS_PAIRS = [('Capacity', 'CapacityUnits'), ('Diameter', 'DiameterUnits'
                      ('LengthKnown', 'LengthKnownUnits'), ('Cost', 'CostUnits')]
 STATUS_MILESTONES = [('cancelled', 'CancelledYear'), ('shelved', 'ShelvedYear'),
                      ('retired', 'StopYear')]
-CANONICAL_STATUSES = {'proposed', 'construction', 'operating', 'idle',
+CANONICAL_STATUSES = {'proposed', 'construction', 'operating', 'idled',
                       'mothballed', 'shelved', 'cancelled', 'retired'}
 START_END_LOCATION_PARTS = ['Location', 'Prefecture/District', 'State/Province',
                             'CountryOrArea', 'Region', 'SubRegion']
@@ -147,6 +147,15 @@ def check_categoricals(df):
             report('FAIL', 'Status vocabulary', f"unexpected: {sorted(bad)}")
         else:
             report('OK', 'Status vocabulary', str(df['Status'].value_counts().to_dict()))
+    if 'SegmentName' in df.columns:
+        # network summary rows; the export drops them (gem-tracker-constants)
+        info = df['SegmentName'].astype(str).str.strip().str.upper().str.startswith(
+            'SYSTEM/NETWORK INFO')
+        if info.any():
+            report('FAIL', 'no SYSTEM/NETWORK INFO rows',
+                   str(df.loc[info, 'ProjectID'].tolist() if 'ProjectID' in df else int(info.sum())))
+        else:
+            report('OK', 'no SYSTEM/NETWORK INFO rows')
     for col in ['RouteType', 'RouteAccuracy', 'CapacityUnits', 'DiameterUnits',
                 'LengthKnownUnits', 'CostUnits']:
         if col in df.columns:

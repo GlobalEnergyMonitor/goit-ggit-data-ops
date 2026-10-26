@@ -49,11 +49,17 @@ MISSING = {'', '--', 'nan', 'None'}
 # Canonical vocabularies. Statuses come from gem-tracker-constants when it is
 # installed so this file never becomes a second declaration of them.
 try:
-    from gem_tracker_constants import PIPELINE_STATUS
+    from gem_tracker_constants import PIPELINE_STATUS, is_system_info_row
     CANONICAL_STATUSES = set(PIPELINE_STATUS)
 except ImportError:  # pragma: no cover - constants package not installed
-    CANONICAL_STATUSES = {'proposed', 'construction', 'operating', 'idle',
+    CANONICAL_STATUSES = {'proposed', 'construction', 'operating', 'idled',
                           'mothballed', 'shelved', 'cancelled', 'retired'}
+
+    def is_system_info_row(df, segment_col='SegmentName'):
+        if segment_col not in df.columns:
+            return pd.Series(False, index=df.index)
+        seg = df[segment_col].astype(str).str.strip().str.upper()
+        return seg.str.startswith('SYSTEM/NETWORK INFO')
 
 YEAR_COLS = ['ProposalYear', 'ConstructionYear', 'StartYear1', 'StartYear2',
              'StartYear3', 'StartYearEarliest', 'ShelvedYear', 'CancelledYear',
@@ -85,7 +91,7 @@ VALUE_UNITS_PAIRS = [('Capacity', 'CapacityUnits'), ('Diameter', 'DiameterUnits'
 STATUS_MILESTONES = [('cancelled', 'CancelledYear'), ('shelved', 'ShelvedYear'),
                      ('retired', 'StopYear')]
 # statuses that imply the pipeline has been built and should have a start year
-BUILT_STATUSES = {'operating', 'idle', 'mothballed', 'retired'}
+BUILT_STATUSES = {'operating', 'idled', 'mothballed', 'retired'}
 IN_DEV_STATUSES = {'proposed', 'construction'}
 
 # Value -> ref column pairs. Sparse refs are a known legacy backlog, so these
@@ -333,13 +339,22 @@ def check_vocabularies(c: Checker):
 
     if c.has('Status'):
         status = c.s('Status')
-        bad = ~status.isin(CANONICAL_STATUSES) & ~status.isin(MISSING)
+        # 'N/A' is a deliberate backend value (not a real pipeline); every
+        # release output drops it, so it is reported as a NOTE, not a FAIL.
+        na = status == 'N/A'
+        # SYSTEM/NETWORK INFO rows are dropped from every release output too,
+        # and may carry a summary status such as 'mixed status'
+        info = is_system_info_row(c.df)
+        bad = ~status.isin(CANONICAL_STATUSES) & ~status.isin(MISSING) & ~na & ~info
         normalizable = bad & status.str.lower().str.strip().isin(CANONICAL_STATUSES)
         c.flag('non-canonical Status', bad, ['Status'], 'FAIL',
                detail=f'{int(normalizable.sum())} of them differ only by case/'
                       'whitespace; the rest drop out of every status-bucket filter',
                ok_detail=str(status[c.real].value_counts().to_dict()))
-        c.flag('blank Status on a real row', c.blank('Status'), level='FAIL')
+        c.flag('Status N/A (dropped from release outputs)', na, ['Status'], 'NOTE')
+        c.flag('SYSTEM/NETWORK INFO row (dropped from release outputs)', info,
+               ['SegmentName', 'Status'], 'NOTE')
+        c.flag('blank Status on a real row', c.blank('Status') & ~info, level='FAIL')
 
     if c.has('Fuel'):
         try:
@@ -546,7 +561,7 @@ def check_status_logic(c: Checker):
                ['ConstructionYear'], 'WARN')
     if c.has('StartYear1'):
         built = status.isin(BUILT_STATUSES)
-        c.flag('built rows (operating/idle/mothballed/retired) missing StartYear1',
+        c.flag('built rows (operating/idled/mothballed/retired) missing StartYear1',
                built & c.blank('StartYear1'), ['StartYear1'], 'WARN',
                ok_detail=f'{int((built & c.real).sum())} built rows')
         c.flag('in-development row with a StartYear1 already in the past',
@@ -763,6 +778,15 @@ def check_geography(c: Checker):
 # Tier 10 — cross-field flag coherence
 # ---------------------------------------------------------------------------
 
+def _fuel(c: Checker) -> pd.Series:
+    """Fuel in canonical bucket spelling ('gas' -> 'Gas'), for comparisons."""
+    try:
+        from gem_tracker_constants import normalize_fuels
+    except ImportError:
+        return c.s('Fuel')
+    return normalize_fuels(pd.DataFrame({'Fuel': c.s('Fuel')}))['Fuel']
+
+
 def check_cross_field(c: Checker):
     c.tier = '10. cross-field flags'
 
@@ -791,12 +815,14 @@ def check_cross_field(c: Checker):
         any_h2 = pd.Series(False, index=c.df.index)
         for col in h2_cols:
             any_h2 |= c.filled(col)
+        # GAS_HYDROGEN_FUEL_OPTIONS is the gas-or-hydrogen bucket and includes
+        # plain 'Gas', so it is not the list of hydrogen-bearing fuels
         try:
-            from gem_tracker_constants import GAS_HYDROGEN_FUEL_OPTIONS
-            h2_fuels = set(GAS_HYDROGEN_FUEL_OPTIONS) | set()
+            from gem_tracker_constants import HYDROGEN_FUEL_OPTIONS
+            h2_fuels = {'Gas and Hydrogen'} | set(HYDROGEN_FUEL_OPTIONS)
         except ImportError:
             h2_fuels = {'Gas and Hydrogen', 'Hydrogen'}
-        declared = c.s('Fuel').isin(h2_fuels)
+        declared = _fuel(c).isin(h2_fuels)
         c.flag('H2 fields filled but Fuel is not a hydrogen fuel', any_h2 & ~declared,
                ['Fuel'] + h2_cols[:3], 'WARN',
                detail='either the rows need a Fuel update or the convention needs '
@@ -842,7 +868,7 @@ def check_cross_field(c: Checker):
     if c.has('Fuel'):
         # A gas tab should hold gas; an oil tab should hold oil/NGL.
         gas_tab = c.has('CapacityBcm/y')
-        wrong = (c.s('Fuel') == 'Oil') if gas_tab else c.s('Fuel').isin({'Gas'})
+        wrong = (_fuel(c) == 'Oil') if gas_tab else _fuel(c).isin({'Gas'})
         c.flag('row filed on the wrong tracker tab for its Fuel', wrong, ['Fuel'], 'FAIL')
 
 
