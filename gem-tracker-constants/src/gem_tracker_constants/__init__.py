@@ -6,10 +6,17 @@ otherwise re-declare inline (and drift out of sync).
 
 from __future__ import annotations
 
-from ._loader import FUELS, STATUSES
-from .helpers import collapse_gas_and_hydrogen, find_uncovered_fuels
+from ._loader import FUEL_ALIASES, FUELS, STATUSES
+from .helpers import (
+    SYSTEM_INFO_SEGMENT,
+    collapse_gas_and_hydrogen,
+    drop_system_info_rows,
+    find_uncovered_fuels,
+    is_system_info_row,
+    normalize_fuels,
+)
 
-__version__ = "0.5.0"
+__version__ = "0.8.0"
 
 # Fuel buckets — raw `Fuel` column values that count as each fuel type.
 GAS_FUEL_OPTIONS: list[str] = FUELS["gas"]
@@ -23,6 +30,8 @@ HYDROGEN_FUEL_OPTIONS: list[str] = FUELS["hydrogen"]
 OIL_FUEL_OPTIONS: list[str] = FUELS["oil"]
 NGL_FUEL_OPTIONS: list[str] = FUELS["ngl"]
 OIL_NGL_COMBINED: list[str] = FUELS["oil_ngl_combined"]
+# Raw Fuel strings that count as a bucket entry ('Coke oven gas' -> 'Gas').
+FUEL_ALIASES: dict[str, str] = FUEL_ALIASES
 
 # Pipeline statuses — GOIT/GGIT use lowercase.
 PIPELINE_STATUS: list[str] = STATUSES["pipeline"]["base"]
@@ -42,12 +51,17 @@ __all__ = [
     "OIL_FUEL_OPTIONS",
     "NGL_FUEL_OPTIONS",
     "OIL_NGL_COMBINED",
+    "FUEL_ALIASES",
     "PIPELINE_STATUS",
     "PIPELINE_EXCEL_STATUS",
     "PIPELINE_IN_DEV_COL",
     "TERMINAL_STATUS",
     "TERMINAL_EXCEL_STATUS",
     "TERMINAL_IN_DEV_COL",
+    "SYSTEM_INFO_SEGMENT",
     "collapse_gas_and_hydrogen",
+    "drop_system_info_rows",
     "find_uncovered_fuels",
+    "is_system_info_row",
+    "normalize_fuels",
 ]

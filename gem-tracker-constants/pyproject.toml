@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gem-tracker-constants"
-version = "0.5.0"
+version = "0.8.0"
 description = "Canonical fuel buckets and status orderings for GEM GOIT/GGIT tracker workflows."
 readme = "README.md"
 requires-python = ">=3.9"

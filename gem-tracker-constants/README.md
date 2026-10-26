@@ -38,8 +38,13 @@ from gem_tracker_constants import (
     TERMINAL_EXCEL_STATUS,
     TERMINAL_IN_DEV_COL,
     collapse_gas_and_hydrogen,
+    drop_system_info_rows,
     find_uncovered_fuels,
+    normalize_fuels,
 )
+
+# The sheets don't hold to the bucket spelling ('gas' vs 'Gas'): normalize first
+normalize_fuels(pipes_df)
 
 # Filter pipelines to the oil bucket
 oil_pipes = pipes_df[pipes_df["Fuel"].isin(OIL_FUEL_OPTIONS)]
@@ -48,6 +53,9 @@ oil_pipes = pipes_df[pipes_df["Fuel"].isin(OIL_FUEL_OPTIONS)]
 gas_pipes = collapse_gas_and_hydrogen(
     pipes_df[pipes_df["Fuel"].isin(GAS_FUEL_OPTIONS)].copy()
 )
+
+# Release outputs leave out the SYSTEM/NETWORK INFO summary rows
+pipes_df = drop_system_info_rows(pipes_df)
 
 # QC a fresh backend pull: which Fuel values fall through every bucket?
 find_uncovered_fuels(pipes_df)  # prints + returns uncovered strings
@@ -94,7 +102,7 @@ Pipeline trackers (GOIT, GGIT) use lowercase statuses; the LNG terminal tracker 
 
 | Constant | What it does |
 | --- | --- |
-| `PIPELINE_STATUS` | The eight pipeline statuses in canonical order: `proposed` → `construction` → `shelved` → `cancelled` → `operating` → `idle` → `mothballed` → `retired`. |
+| `PIPELINE_STATUS` | The eight pipeline statuses in canonical order: `proposed` → `construction` → `shelved` → `cancelled` → `operating` → `idled` → `mothballed` → `retired`. |
 | `PIPELINE_EXCEL_STATUS` | Same ordering for summary-sheet output, with the "in development" rollup column inserted right after `construction`. |
 | `PIPELINE_IN_DEV_COL` | Name of that rollup column: `in development (proposed + construction)`. |
 | `TERMINAL_STATUS` | Terminal statuses, Title case, same canonical order. |
@@ -106,7 +114,9 @@ Pipeline trackers (GOIT, GGIT) use lowercase statuses; the LNG terminal tracker 
 | Function | What it does |
 | --- | --- |
 | `collapse_gas_and_hydrogen(df, fuel_col="Fuel")` | Rewrites `"Gas and Hydrogen"` → `"Gas"` in place, for gas-only aggregation. |
-| `find_uncovered_fuels(data, fuel_col="Fuel", buckets=None, verbose=True)` | QC check: takes the backend pipelines DataFrame (or a Series/iterable of fuel values), does a `unique()`, and returns the strings not covered by any fuel bucket — pipelines that would silently drop out of every filter. Prints uncovered values as `repr`s so stray whitespace is visible; pass `buckets=['oil', 'ngl']` to check against a subset. |
+| `normalize_fuels(df, fuel_col="Fuel")` | Rewrites `Fuel` in place to the canonical bucket spelling, ignoring case and surrounding whitespace, and applies the `aliases` map in fuels.yaml (`coke oven gas` → `Gas`). Run it before any `isin(<bucket>)` filter: the buckets are case-sensitive and the gas tab went lowercase in October 2026. Unmatched values are left alone. |
+| `is_system_info_row(df, segment_col="SegmentName")` / `drop_system_info_rows(df, ...)` | Mask / drop of the `SYSTEM/NETWORK INFO` rows (`SegmentName` starting with `SYSTEM_INFO_SEGMENT`, case and whitespace ignored, so `SYSTEM/NETWORK INFO (Main Line)` counts). These rows summarize a whole network, often with its total km, next to its segment rows, and every release output drops them (ruling 2026-10-26). `SYSTEM/NETWORK ROUTE` rows carry a real route and are kept. |
+| `find_uncovered_fuels(data, fuel_col="Fuel", buckets=None, verbose=True)` | QC check: takes the backend pipelines DataFrame (or a Series/iterable of fuel values), does a `unique()`, and returns the strings not covered by any fuel bucket — pipelines that would silently drop out of every filter. Ignores case and counts aliases, like `normalize_fuels()`. Prints uncovered values as `repr`s so stray whitespace is visible; pass `buckets=['oil', 'ngl']` to check against a subset. |
 
 ## Invariants
 

@@ -32,12 +32,23 @@
 #   3. `gas` includes 'Gas and Hydrogen'; consumers running a gas-only
 #      analysis should collapse it via helpers.collapse_gas_and_hydrogen().
 #
+# Case: bucket strings are the canonical spelling. The tracker sheets are not
+# held to it (the gas tab went all-lowercase in October 2026), so consumers
+# run helpers.normalize_fuels() before filtering. It matches case-insensitively
+# after stripping whitespace, rewrites each value to the spelling below, and
+# applies the `aliases` map for raw strings that are not bucket entries.
+#
 # When editing this file, update tests if you change an invariant on purpose;
 # otherwise the invariant tests will catch accidental drift.
 
 gas:
   - Gas
   - Gas and Hydrogen
+
+# Raw Fuel strings that are not bucket entries but count as one. Keys match
+# case-insensitively; values must be bucket entries (tested).
+aliases:
+  Coke oven gas: Gas
 
 gas_hydrogen:
   - Gas

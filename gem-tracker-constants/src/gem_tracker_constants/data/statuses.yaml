@@ -4,6 +4,11 @@
 # (GOIT, GGIT) use lowercase values; LNG terminal tracker uses Title case
 # values. Both are captured here so downstream code can stop guessing.
 #
+# The pipeline backend renamed `idle` to `idled` in October 2026; the terminal
+# tracker still uses `Idle`. Pipeline release snapshots cut before then still
+# say `idle`. `N/A` is a deliberate backend value for rows that are not real
+# pipelines; it is not a status and is dropped from every release output.
+#
 # `excel` is the column ordering used in summary-sheet output, which inserts an
 # "in development" rollup column right after `construction` (a sum of
 # proposed + construction). The rollup column name is `in_dev_col`.
@@ -22,7 +27,7 @@ pipeline:
     - shelved
     - cancelled
     - operating
-    - idle
+    - idled
     - mothballed
     - retired
   excel:
@@ -32,7 +37,7 @@ pipeline:
     - shelved
     - cancelled
     - operating
-    - idle
+    - idled
     - mothballed
     - retired
 

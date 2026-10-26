@@ -31,3 +31,30 @@ def test_accepts_dataframe_and_series():
     df = pd.DataFrame({"Fuel": ["Gas", "Mystery juice", float("nan")]})
     assert find_uncovered_fuels(df, verbose=False) == ["Mystery juice"]
     assert find_uncovered_fuels(df["Fuel"], verbose=False) == ["Mystery juice"]
+
+
+def test_case_and_aliases_are_covered():
+    # the gas tab went lowercase in October 2026; coke oven gas is an alias
+    assert find_uncovered_fuels(
+        ["gas", "gas and hydrogen", "oil", "coke oven gas"], verbose=False
+    ) == []
+
+
+def test_normalize_fuels_rewrites_to_bucket_spelling():
+    pd = pytest.importorskip("pandas")
+    from gem_tracker_constants import GAS_FUEL_OPTIONS, normalize_fuels
+
+    df = pd.DataFrame({"Fuel": ["gas", " Gas and hydrogen ", "coke oven gas",
+                                "oil", "Mystery juice", None]})
+    normalize_fuels(df)
+    assert df["Fuel"].tolist()[:5] == ["Gas", "Gas and Hydrogen", "Gas", "Oil",
+                                        "Mystery juice"]
+    assert df["Fuel"].isin(GAS_FUEL_OPTIONS).sum() == 3
+
+
+def test_aliases_point_at_bucket_entries():
+    from gem_tracker_constants import FUEL_ALIASES, FUELS
+
+    entries = {v for bucket in FUELS.values() for v in bucket}
+    assert set(FUEL_ALIASES.values()) <= entries
+    assert "aliases" not in FUELS

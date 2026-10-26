@@ -15,4 +15,6 @@ def _load(filename: str) -> Any:
 
 
 FUELS: dict[str, list[str]] = _load("fuels.yaml")
+# `aliases` is a map, not a bucket; split it off so FUELS stays buckets only.
+FUEL_ALIASES: dict[str, str] = FUELS.pop("aliases", {}) or {}
 STATUSES: dict[str, Any] = _load("statuses.yaml")

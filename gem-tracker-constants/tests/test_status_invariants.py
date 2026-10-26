@@ -31,5 +31,7 @@ def test_terminal_statuses_are_title_case():
 
 
 def test_pipeline_and_terminal_status_sets_match_case_insensitively():
-    """Both trackers cover the same lifecycle stages — only the casing differs."""
-    assert {s.lower() for s in PIPELINE_STATUS} == {s.lower() for s in TERMINAL_STATUS}
+    """Both trackers cover the same lifecycle stages — only the casing differs,
+    plus the pipeline backend's `idled` (the terminal tracker still says `Idle`)."""
+    pipeline = {"idle" if s == "idled" else s for s in PIPELINE_STATUS}
+    assert pipeline == {s.lower() for s in TERMINAL_STATUS}
