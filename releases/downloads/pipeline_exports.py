@@ -23,15 +23,20 @@ CLI examples:
         --routes-path /path/to/pipeline-routes/data/individual-routes \
         --map-only --map-output out/goit_map_latest.geojson
 
-Requires the GDRIVE_API_CREDENTIALS env var (Google service-account JSON)
-and an on-disk checkout of the goit-ggit-pipeline-routes `normalized` branch.
+Sheet reads go through the `gws` CLI on the read-only work profile
+(~/.config/gws-gem) by default. CI has no interactive login, so when the
+GDRIVE_API_CREDENTIALS env var (service-account JSON) is set, reads use that
+instead; see open_sheet(). Also needs an on-disk checkout of the
+goit-ggit-pipeline-routes `normalized` branch.
 """
 
 import argparse
 import datetime
+import json
 import os
 import re
 import shutil
+import subprocess
 import sys
 import time
 import zipfile
@@ -39,7 +44,6 @@ from pathlib import Path
 
 import pandas as pd
 import geopandas as gpd
-import pygsheets
 from shapely import set_precision
 
 # Canonical fuel buckets. Source of truth: the in-repo gem-tracker-constants
@@ -55,6 +59,8 @@ from gem_tracker_constants import (
     OIL_FUEL_OPTIONS,
     NGL_FUEL_OPTIONS,
     collapse_gas_and_hydrogen,
+    drop_system_info_rows,
+    normalize_fuels,
 )
 
 PIPELINES_SHEET_KEY = '1foPLE6K-uqFlaYgLPAUxzeXfDO5wOOqE7tibNHeqTek'
@@ -67,6 +73,9 @@ DEFAULT_ROUTES_PATH = (
 )
 
 ALL_FORMATS = ('xlsx', 'geojson', 'gpkg', 'shp')
+
+# Read-only gws profile set up by the `gws-gem` shell wrapper
+GWS_CONFIG_DIR = os.environ.get('PIPELINE_EXPORTS_GWS_CONFIG_DIR', '~/.config/gws-gem')
 
 # Publish guardrails for map output: a degraded run (empty routes checkout,
 # sheet fetch gone wrong) must never overwrite the public map file.
@@ -92,7 +101,6 @@ def refresh_routes(routes_path):
     Fast-forward only. On any failure (offline, dirty worktree, non-ff),
     warns and falls back to the on-disk files rather than blocking the run.
     """
-    import subprocess
     repo = str(Path(routes_path))
     try:
         branch = subprocess.run(
@@ -160,16 +168,83 @@ def get_config(ptype):
     return configs[ptype]
 
 
-def fetch_pipeline_data(ss, config):
+def _numericise(value):
+    """'3' -> 3, '3.1' -> 3.1, anything else unchanged (pygsheets' rule)."""
+    if isinstance(value, str) and value != '':
+        for cast in (int, float):
+            try:
+                return cast(value)
+            except ValueError:
+                pass
+    return value
+
+
+def _values_to_df(values):
+    """Header row + data rows (ragged, as the Sheets API returns them) ->
+    DataFrame with '' for empty cells and numbers parsed, matching what
+    pygsheets' get_as_df produced before the move to gws."""
+    width = max((len(row) for row in values), default=0)
+    rows = [[_numericise(v) for v in row + [''] * (width - len(row))] for row in values]
+    return pd.DataFrame(rows[1:], columns=rows[0]) if rows else pd.DataFrame()
+
+
+def _gws_read_tab(sheet_key, title):
+    """Formatted values of a whole tab via `gws` (read-only profile)."""
+    env = dict(os.environ,
+               GOOGLE_WORKSPACE_CLI_CONFIG_DIR=os.path.expanduser(GWS_CONFIG_DIR),
+               GOOGLE_WORKSPACE_CLI_KEYRING_BACKEND='file')
+    params = {'spreadsheetId': sheet_key, 'range': "'" + title.replace("'", "''") + "'"}
+    proc = subprocess.run(
+        ['gws', 'sheets', 'spreadsheets', 'values', 'get',
+         '--params', json.dumps(params), '--format', 'json'],
+        capture_output=True, text=True, env=env)
+    if proc.returncode != 0:
+        raise RuntimeError(f"gws read of '{title}' failed: "
+                           f"{proc.stderr.strip() or proc.stdout.strip()}")
+    body = json.loads(proc.stdout)
+    # gws reports API errors as JSON with an "error" key and still exits 0
+    if 'error' in body:
+        raise RuntimeError(f"gws read of '{title}': {body['error']}")
+    return body.get('values', [])
+
+
+def open_sheet(sheet_key=PIPELINES_SHEET_KEY, creds_env='GDRIVE_API_CREDENTIALS'):
+    """Return read_tab(title, header_row=1) -> DataFrame for one spreadsheet.
+
+    The one place sheet auth lives. Default is the `gws` CLI on the read-only
+    work profile. If `creds_env` is set (CI, where gws's interactive OAuth
+    can't run), reads go through that service account with pygsheets instead.
+    """
+    if os.environ.get(creds_env):
+        import pygsheets
+        ss = pygsheets.authorize(service_account_env_var=creds_env).open_by_key(sheet_key)
+        print(f"  Sheet reads: service account from ${creds_env}")
+
+        def read_tab(title, header_row=1):
+            return ss.worksheet('title', title).get_as_df(
+                start=f'A{header_row}', include_tailing_empty=False)
+    else:
+        print(f"  Sheet reads: gws ({GWS_CONFIG_DIR})")
+
+        def read_tab(title, header_row=1):
+            return _values_to_df(_gws_read_tab(sheet_key, title)[header_row - 1:])
+    return read_tab
+
+
+def fetch_pipeline_data(read_tab, config):
     """Fetch and initial filter of pipeline data from a worksheet."""
     t0 = time.time()
-    df = ss.worksheet('title', config['sheet']).get_as_df(start='A3', include_tailing_empty=False)
-    df_dict = ss.worksheet('title', config['dict_sheet']).get_as_df(include_tailing_empty=False)
-    df_copy = ss.worksheet('title', config['copyright_sheet']).get_as_df(include_tailing_empty=False)
+    df = read_tab(config['sheet'], header_row=3)
+    df_dict = read_tab(config['dict_sheet'])
+    df_copy = read_tab(config['copyright_sheet'])
     print(f"  Sheets fetched in {time.time() - t0:.1f}s")
 
     if df_copy.shape[1] > 1:
         df_copy = pd.DataFrame(df_copy.iloc[:, 0])
+
+    # The sheet doesn't hold to the bucket spelling (the gas tab is lowercase
+    # since Oct 2026), so rewrite Fuel to it before the isin filter
+    normalize_fuels(df)
 
     # Standard initial filters
     mask = (
@@ -218,6 +293,8 @@ def simplify_fuel_types(df, strategy):
                        dual-fuel strings ('Oil, NGL', 'Oil, NGL, naphtha')
                        live in the oil bucket, so they become 'Oil'
       - 'Gas':         rows with Fuel in GAS_FUEL_OPTIONS -> 'Gas'
+
+    GGIT labels are lowercased afterward ('gas'); see process_single_dataset.
     """
     if not strategy or strategy == 'None':
         return df
@@ -478,19 +555,30 @@ def export_files(gdf, base_name, dict_df=None, acronyms_df=None, copyright_df=No
     return files
 
 
-def process_single_dataset(ss, cfg, label, routes_path,
+def process_single_dataset(read_tab, cfg, label, routes_path,
                            filter_status=None, filter_countries=None,
                            simplify_fuels=None):
     """Fetch, filter, and load geometries for one pipeline dataset."""
     routes_path = Path(routes_path)
-    df, df_dict, df_copy = fetch_pipeline_data(ss, cfg)
+    df, df_dict, df_copy = fetch_pipeline_data(read_tab, cfg)
     raw_ids = set(df['ProjectID'].dropna().astype(str).str.strip()) - {''}
+
+    # SYSTEM/NETWORK INFO rows summarize a whole network next to its segment
+    # rows; they stay out of every release output. Dropped after raw_ids so
+    # their route files reconcile as "present in the raw sheet".
+    before = len(df)
+    df = drop_system_info_rows(df)
+    if len(df) < before:
+        print(f"  Dropped {before - len(df)} SYSTEM/NETWORK INFO rows")
 
     print(f"\nChecking {label} no-route conflicts...")
     check_no_route_geojson_files(df, routes_path / cfg['folder'])
 
     df = filter_by_status(df, filter_status)
     df = simplify_fuel_types(filter_by_countries(df, filter_countries), simplify_fuels)
+    if cfg['tracker'] == 'GGIT':
+        # GGIT publishes lowercase fuel labels ('gas', 'hydrogen') since Nov 2026
+        df['Fuel'] = df['Fuel'].str.lower()
     df = load_geometries(df, routes_path / cfg['folder'], label)
 
     return df, df_dict, df_copy, raw_ids
@@ -500,7 +588,7 @@ def build_release(pipeline_type, routes_path,
                   simplify_fuels=None, filter_status=None, filter_countries=None,
                   sheet_key=PIPELINES_SHEET_KEY,
                   creds_env='GDRIVE_API_CREDENTIALS'):
-    """Full release build: Google Sheets auth → fetch/filter/geometry-join →
+    """Full release build: sheet reads (see open_sheet) → fetch/filter/geometry-join →
     Data-dictionary column selection.
 
     Returns a dict with:
@@ -514,18 +602,17 @@ def build_release(pipeline_type, routes_path,
     """
     t_total = time.time()
 
-    gc = pygsheets.authorize(service_account_env_var=creds_env)
-    ss = gc.open_by_key(sheet_key)
+    read_tab = open_sheet(sheet_key, creds_env)
     config = get_config(pipeline_type)
 
     if pipeline_type == 'Oil-and-Gas':
         oil_cfg, gas_cfg = get_config('Oil-NGL'), get_config('Gas')
 
         oil_df, oil_dict, oil_copy, raw_oil_ids = process_single_dataset(
-            ss, oil_cfg, 'Oil-NGL', routes_path,
+            read_tab, oil_cfg, 'Oil-NGL', routes_path,
             filter_status, filter_countries, simplify_fuels)
         gas_df, gas_dict, gas_copy, raw_gas_ids = process_single_dataset(
-            ss, gas_cfg, 'Gas', routes_path,
+            read_tab, gas_cfg, 'Gas', routes_path,
             filter_status, filter_countries, simplify_fuels)
 
         raw_db_ids = raw_oil_ids | raw_gas_ids
@@ -541,15 +628,15 @@ def build_release(pipeline_type, routes_path,
         common_fields = set(oil_dict['VariableName']) & set(gas_dict['VariableName'])
         pipes_dict = pd.concat([oil_dict, gas_dict[~gas_dict['VariableName'].isin(common_fields)]], ignore_index=True)
         pipes_copy = pd.DataFrame({'Copyright': ['=== GOIT ===', *oil_copy.iloc[:, 0].tolist(), '', '=== GGIT ===', *gas_copy.iloc[:, 0].tolist()]})
-        pipes_acro = ss.worksheet('title', 'Acronyms').get_as_df(include_tailing_empty=False)
+        pipes_acro = read_tab('Acronyms')
 
     else:
         # Single dataset mode
         pipes_df, pipes_dict, pipes_copy, raw_db_ids = process_single_dataset(
-            ss, config, pipeline_type, routes_path,
+            read_tab, config, pipeline_type, routes_path,
             filter_status, filter_countries, simplify_fuels)
         pipes_gdf = gpd.GeoDataFrame(pipes_df, geometry='geometry', crs='EPSG:4326')
-        pipes_acro = ss.worksheet('title', 'Acronyms').get_as_df(include_tailing_empty=False)
+        pipes_acro = read_tab('Acronyms')
 
     # Select and order columns for export
     export_mask = (pipes_dict['IncludeWithDataRelease'] == 'Yes') & (pipes_dict['DataReleaseColumnOrder'].notna())

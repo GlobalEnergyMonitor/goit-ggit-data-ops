@@ -34,10 +34,23 @@ Configuration (notebook Configuration cell, or the matching CLI flags):
 - **`SIMPLIFY_FUELS`** — `None` | `'Oil'` | `'NGL'` | `'Oil-and-NGL'` | `'Gas'`;
   relabels fuels for the simplified release downloads using the canonical
   `OIL_FUEL_OPTIONS` / `NGL_FUEL_OPTIONS` buckets from
-  [gem-tracker-constants](../../gem-tracker-constants/) (in this repo)
+  [gem-tracker-constants](../../gem-tracker-constants/) (in this repo).
+  GGIT outputs carry lowercase fuel labels (`gas`, `hydrogen`) from Nov 2026,
+  with or without simplification. Every output also drops the
+  `SYSTEM/NETWORK INFO` rows (network summary rows; `SYSTEM/NETWORK ROUTE`
+  rows are kept)
 - **`FILTER_STATUS`** / **`FILTER_COUNTRIES`** — optional row filters
 
 Outputs are written to `data-files/`.
+
+## LNG terminals
+
+[`terminal_exports.py`](terminal_exports.py) builds the LNG terminal downloads (xlsx, geojson, gpkg, zipped shapefile) from the website's `lng-export-*.csv`, not from a Sheet. LNG rows only (the NH3 / LH2 / eLNG / Oil rows are dropped, decided for Oct 2026), and the six alternative-fuel columns (LH2, NH3, SyntheticLNG, RetrofitProposed, AltFuelPrelimAgreement, AltFuelCallMarketInterest) are removed from every file along with their data-dictionary rows (`DROP_COLUMNS`). The xlsx About sheet (copyright, acronyms, data dictionary) is carried over from the previous release's xlsx via `--template`, with the dates refreshed and four renamed variables fixed. Rows without coordinates stay in the xlsx and are left out of the GIS files. Shapefile field names are the fixed `SHAPEFILE_FIELDS` map taken from the Sept 2025 shapefile. Release notes are optional (`--release-notes`, one line per line).
+
+```bash
+python terminal_exports.py --csv ../summary-sheets/2026-q4-lng-terminals/GEM-GGIT-LNG-Terminals-2026-q4.csv \
+    --template data-files/templates/GEM-GGIT-LNG-Terminals-2025-09.xlsx --release-month 2026-10
+```
 
 ## CI map build
 
@@ -61,15 +74,17 @@ workflow's own `GITHUB_TOKEN`.
 
 ## Requirements
 
-- Python with `pandas`, `geopandas`, `shapely`, `pygsheets`, `openpyxl`
-  (pinned in [`requirements.txt`](requirements.txt))
+- Python with `pandas`, `geopandas`, `shapely`, `openpyxl`, plus `pygsheets`
+  for CI (pinned in [`requirements.txt`](requirements.txt))
 - `gem-tracker-constants` (lives in this repo at
   [`../../gem-tracker-constants/`](../../gem-tracker-constants/), installed by
   the notebook's first cell) — single source of truth for fuel buckets and
   status orderings, shared with the QC summary sheets in this repo so release
   totals match QC summary totals
-- `GDRIVE_API_CREDENTIALS` environment variable pointing at a Google service
-  account with access to the tracker sheets
+- Sheet access: locally, the `gws` CLI with the read-only work profile
+  (`~/.config/gws-gem`; override with `PIPELINE_EXPORTS_GWS_CONFIG_DIR`). When
+  `GDRIVE_API_CREDENTIALS` is set (CI), the module reads through `pygsheets`
+  with that service account instead, so leave it unset in a local shell
 - A local checkout of `goit-ggit-pipeline-routes` (path set via
   `PIPELINE_ROUTES_PATH` in the Configuration cell)
 

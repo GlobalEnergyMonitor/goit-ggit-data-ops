@@ -44,9 +44,11 @@ no longer work.
   run by hand — the token never leaves the machine. This is the read/write split:
   `gem-db-ops` owns reads of both backends and never writes; `route-lengths/` owns
   the only write client and stays here.
-- **Headless/CI access has no replacement credential.** Until one is chosen,
-  `.github/workflows/build-map-data.yml`, `releases/downloads/pipeline_exports.py`,
-  and the `dashboards/` apps are broken. Cycle notebooks are being repointed one
+- **Headless/CI access** rides on the `GDRIVE_API_CREDENTIALS` repo secret, a
+  different service account that still works for `.github/workflows/build-map-data.yml`.
+  `releases/downloads/pipeline_exports.py` reads through `gws-gem` locally and uses
+  that secret only when the variable is set. The `dashboards/` apps have no
+  replacement credential yet. Cycle notebooks are being repointed one
   at a time as they are touched: `updates/qc/` reads through gem-db-ops and works;
   `progress-snapshot.ipynb` does not yet.
 

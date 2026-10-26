@@ -17,9 +17,9 @@ name: build map data
 #  - workflow_dispatch: manual runs; `upload: false` builds without
 #    publishing, `dest_branch` can point at a test branch
 #
-# BROKEN as of 2026-07-31: the gem-analysis service account behind the
-# GDRIVE_API_CREDENTIALS secret was deleted, so the sheet-reading steps below
-# fail. Needs a replacement headless credential — see README.md.
+# The GDRIVE_API_CREDENTIALS secret (service-account JSON) is what the
+# sheet-reading steps use; pipeline_exports.py takes the pygsheets path only
+# when that variable is set and reads through gws otherwise.
 # Publishing needs no secret — GITHUB_TOKEN pushes to this repo.
 
 on:

@@ -28,8 +28,8 @@ tracker sheet. See README.md for the layout and how to run it.
   don't, because an unresolved polygon silently drops kilometres. Fix the
   dictionary rather than relaxing the check.
 - **Google Sheets access goes through `sheets_client.py` only.** The
-  `gem-analysis` service account is deleted; `gem_tracker_constants.sheets`
-  and `GDRIVE_API_CREDENTIALS` are dead everywhere. Reads use the `gws` CLI
+  `gem-analysis` service account is deleted and `gem_tracker_constants.sheets`
+  is dead; `GDRIVE_API_CREDENTIALS` survives only as the map-build CI secret. Reads use the `gws` CLI
   (`~/.config/gws-gem`, read-only), writes `~/.config/gws-gem-write`. Do not
   import pygsheets here.
 - **Runs are manual, and that is load-bearing.** The routes-repo dispatch

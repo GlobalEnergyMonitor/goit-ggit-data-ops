@@ -1,8 +1,9 @@
 """Single auth entry point for everything in route-lengths/.
 
 The gem-analysis service account was deleted (2026-07-31), so
-`gem_tracker_constants.sheets.authorize` / `get_sheet` and the
-`GDRIVE_API_CREDENTIALS` secret no longer work anywhere in this repo.
+`gem_tracker_constants.sheets.authorize` / `get_sheet` are dead. (The
+`GDRIVE_API_CREDENTIALS` CI secret holds a different service account and is
+used only by the map build.)
 
 Everything here goes through the `gws` CLI instead, which exposes the raw
 Sheets v4 API (`spreadsheets batchUpdate`, `values update`, ...) on top of the
