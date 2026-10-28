@@ -239,8 +239,12 @@ def fetch_pipeline_data(read_tab, config):
     df_copy = read_tab(config['copyright_sheet'])
     print(f"  Sheets fetched in {time.time() - t0:.1f}s")
 
+    # Collapse to one column by joining each row's cells, not by keeping
+    # column A: the creation date is =TODAY() in column B beside its label
     if df_copy.shape[1] > 1:
-        df_copy = pd.DataFrame(df_copy.iloc[:, 0])
+        df_copy = pd.DataFrame({df_copy.columns[0]: df_copy.apply(
+            lambda r: ' '.join(str(v).strip() for v in r
+                               if pd.notna(v) and str(v).strip()), axis=1)})
 
     # The sheet doesn't hold to the bucket spelling (the gas tab is lowercase
     # since Oct 2026), so rewrite Fuel to it before the isin filter
