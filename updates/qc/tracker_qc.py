@@ -84,7 +84,9 @@ NUMERIC_COLS = ['Capacity', 'CapacityBcm/y', 'CapacityBOEd', 'Pressure',
                 'LengthMergedKm', 'Diameter', 'DiameterInMm', 'ProjectLevelCost',
                 'SegmentCost', 'Cost', 'CostUSD', 'CostEuro', 'NumberOfCountries']
 # Numeric columns where a list or range ("1200, 930") is fine and not flagged.
-MULTI_VALUE_OK = {'Pressure'}
+# DiameterInMm converts a comma list item by item, so it mirrors Diameter,
+# which is already flagged.
+MULTI_VALUE_OK = {'Pressure', 'DiameterInMm'}
 VALUE_UNITS_PAIRS = [('Capacity', 'CapacityUnits'), ('Diameter', 'DiameterUnits'),
                      ('LengthKnown', 'LengthKnownUnits'), ('Pressure', 'PressureUnits'),
                      ('ProjectLevelCost', 'ProjectLevelCostUnits'),
@@ -531,8 +533,11 @@ def check_derived(c: Checker):
     for src, derived in [('Capacity', 'CapacityBcm/y'), ('Capacity', 'CapacityBOEd'),
                          ('Diameter', 'DiameterInMm'), ('LengthKnown', 'LengthKnownKm')]:
         if c.has(src, derived):
+            # A multi-valued source ("6, 8") may convert to "--" by design and
+            # is already reported by the multi-valued check in tier 2.
+            multi = c.s(src).str.fullmatch(r'[\d\s.,/;&+–-]*[,/;&+–-][\d\s.,/;&+–-]*')
             c.flag(f'{src} present but {derived} blank (conversion failed)',
-                   c.filled(src) & c.blank(derived), [src, derived], 'WARN')
+                   c.filled(src) & ~multi & c.blank(derived), [src, derived], 'WARN')
 
     if c.has('StartYearEarliest'):
         starts = [c.num(x) for x in ['StartYear1', 'StartYear2', 'StartYear3']
