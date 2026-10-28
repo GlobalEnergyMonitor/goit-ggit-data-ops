@@ -77,10 +77,11 @@ export filters on, so a value outside them silently vanishes from the release.
 Also the smaller vocabularies (`RouteType`, `RouteAccuracy`, `EuropeTracker`,
 …), split into *normalizable* (case/whitespace only — safe to fix in bulk) and
 *outside vocabulary* (needs a decision). Currency codes are checked against
-ISO 4217; `CAN`→`CAD` and `RMB`→`CNY` are the recurring offenders.
+the full active ISO 4217 list (`ISO_4217`), plus the retired `LTL` and `BGN` and the pre-ISO `AUPound`. Known slips get a suggested fix (`CAN`→`CAD`, `RMB`→`CNY`, `NTD`→`TWD`, `YEN`→`JPY`, `KM`→`BAM`); a lowercase code suggests its uppercase form. All of these were fixed in the sheet on 2026-10-28, with the `Currency conversions` tab renamed to match.
 
 **2. Types.** Numeric columns that don't parse, split into *multi-valued*
-(`42,36,30` — a real convention in `Diameter`, so a WARN, not an error) and
+(`42,36,30` — a real convention in `Diameter`, so a WARN, not an error; not
+flagged at all in `Pressure`, where lists are accepted as of 2026-10-27) and
 genuinely non-numeric. Month columns that hold a year (FAIL — wrong column) or
 a spelled-out month name. URL columns whose contents contain no URL. Scalar
 columns containing a URL, a `LINESTRING`, or a date — the wrong-column
@@ -100,7 +101,7 @@ year missing, and the year set on a row whose status no longer matches. Plus
 in-development rows whose start year is already past, and operating rows whose
 start year is in the future.
 
-**5. Chronology.** Year columns inside `[1900, now+40]`, milestone ordering
+**5. Chronology.** No range check on year values (far-future years are not errors, ruling 2026-10-26). Milestone ordering
 (proposal ≤ construction ≤ start ≤ stop), the later year set with the earlier
 one blank, and a month set with no year.
 

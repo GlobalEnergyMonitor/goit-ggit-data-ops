@@ -164,15 +164,7 @@ def check_categoricals(df):
 
 
 def check_years(df):
-    hi = datetime.date.today().year + 10
-    for col in [c for c in YEAR_COLS if c in df.columns]:
-        s = numeric(df[col]).dropna()
-        bad = s[(s < 1900) | (s > hi)]
-        if len(bad):
-            pids = df.loc[bad.index, 'ProjectID'].tolist()
-            report('FAIL', f'{col} in [1900, {hi}]', f"{sorted(set(bad))} at {pids}")
-        else:
-            report('OK', f'{col} in [1900, {hi}]')
+    # No range check on year values: far-future or old years are not errors (Baird 2026-10-26).
     if {'ProposalYear', 'ConstructionYear', 'StartYear1'} <= set(df.columns):
         py, cy, sy = (numeric(df[c]) for c in ['ProposalYear', 'ConstructionYear', 'StartYear1'])
         bad = (cy < py) | (sy < cy) | (sy < py)

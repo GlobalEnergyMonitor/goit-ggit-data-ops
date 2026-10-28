@@ -83,6 +83,8 @@ NUMERIC_COLS = ['Capacity', 'CapacityBcm/y', 'CapacityBOEd', 'Pressure',
                 'LengthKnown', 'LengthKnownKm', 'LengthEstimateKm',
                 'LengthMergedKm', 'Diameter', 'DiameterInMm', 'ProjectLevelCost',
                 'SegmentCost', 'Cost', 'CostUSD', 'CostEuro', 'NumberOfCountries']
+# Numeric columns where a list or range ("1200, 930") is fine and not flagged.
+MULTI_VALUE_OK = {'Pressure'}
 VALUE_UNITS_PAIRS = [('Capacity', 'CapacityUnits'), ('Diameter', 'DiameterUnits'),
                      ('LengthKnown', 'LengthKnownUnits'), ('Pressure', 'PressureUnits'),
                      ('ProjectLevelCost', 'ProjectLevelCostUnits'),
@@ -124,7 +126,8 @@ VOCABULARIES = {
     'RouteType': {'Mapped route (at any accuracy)',
                   'Not mapped (but could be — route or endpoints are known)',
                   'Unavailable (cannot find route)', 'Capacity expansion only',
-                  'Bidirectionality upgrade only', 'Included in other ProjectID'},
+                  'Bidirectionality upgrade only', 'Included in other ProjectID',
+                  'N/A'},  # accepted as-is (ruling 2026-10-28)
     'Delayed': {'yes'},
     'DelayType': {'confirmed', 'inferred'},
     'ShelvedCancelledType': {'confirmed', 'inferred'},
@@ -141,8 +144,28 @@ VOCABULARIES = {
     'CapacityUnits': None,
 }
 
-# Currency codes seen in the cost-unit columns that are not ISO 4217.
-NON_ISO_CURRENCIES = {'CAN': 'CAD', 'RMB': 'CNY'}
+# Active ISO 4217 codes (from pycountry 26.2.16; refresh when ISO adds one).
+ISO_4217 = frozenset('''
+AED AFN ALL AMD AOA ARS AUD AWG AZN BAM BBD BDT BHD BIF BMD BND BOB BOV
+BRL BSD BTN BWP BYN BZD CAD CDF CHE CHF CHW CLF CLP CNY COP COU CRC CUP
+CVE CZK DJF DKK DOP DZD EGP ERN ETB EUR FJD FKP GBP GEL GHS GIP GMD GNF
+GTQ GYD HKD HNL HTG HUF IDR ILS INR IQD IRR ISK JMD JOD JPY KES KGS KHR
+KMF KPW KRW KWD KYD KZT LAK LBP LKR LRD LSL LYD MAD MDL MGA MKD MMK MNT
+MOP MRU MUR MVR MWK MXN MXV MYR MZN NAD NGN NIO NOK NPR NZD OMR PAB PEN
+PGK PHP PKR PLN PYG QAR RON RSD RUB RWF SAR SBD SCR SDG SEK SGD SHP SLE
+SOS SRD SSP STN SVC SYP SZL THB TJS TMT TND TOP TRY TTD TWD TZS UAH UGX
+USD USN UYI UYU UYW UZS VED VES VND VUV WST XAD XAF XAG XAU XBA XBB XBC
+XBD XCD XCG XDR XOF XPD XPF XPT XSU XTS XUA XXX YER ZAR ZMW ZWG
+'''.split())
+
+# Accepted outside the active list: LTL and BGN are retired ISO codes (the
+# lev was replaced by the euro in 2026) and AUPound, the pre-1966 Australian
+# pound, never had one. All price historical costs.
+CURRENCY_OK = ISO_4217 | {'LTL', 'BGN', 'AUPound'}
+
+# Non-ISO codes already seen in the trackers, with their ISO replacement.
+CURRENCY_FIXES = {'CAN': 'CAD', 'RMB': 'CNY', 'NTD': 'TWD', 'YEN': 'JPY',
+                  'KM': 'BAM', 'MR': 'MYR', 'SWE': 'SEK'}
 
 # Capacity unit -> bcm/y factor, for the derived-column agreement check.
 BCM_PER_YEAR = {'bcm/y': 1.0, 'MMcf/d': 0.010337, 'MMSCMD': 0.365,
@@ -392,10 +415,13 @@ def check_vocabularies(c: Checker):
         if not c.has(col):
             continue
         vals = c.s(col)
-        bad = vals.isin(NON_ISO_CURRENCIES)
+        bad = c.filled(col) & ~vals.isin(CURRENCY_OK)
+        fixes = []
+        for v in sorted(set(vals[bad & c.real])):
+            fix = CURRENCY_FIXES.get(v) or (v.upper() if v.upper() in ISO_4217 else '?')
+            fixes.append(f'{v} -> {fix}')
         c.flag(f'{col} non-ISO currency code', bad, [col], 'WARN',
-               detail='; '.join(f'{k} -> {v}' for k, v in NON_ISO_CURRENCIES.items()
-                                if (vals == k).any()))
+               detail='; '.join(fixes))
 
 
 # ---------------------------------------------------------------------------
@@ -411,10 +437,12 @@ def check_types(c: Checker):
         bad = c.filled(col) & c.num(col).isna()
         # Multi-valued entries ("42,36,30") are a distinct, very common shape:
         # legitimate information in a field nothing downstream can compute on.
-        multi = bad & c.s(col).str.fullmatch(r'[\d\s.,/;&+-]*[,/;&+-][\d\s.,/;&+-]*')
-        c.flag(f'{col} multi-valued (comma/slash list or range)', multi, [col], 'WARN',
-               detail='blank DiameterInMm/CapacityBcm-style derived columns follow'
-                      if col in ('Diameter', 'Capacity') else '')
+        # Ranges are written with an en dash (6–22) by convention; hyphens are legacy.
+        multi = bad & c.s(col).str.fullmatch(r'[\d\s.,/;&+–-]*[,/;&+–-][\d\s.,/;&+–-]*')
+        if col not in MULTI_VALUE_OK:
+            c.flag(f'{col} multi-valued (comma/slash list or range)', multi, [col], 'WARN',
+                   detail='blank DiameterInMm/CapacityBcm-style derived columns follow'
+                          if col in ('Diameter', 'Capacity') else '')
         c.flag(f'{col} not a number', bad & ~multi, [col], 'WARN',
                detail=f'examples: {sorted(set(c.s(col)[bad & ~multi & c.real]))[:4]}')
 
@@ -579,13 +607,7 @@ def check_status_logic(c: Checker):
 
 def check_chronology(c: Checker):
     c.tier = '5. chronology'
-    hi = c.today.year + 15
-    for col in YEAR_COLS:
-        if not c.has(col):
-            continue
-        years = c.num(col)
-        c.flag(f'{col} outside [1900, {hi}]',
-               years.notna() & ~years.between(1900, hi), [col], 'FAIL')
+    # No range check on year values: far-future or old years are not errors (Baird 2026-10-26).
 
     sequence = [x for x in ['ProposalYear', 'FIDYear', 'ConstructionYear',
                             'StartYear1', 'StartYear2', 'StartYear3', 'StopYear']

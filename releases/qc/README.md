@@ -67,9 +67,7 @@ These are reported, not hard-failed, because expected values differ by release:
 
 ## 5. Numeric and year sanity
 
-- **Year columns** (`ProposalYear`, `ConstructionYear`, `StartYear1-3`,
-  `CancelledYear`, `StopYear`, `ShelvedYear`) within `[1900, current year + 10]`.
-  Caught a `StopYear = 2044` typo on an idle pipeline.
+- **No range check on year values.** Far-future or old years are not errors (ruling 2026-10-26), so a year is never flagged for its size alone.
 - **Chronology**: `ProposalYear <= ConstructionYear <= StartYear1` per row.
 - **Capacity parseable as a number** once commas are stripped. Caught a
   malformed `50,000,00` entry.
