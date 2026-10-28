@@ -102,9 +102,9 @@ README.md for the folder map and the typical release workflow.
   first, macOS keychain second — `.env`'s `gem-wiki-api` bot password has
   strictly more grants, so that order is load-bearing; see the folder README).
   Cloudflare's Under Attack Mode (the 2026-08-07 incident) is off again as of
-  2026-08-11, but keep the `baird-wiki` UA token — it's the WAF-bypass
-  identity if UAM returns; if scripted access starts 403ing, check the UA
-  first. Same policy as Google
+  2026-08-11, but the gem.wiki User-Agent still carries a token the admin
+  recognizes. It comes from `GEMWIKI_USER_AGENT` (never committed; ask Baird)
+  and if scripted access starts 403ing, check that it is set. Same policy as Google
   Sheets: never push a wiki edit without previewing it and getting explicit
   per-edit approval from the user. Exception (user-approved 2026-07-20):
   `gem-wiki/cite-error-fixes/` runs its gated orphaned-ref repair in

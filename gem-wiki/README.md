@@ -87,7 +87,7 @@ wiki-side, which is another reason to keep exactly one.
 rendered article HTML and `/robots.txt` all return 200 with no `cf-mitigated`
 header under arbitrary UAs — including `python-requests/…`, which was the
 canonical 403 while UAM was on. Whether the admin also removed the
-`baird-wiki` WAF bypass rule isn't observable from outside; treat it as
+UA-token WAF bypass rule isn't observable from outside; treat it as
 possibly still live and possibly needed again.
 
 **History:** gem.wiki was taken down by a traffic flood in early August 2026
@@ -96,8 +96,8 @@ which JS-challenges every visitor — all scripted access 403'd with
 `cf-mitigated: challenge` before MediaWiki saw the request, regardless of
 headers, library (`mwclient` 403'd identically) or a browser-minted
 `cf_clearance` cookie, because the challenge fingerprints the TLS handshake.
-The fix agreed with the admin was a WAF rule letting UAs carrying the
-**`baird-wiki`** token bypass UAM, paired with client-side rate limiting
+The fix agreed with the admin was a WAF rule letting UAs carrying an
+agreed leading token bypass UAM, paired with client-side rate limiting
 (~5 req/sec, his number). The rule matched on the bare token, zone-wide, and
 was verified live 2026-08-07; UAM was off again by 2026-08-11. The full
 diagnostics and bypass verification are in git history (`5621479`, `c3d6349`)
@@ -105,20 +105,22 @@ if it ever comes back.
 
 **What stays load-bearing with UAM off:**
 
-- **Keep `baird-wiki` as the leading UA token.** It is the identity GEM's
+- **Keep the agreed leading UA token.** It comes from `GEMWIKI_USER_AGENT`
+  and is never committed (ask Baird for it). It is the identity GEM's
   admin knows in the firewall logs, and the bypass if UAM returns — if
   scripted access starts 403ing again, check the UA first. The token
   deliberately avoids the word "bot" (Cloudflare scores those more
   suspiciously, and these are attributed, human-supervised edits) and names
   the person so any firewall rule keyed on it stays self-auditing. The
   version and contact address around the token are ordinary MediaWiki
-  etiquette, free to change.
+  etiquette, free to change. Without the variable set, the default UA is a
+  plain attributed client string with no token.
 - **Keep the 5 req/sec throttle** (`MAX_CALLS_PER_SECOND` in `gemwiki.py`).
   The admin asked for it as part of the arrangement, not as a UAM-era
   measure. Non-API fetches of gem.wiki (rendered HTML scrapes) must still
   call `gemwiki.throttle()` — they spend the same allowance.
 - There is exactly **one** UA for the whole repo — `USER_AGENT` in
-  `gemwiki.py` (overridable via `$GEMWIKI_USER_AGENT`), which the
+  `gemwiki.py` (read from `$GEMWIKI_USER_AGENT`), which the
   `cite-error-fixes/` scripts import rather than defining their own.
   Per-tool suffixes were dropped 2026-08-07: the admin needs the traffic
   identifiable, not split by tool. Scripts that fetch **external** sites

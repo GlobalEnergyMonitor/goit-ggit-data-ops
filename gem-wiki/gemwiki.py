@@ -20,19 +20,19 @@ import requests
 
 API = "https://www.gem.wiki/w/api.php"
 
-# GEM's infra admin matches the leading token in a Cloudflare WAF rule that
-# lets this traffic bypass Under Attack Mode. UAM is off again (2026-08-11),
-# but keep "baird-wiki" in any User-Agent that talks to gem.wiki — it's the
-# identity in GEM's firewall logs and the bypass if UAM comes back.
-# This is the single UA for every gem.wiki client in the repo — the scripts in
-# cite-error-fixes/ import it rather than defining their own, so the firewall
-# sees one string. The admin only asked that it be identifiable (2026-08-07),
-# so the old per-tool suffix is gone; the version and contact address stay as
-# ordinary MediaWiki UA etiquette. Verified: the bypass rule matches on the
-# "baird-wiki" token alone, so the rest is free to change.
+# GEM's infra admin recognizes a specific leading token in this User-Agent in the
+# firewall logs, and a Cloudflare WAF rule keyed on it let this traffic through
+# Under Attack Mode (2026-08-07 to 08-11). UAM is off again, but the token stays
+# the identity the admin knows and the way through if UAM returns. It is a
+# credential, so it is never committed: set GEMWIKI_USER_AGENT in your shell (ask
+# Baird for the value). This is the single UA for every gem.wiki client in the
+# repo; the scripts in cite-error-fixes/ import it rather than defining their
+# own, so the firewall sees one string. The admin only asked that it be
+# identifiable (2026-08-07). The default below is a plain attributed client
+# string with no token.
 USER_AGENT = os.environ.get(
     "GEMWIKI_USER_AGENT",
-    "baird-wiki/1.0 (baird.langenbrunner@globalenergymonitor.org)",
+    "goit-ggit-data-ops/1.0 (gem.wiki client)",
 )
 ENV_PATH = Path(__file__).resolve().parent / ".env"
 # Bot password (Special:BotPasswords) in the login keychain; see credentials().

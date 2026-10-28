@@ -15,7 +15,7 @@ from urllib.error import HTTPError, URLError
 EXPORT = sys.argv[1] if len(sys.argv) > 1 else "gem_export.csv"
 OUT = sys.argv[2] if len(sys.argv) > 2 else "cite_error_results.json"
 # This crawler hits gem.wiki article HTML rather than the API, but the firewall
-# treats it the same: it needs the shared UA (the "baird-wiki" token is what the
+# treats it the same: it needs the shared UA (its leading token, from GEMWIKI_USER_AGENT, is what the
 # Cloudflare bypass rule matches) and it must respect the same rate limit. Both
 # come from ../gemwiki.py — see ../README.md.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
