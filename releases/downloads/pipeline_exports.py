@@ -840,7 +840,11 @@ def main(argv=None):
                         help='skip the release exports; requires --map-output')
     parser.add_argument('--refresh-routes', action='store_true',
                         help='git pull --ff-only the routes checkout before building (local runs)')
+    parser.add_argument('--release-month', default=None, metavar='YYYY-MM',
+                        help='month stamped in output filenames (default: the current month)')
     args = parser.parse_args(argv)
+    release_date = (datetime.datetime.strptime(args.release_month, '%Y-%m').date()
+                    if args.release_month else None)
 
     if args.map_only and not args.map_output:
         parser.error('--map-only requires --map-output')
@@ -863,7 +867,7 @@ def main(argv=None):
     if not args.map_only:
         Path(args.out_dir).mkdir(parents=True, exist_ok=True)
         base_name = release_base_name(args.out_dir, release['config'], args.pipeline_type,
-                                      args.status, args.countries)
+                                      args.status, args.countries, date=release_date)
         export_files(release['gdf_export'], base_name,
                      release['dict_export'], release['acronyms'], release['copyright'],
                      formats=tuple(args.formats))

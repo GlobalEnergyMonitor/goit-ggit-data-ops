@@ -6,7 +6,7 @@ Copied from [../../RELEASE-CHECKLIST.md](../../RELEASE-CHECKLIST.md) on 2026-10-
 Release:          2026-q4-gas-pipelines
 Release month:    2026-11                  (stamp used in download filenames; confirm at freeze)
 Tracker sheet:    1foPLE6K-uqFlaYgLPAUxzeXfDO5wOOqE7tibNHeqTek  ("Pipelines (Gas/Oil/NGL) - main", tab "Gas pipelines")
-Release snapshot: TBD (step 6)
+Release snapshot: 1f-7LGFWa6v9O63e2P7X3aHRWIJGgp87eSer_i3jm91Q  ("Copy of Pipelines (Gas/Oil/NGL) - main - Oct 2026 pre-release for Ownership team", made 2026-10-29)
 Data freeze:      TBD (Asana "Prep for GGIT pipelines update - Q3 2026": start 2026-10-09, due 2026-11-10)
 Update cycle:     ../../../updates/2026-q3-gas-pipelines/
 Run by:           Baird
@@ -58,7 +58,7 @@ Run by:           Baird
 
 Notebook: `releases/owner-parent/GOIT-GGIT-owner-parent-importing-ownership-tracker-CURRENT.ipynb`
 
-- [ ] Hand a copy of the tracker data to the ownership team so they can look up parents. Before that, re-run the backend QC once the 2026-10-28 corrections are in, and agree that `Owner` and `Parent` stop changing after the handoff
+- [ ] Hand a copy of the tracker data to the ownership team so they can look up parents. The snapshot in the header is that copy (2026-10-29). Every tab matched the live sheet cell for cell, except 9 `#REF!` WKT cells on `Removed oil/NGL/gas pipelines`, an IMPORTRANGE the copy has not been granted access to. Those rows are not exported. Before that, re-run the backend QC once the 2026-10-28 corrections are in, and agree that `Owner` and `Parent` stop changing after the handoff
 - [ ] Point the notebook at the tracker sheet, run all cells
 - [ ] Missing-parents list is empty
 
@@ -74,12 +74,12 @@ Notebook: `releases/owner-parent/GOIT-GGIT-owner-parent-importing-ownership-trac
 
 `releases/downloads/pipeline_exports.py --pipeline-type Gas` (or the notebook wrapper), pointed at the **release snapshot**.
 
-- [ ] Configuration set: `PIPELINE_TYPE`, `SIMPLIFY_FUELS`, filters, routes path, `2026-11` stamp
+- [ ] Configuration set: `PIPELINE_TYPE`, `SIMPLIFY_FUELS`, filters, routes path, `2026-11` stamp. Use `--release-month 2026-11`; without it the file names carry the month the export runs. Pre-ownership build of 2026-10-29: `--pipeline-type Gas --sheet-key <snapshot> --release-month 2026-11`, 4,605 pipelines. Re-run it once the ownership results are in the snapshot
 - [ ] Outputs in `releases/downloads/data-files/` as `GEM-GGIT-Gas-Pipelines-2026-11.{xlsx,geojson,gpkg}` + `-shp.zip`
 
 ## 8. Release download QC
 
-- [ ] `python releases/qc/data-release-qc.py releases/downloads/data-files/GEM-GGIT-Gas-Pipelines-2026-11` exits clean
+- [ ] `python releases/qc/data-release-qc.py releases/downloads/data-files/GEM-GGIT-Gas-Pipelines-2026-11` exits clean. The pre-ownership build of 2026-10-29 passed with 0 FAIL and 4 WARN: column order, and the deferred CancelledYear, ShelvedYear and StopYear
 - [ ] Fixes made at the source (live sheet **and** snapshot), export re-run; remaining WARNs explained
 - [x] Trial run on the live sheet, 2026-10-26. Fuel is all `gas` and no SYSTEM/NETWORK INFO rows remain. A second trial run on 2026-10-28 (4,602 rows) cleared every data FAIL below. The only FAIL left was the copyright month, because the trial ran in October and the file says November. Remaining WARNs: missing CancelledYear, ShelvedYear and StopYear (192 rows, left for the next update cycle by decision 2026-10-28), column order (cosmetic), 14 capacity units not defined in the acronyms tab (13 added to `Acronyms` 2026-10-28; the 14th was a case variant, normalized), and one `DiameterUnits` value of `"  mm"` with leading spaces (trimmed)
   - [x] P4483 `Capacity` is `25.8/18.7`
