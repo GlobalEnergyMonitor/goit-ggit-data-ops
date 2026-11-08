@@ -903,7 +903,7 @@ def check_cross_field(c: Checker):
 # Tier 11 — text hygiene
 # ---------------------------------------------------------------------------
 
-TEXT_COLS = ['PipelineName', 'PipelineNetworkGrouping', 'SegmentName',
+TEXT_COLS = ['PipelineName', 'PipelineNetworkGrouping', 'PrimaryNetwork', 'SecondaryNetworks', 'SegmentName',
              'CountriesOrAreas', 'Owner', 'Parent', 'Researcher', 'Status', 'Fuel',
              'PipelineType', 'StartLocation', 'EndLocation', 'StartCountryOrArea',
              'EndCountryOrArea', 'StartState/Province', 'EndState/Province']
