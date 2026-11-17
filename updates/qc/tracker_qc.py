@@ -134,7 +134,7 @@ VOCABULARIES = {
     'DelayType': {'confirmed', 'inferred'},
     'ShelvedCancelledType': {'confirmed', 'inferred'},
     'EuropeTracker': {'yes'},
-    'AssociatedWithLNGExports': {'export', 'import'},  # was yes until 2026-11-17
+    'AssociatedWithLNGExportOrImport': {'export', 'import'},  # was yes until 2026-11-17
     'DataCenter': {'yes'},  # gas tab; blank = not tied to a data center
     'PipelineDirectionality': {'unidirectional', 'bidirectional'},
     'LengthKnownUnits': {'km', 'mi'},
