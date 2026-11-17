@@ -187,9 +187,15 @@ tables. It must pass on the Nov 2026 snapshot before anything is published; if i
 the backend ratios refresh hasn't run. The failure output names the offending pipelines,
 which on the live data are mostly duplicate/renamed pairs that cancel out.
 
+## Run of 2026-11-17: interim snapshot and draft workbook
+
+The notebook now reads the interim snapshot (`1M6QjSscN7ck2XpiSKQvTcfMbtMP_FHWwjwnOreGMOvU`, taken Nov 17 2026 before ownership landed, after refreshing the route lengths). The guard passes. Global output sits next to the notebook and each regional run is in `regional/<tracker code>/`, one run per `REGION_NAME`.
+
+`draft-workbook/write_draft.py` is the only step beyond the notebook. It reads the Global xlsx and overwrites the six gas tabs and the cost per km tab of the DRAFT summary workbook in the release Drive folder (dry run first with the `dry` argument, real writes through `gws-gem-write`, so each run needs approval). The owner tab is provisional until the parent research lands. `find_cell.py` is the small gws helper it imports. Re-run the notebook and the writer after the final snapshot.
+
 ## Open before publishing
 
-- Repoint `SPREADSHEET_KEY` at the Nov 2026 snapshot and confirm the guard passes.
+- Repoint `SPREADSHEET_KEY` at the final Nov 2026 snapshot (after ownership) and rerun; the interim snapshot is pre-ownership.
 - Decide whether the gas capex tabs ship on the corrected gas-only basis (default here) or
   the historical all-fuel basis, and note the choice in the release notes either way.
 - The notebook never writes to Google Sheets. Pasting results into the published workbook
