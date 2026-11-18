@@ -196,6 +196,7 @@ The notebook now reads the interim snapshot (`1M6QjSscN7ck2XpiSKQvTcfMbtMP_FHWwj
 ## Open before publishing
 
 - Repoint `SPREADSHEET_KEY` at the final Nov 2026 snapshot (after ownership) and rerun; the interim snapshot is pre-ownership.
+- Update the wiki page [GGIT and GOIT cost estimates](https://www.gem.wiki/GGIT_and_GOIT_cost_estimates) with the additional cost estimates for the November 2026 release, once the final snapshot is in (preview and per-edit approval required).
 - Decide whether the gas capex tabs ship on the corrected gas-only basis (default here) or
   the historical all-fuel basis, and note the choice in the release notes either way.
 - The notebook never writes to Google Sheets. Pasting results into the published workbook

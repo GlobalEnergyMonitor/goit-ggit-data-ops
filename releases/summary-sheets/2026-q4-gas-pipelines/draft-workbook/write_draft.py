@@ -66,4 +66,15 @@ def cost(sheet,first):
     if not DRY: gws(W,"sheets","spreadsheets","values","update","--params",json.dumps({"spreadsheetId":K,"range":f"'{ct}'!A{first}","valueInputOption":"RAW"}),"--json",json.dumps({"values":rows}))
 cost("Cost per km by region",9); cost("Cost per km by subregion",17)
 if not DRY: gws(W,"sheets","spreadsheets","values","update","--params",json.dumps({"spreadsheetId":K,"range":f"'{ct}'!A3","valueInputOption":"RAW"}),"--json",json.dumps({"values":[["Gas Pipelines data, November 2026 (DRAFT)"]]}))
+# trim empty rows below the data (every tab we wrote, ending on its last non-blank row)
+if not DRY:
+    meta=gws(R,"sheets","spreadsheets","get","--params",json.dumps({"spreadsheetId":K,"fields":"sheets.properties(sheetId,title,gridProperties.rowCount)"}))
+    reqs=[]
+    for s in meta["sheets"]:
+        p=s["properties"]
+        if p["title"] not in [t for t,*_ in PLAN]+[ct]: continue
+        vals=rd(p["title"],"A1:Z2000"); last=max(i for i,r in enumerate(vals,1) if any(str(c).strip() for c in r))
+        if p["gridProperties"]["rowCount"]>last: reqs.append({"deleteDimension":{"range":{"sheetId":p["sheetId"],"dimension":"ROWS","startIndex":last,"endIndex":p["gridProperties"]["rowCount"]}}})
+    if reqs: gws(W,"sheets","spreadsheets","batchUpdate","--params",json.dumps({"spreadsheetId":K}),"--json",json.dumps({"requests":reqs}))
+    print("trimmed",len(reqs),"tabs")
 print("done" if not DRY else "dry run only")

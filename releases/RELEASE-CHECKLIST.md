@@ -184,6 +184,7 @@ Folder: the release folder created in step 2.
 - [ ] Copy/update the methodology `README.md` in the release folder
       (see `2026-q2-oil-pipelines/README.md` for the expected shape)
 - [ ] Commit the notebook + README (data files stay gitignored)
+- [ ] Draft workbook, dashboard CSVs, wiki cost-estimates page, and topline points: follow `SUMMARY-DASHBOARD-WIKI-SOP.md`
 
 ## 10. Publish and wrap up
 
