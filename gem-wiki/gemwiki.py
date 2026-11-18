@@ -146,6 +146,57 @@ def credentials():
     )
 
 
+# -------------------------------------------------- Cloudflare fallback --
+# When Cloudflare challenges this client (403 "Just a moment...", seen again
+# 2026-11-18), set GEMWIKI_CF=1. session() then borrows a cf_clearance cookie
+# earned by a real Google Chrome, using pipelines-researcher's
+# scripts/cf_clearance.py (its store is that repo's work/cf_clearance.json).
+# The cookie only works with the exact Chrome User-Agent that earned it, so it
+# replaces USER_AGENT for that session, and it is bound to this machine's IP.
+# Cookies go in the session's jar, never a fixed Cookie header: a fixed header
+# overrides the wiki's own session cookies and login fails with "session
+# timed out". Needs Chrome on this Mac, so it is a local fallback, not for CI.
+# GEMWIKI_CF_SCRIPTS overrides where cf_clearance.py is looked for.
+
+CF_SCRIPTS = Path(os.environ.get(
+    "GEMWIKI_CF_SCRIPTS",
+    Path(__file__).resolve().parents[2] / "pipelines-researcher" / "scripts"))
+_cf = None   # (cookies dict, ua), earned once per process
+
+
+def _cf_works(cookies, ua):
+    r = requests.get(API, params={"action": "query", "meta": "siteinfo", "format": "json"},
+                     headers={"User-Agent": ua}, cookies=cookies, timeout=60)
+    return r.status_code == 200 and r.headers.get("cf-mitigated") != "challenge"
+
+
+def _apply_cf_clearance(s):
+    global _cf
+    if _cf is None:
+        import sys
+        if not (CF_SCRIPTS / "cf_clearance.py").exists():
+            raise WikiError(f"GEMWIKI_CF=1 but no cf_clearance.py in {CF_SCRIPTS}; set GEMWIKI_CF_SCRIPTS")
+        sys.path.insert(0, str(CF_SCRIPTS))
+        import cf_clearance
+        url = API + "?action=query&meta=siteinfo&format=json"
+        for attempt in range(2):
+            hit = cf_clearance.cookie_for(url)
+            if hit:
+                cookies = dict(kv.split("=", 1) for kv in hit[0].split("; "))
+                if _cf_works(cookies, hit[1]):
+                    _cf = (cookies, hit[1])
+                    break
+            if attempt == 0:
+                print("gem.wiki: getting a Cloudflare clearance cookie from Chrome (about 5 seconds)")
+                cf_clearance.refresh([url])
+        else:
+            raise WikiError("Cloudflare still challenges gem.wiki after a Chrome clearance refresh")
+    cookies, ua = _cf
+    s.headers["User-Agent"] = ua
+    for k, v in cookies.items():
+        s.cookies.set(k, v, domain=".gem.wiki")
+
+
 def session(login=False):
     """A requests.Session for the API; logs in with the bot password if asked.
 
@@ -154,6 +205,8 @@ def session(login=False):
     """
     s = requests.Session()
     s.headers["User-Agent"] = USER_AGENT
+    if os.environ.get("GEMWIKI_CF", "") in ("1", "true", "yes"):
+        _apply_cf_clearance(s)
     if login:
         user, password = credentials()
         token = get(s, action="query", meta="tokens", type="login")[
@@ -173,21 +226,47 @@ def _check(data):
     return data
 
 
+def _send(request, attempts=6):
+    """Run one throttled request; on HTTP 429, 502, 503 or 504 wait (Retry-After, else 15 s doubling) and try
+    again. Bulk page builds on 2026-11-06 died on a 429 after 60 pages and a 503 after 345; the SOP says retry."""
+    wait = 15
+    for i in range(attempts):
+        _throttle()
+        try:
+            r = request()
+        except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
+            if i == attempts - 1:
+                raise
+            print(f"timeout or connection error from gem.wiki; waiting {wait}s before retry {i + 1}/{attempts - 1}")
+            time.sleep(wait)
+            wait = min(wait * 2, 120)
+            continue
+        if r.status_code == 403 and r.headers.get("cf-mitigated") == "challenge":
+            raise WikiError("Cloudflare is challenging gem.wiki (403 'Just a moment...'); "
+                            "re-run with GEMWIKI_CF=1 to use a Chrome clearance cookie (see README)")
+        if r.status_code not in (429, 502, 503, 504) or i == attempts - 1:
+            r.raise_for_status()
+            return r
+        try:
+            wait = max(wait, int(r.headers.get("Retry-After", 0)))
+        except ValueError:
+            pass
+        print(f"{r.status_code} from gem.wiki; waiting {wait}s before retry {i + 1}/{attempts - 1}")
+        time.sleep(wait)
+        wait = min(wait * 2, 120)
+
+
 def get(s, **params):
     params.setdefault("format", "json")
     params.setdefault("formatversion", "2")
-    _throttle()
-    r = s.get(API, params=params, timeout=60)
-    r.raise_for_status()
+    r = _send(lambda: s.get(API, params=params, timeout=60))
     return _check(r.json())
 
 
 def post(s, **data):
     data.setdefault("format", "json")
     data.setdefault("formatversion", "2")
-    _throttle()
-    r = s.post(API, data=data, timeout=60)
-    r.raise_for_status()
+    r = _send(lambda: s.post(API, data=data, timeout=60))
     return _check(r.json())
 
 

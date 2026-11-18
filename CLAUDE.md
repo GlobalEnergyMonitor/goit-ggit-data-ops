@@ -104,7 +104,11 @@ README.md for the folder map and the typical release workflow.
   Cloudflare's Under Attack Mode (the 2026-08-07 incident) is off again as of
   2026-08-11, but the gem.wiki User-Agent still carries a token the admin
   recognizes. It comes from `GEMWIKI_USER_AGENT` (never committed; ask Baird)
-  and if scripted access starts 403ing, check that it is set. Same policy as Google
+  and if scripted access starts 403ing, check that it is set. If it is set and
+  Cloudflare still challenges (as on 2026-11-18), run with `GEMWIKI_CF=1`:
+  `gemwiki.session()` then borrows a real-Chrome clearance cookie. If that
+  fails too, the third way is pasting the page through Claude in Chrome
+  (README, "Cloudflare" section, has all three). Same policy as Google
   Sheets: never push a wiki edit without previewing it and getting explicit
   per-edit approval from the user. Exception (user-approved 2026-07-20):
   `gem-wiki/cite-error-fixes/` runs its gated orphaned-ref repair in
