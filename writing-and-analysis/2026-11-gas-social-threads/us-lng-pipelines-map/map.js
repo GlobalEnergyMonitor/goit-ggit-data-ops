@@ -24,7 +24,7 @@ const TEXT = {
   subtitle:
     "Gas pipelines in construction or proposed that GEM links to LNG export terminals, the terminals they serve, and the operating gas pipeline network",
   note:
-    "Note: Includes four lines in construction (Blackcomb, Blackfin, Eiger Express and Pelican) that deliver gas to hubs that LNG plants draw from, as well as to other buyers. One linked line, the proposed Gillis Access extension, has no mapped route yet. Alaska LNG is not shown.",
+    "Note: Includes four lines in construction (Blackcomb, Blackfin, Eiger Express and Pelican) that deliver gas to hubs that LNG plants draw from, as well as to other buyers. Alaska LNG is not shown.",
   source:
     "Source: Global Energy Monitor, Global Gas Infrastructure Tracker, data as of November 19, 2026",
 };
