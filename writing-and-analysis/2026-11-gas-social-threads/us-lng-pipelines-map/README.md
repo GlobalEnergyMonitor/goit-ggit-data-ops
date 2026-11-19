@@ -5,7 +5,7 @@ A static GEM-style map of US gas pipelines in construction or proposed that the 
 ## Regenerate
 
 ```
-python prep_data.py          # backend flags via gws-gem (read-only) + Nov 2026 pipelines gpkg + Oct 2026 LNG terminals gpkg -> data/
+python prep_data.py          # today's data: backend sheet (gws-gem, read-only), routes repo normalized branch, LNG terminals from the read-only DB -> data/
 python export.py --scale 2   # writes GGIT-US-LNG-pipelines-2026-11.png and .svg
 python export.py --serve     # live preview while editing map.js
 ```
@@ -14,8 +14,8 @@ python export.py --serve     # live preview while editing map.js
 
 ## Scope choices
 
-- Highlighted lines: `AssociatedWithLNGExportOrImport = export`, status construction (solid) or proposed (dashed), `CountriesOrAreas` includes the United States. Routes are joined from the release gpkg on ProjectID.
-- Eleven flagged rows have no route in the release file, including the Commonwealth LNG pipeline, so they are not drawn. The note on the map says so.
+- Highlighted lines: `AssociatedWithLNGExportOrImport = export`, status construction (solid) or proposed (dashed), `CountriesOrAreas` includes the United States. Routes come from `origin/normalized` of goit-ggit-pipeline-routes-normalized, read with `git archive`, joined on ProjectID. No release file is used; the map shows the data as it stands on the day `prep_data.py` runs, and the source line carries that date.
+- Flagged rows with no drawn route are left off the map, and the note says how many (seven on 2026-11-19 after the route work that day: five upgrades that add no new pipe, P5509, which duplicates the mapped Sabine Crossing row P7798, and the Gillis Access extension P7807, which has no published route; only the last counts as a missing line). Update that count in `map.js` after a rerun.
 - The four shared hub lines (Blackcomb, Blackfin, Eiger Express, Pelican) are included and named in the note.
 - "Louisiana LNG Terminal" in the pipelines sheet is treated as Woodside Louisiana LNG.
 - Alaska LNG and the Ohio line are outside the frame. Saguaro Energía (Sonora, Mexico) is shown by an arrow.

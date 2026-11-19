@@ -1,27 +1,38 @@
 """
 Data prep for the US LNG pipelines map (Nov 2026 gas release social posts).
 
-Writes three files into data/ (gitignored, like all data in this repo):
+Everything is read as it stands today, not from a release file:
+
+  - pipeline flags and statuses: the backend Gas pipelines sheet, read-only
+    through gws-gem (route-lengths/sheets_client.py);
+  - pipeline routes: the routes repo's normalized branch (origin/normalized of
+    goit-ggit-pipeline-routes-normalized), read with `git archive` so the local
+    checkout's working tree is never touched;
+  - LNG terminals: a fresh pull from the read-only GEM database through
+    gem-db-ops/lng/pull.py.
+
+Writes into data/ (gitignored, like all data in this repo):
 
   lng-pipelines.geojson      US gas pipelines in construction or proposed that the
                              pipelines researcher flagged as associated with an LNG
                              export terminal (AssociatedWithLNGExportOrImport =
-                             export). Flags and status come from the backend Gas
-                             pipelines sheet, read-only through gws-gem; routes come
-                             from the Nov 5 release gpkg, joined on ProjectID.
+                             export).
   operating-context.geojson  all operating gas pipelines inside the padded map frame
                              (geometry only, simplified), the grey background layer.
   terminals.csv              the LNG export terminals those pipelines serve, one row
                              per terminal, with an operating / in development status
-                             rolled up from the Oct 2026 LNG terminals release.
+                             rolled up from the terminal's export units.
 
 Usage:
   python prep_data.py
 """
 
+import io
 import json
 import pathlib
+import subprocess
 import sys
+import tarfile
 
 import geopandas as gpd
 import pandas as pd
@@ -29,9 +40,11 @@ from shapely.ops import linemerge
 
 HERE = pathlib.Path(__file__).resolve().parent
 REPO = HERE.parents[2]  # .../goit-ggit-data-ops
-DATA_FILES = REPO / "releases" / "downloads" / "data-files"
-PIPES_GPKG = DATA_FILES / "GEM-GGIT-Gas-Pipelines-2026-11.gpkg"
-TERMS_GPKG = DATA_FILES / "GEM-GGIT-LNG-Terminals-2026-10.gpkg"
+GEM_ROOT = REPO.parent
+ROUTES_REPO = GEM_ROOT / "goit-ggit-pipeline-routes-normalized"
+ROUTES_REF = "origin/normalized"
+ROUTES_PATH = "data/individual-routes/gas-pipelines"
+LNG_PULL = GEM_ROOT / "gem-db-ops" / "lng" / "pull.py"
 OUT = HERE / "data"
 
 sys.path.insert(0, str(REPO / "route-lengths"))
@@ -51,7 +64,38 @@ def read_backend():
     n = len(header)
     df = pd.DataFrame([(r + [""] * n)[:n] for r in rows], columns=header)
     df = df.loc[:, ~pd.Index(df.columns).duplicated()]
-    return df[df["ProjectID"].str.strip() != ""]
+    df["ProjectID"] = df["ProjectID"].str.strip()
+    return df[df["ProjectID"] != ""]
+
+
+def load_routes():
+    """{ProjectID: geometry} for every gas route with geometry on the normalized branch."""
+    git = ["git", "-C", str(ROUTES_REPO)]
+    subprocess.run(git + ["fetch", "-q", "origin", "normalized"], check=True)
+    sha = subprocess.run(git + ["rev-parse", "--short", ROUTES_REF],
+                         capture_output=True, text=True, check=True).stdout.strip()
+    tar = subprocess.run(git + ["archive", ROUTES_REF, ROUTES_PATH],
+                         capture_output=True, check=True).stdout
+    routes = {}
+    with tarfile.open(fileobj=io.BytesIO(tar)) as tf:
+        for m in tf.getmembers():
+            if not m.name.endswith(".geojson"):
+                continue
+            feats = [f for f in json.load(tf.extractfile(m))["features"] if f.get("geometry")]
+            if not feats:
+                continue  # placeholder file, no drawn route yet
+            g = gpd.GeoDataFrame.from_features(feats, crs=4326).geometry.union_all()
+            if not g.is_empty:
+                routes[pathlib.Path(m.name).stem] = g
+    print(f"routes: {len(routes)} gas routes with geometry at {ROUTES_REF} {sha}")
+    return routes
+
+
+def pull_terminals():
+    out = OUT / "lng-terminals-today.csv"
+    subprocess.run([sys.executable, str(LNG_PULL), "--output", str(out)],
+                   check=True, capture_output=True)
+    return pd.read_csv(out)
 
 
 def split_terminals(v):
@@ -62,17 +106,16 @@ def split_terminals(v):
 def main():
     OUT.mkdir(exist_ok=True)
     back = read_backend()
+    routes = load_routes()
+
     flagged = back[
         (back["AssociatedWithLNGExportOrImport"].str.strip().str.lower() == "export")
         & back["Status"].isin(HIGHLIGHT_STATUSES)
         & back["CountriesOrAreas"].str.contains("United States")
     ].copy()
-
-    geo = gpd.read_file(PIPES_GPKG).to_crs(epsg=4326)
-    routes = geo[["ProjectID", "geometry"]]
-    hl = routes.merge(flagged, on="ProjectID", how="right")
-    no_route = hl[hl.geometry.isna()]
-    hl = gpd.GeoDataFrame(hl[~hl.geometry.isna()], geometry="geometry", crs=4326)
+    flagged["geometry"] = flagged["ProjectID"].map(routes)
+    no_route = flagged[flagged["geometry"].isna()]
+    hl = flagged[flagged["geometry"].notna()]
 
     feats = []
     for _, r in hl.iterrows():
@@ -87,17 +130,19 @@ def main():
                 "terminal": "; ".join(split_terminals(r["AssociatedLNGTerminal(s)"])),
                 "capacity_bcmy": r["CapacityBcm/y"],
             },
-            "geometry": r.geometry.simplify(0.003).__geo_interface__,
+            "geometry": r["geometry"].simplify(0.003).__geo_interface__,
         })
     (OUT / "lng-pipelines.geojson").write_text(
         json.dumps({"type": "FeatureCollection", "features": feats}), encoding="utf-8")
 
-    # Background: operating gas lines in the frame (release file status).
+    # Background: operating gas lines (backend status today) inside the frame.
+    op = back[back["Status"] == "operating"]
+    op_geoms = gpd.GeoSeries([routes[p] for p in op["ProjectID"] if p in routes], crs=4326)
     minx, miny, maxx, maxy = FRAME_PAD
-    ctx = geo[(geo["Status"] == "operating") & ~geo.geometry.isna()].cx[minx:maxx, miny:maxy]
+    op_geoms = op_geoms.cx[minx:maxx, miny:maxy]
     # Some network rows are thousands of two-point segments; merge them into
     # long lines first so simplify can actually thin the vertices.
-    ctx_geoms = ctx.geometry.apply(
+    ctx_geoms = op_geoms.apply(
         lambda g: linemerge(g) if g.geom_type == "MultiLineString" else g
     ).simplify(0.008, preserve_topology=False)
     (OUT / "operating-context.geojson").write_text(json.dumps({
@@ -107,7 +152,7 @@ def main():
 
     # Terminals served by the highlighted lines (all of them, routed or not).
     served = sorted({t for v in flagged["AssociatedLNGTerminal(s)"] for t in split_terminals(v)})
-    terms = gpd.read_file(TERMS_GPKG)
+    terms = pull_terminals()
     terms = terms[terms["TerminalName"].isin(served) & (terms["FacilityType"] == "export")]
     out = []
     for name, grp in terms.groupby("TerminalName"):
@@ -124,8 +169,8 @@ def main():
             "status": status,
             "unit_statuses": ", ".join(sorted(statuses)),
             "country": grp["Country/Area"].iloc[0],
-            "latitude": grp["Latitude"].astype(float).mean(),
-            "longitude": grp["Longitude"].astype(float).mean(),
+            "latitude": pd.to_numeric(grp["Latitude"], errors="coerce").mean(),
+            "longitude": pd.to_numeric(grp["Longitude"], errors="coerce").mean(),
         })
     pd.DataFrame(out).to_csv(OUT / "terminals.csv", index=False)
 
