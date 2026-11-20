@@ -22,11 +22,11 @@
 const TEXT = {
   title: "The US is building gas pipelines to feed LNG exports",
   subtitle:
-    "Gas pipelines in construction or proposed that GEM links to LNG export terminals, the terminals they serve, and the operating gas pipeline network",
+    "Gas pipelines in development to supply the growing US LNG export market, shown with the specific LNG terminals they will serve and the broader operating pipeline network",
   note:
-    "Note: Includes four lines in construction (Blackcomb, Blackfin, Eiger Express and Pelican) that deliver gas to hubs that LNG plants draw from, as well as to other buyers. Alaska LNG is not shown.",
+    "Note: Includes four pipelines in construction (Blackcomb, Blackfin, Eiger Express and Pelican) that will deliver gas to hubs that feed LNG plants and other buyers. Alaska LNG is not shown.",
   source:
-    "Source: Global Energy Monitor, Global Gas Infrastructure Tracker, data as of November 19, 2026",
+    "Source: Global Energy Monitor, Global Gas Infrastructure Tracker, October 2026",
 };
 
 // ---- Style config ----
@@ -61,15 +61,15 @@ const REGION_LABELS = [
   ["LOUISIANA", -92.35, 31.25, "state-label"],
   ["NEW MEXICO", -105.0, 32.85, "state-label"],
   ["MISSISSIPPI", -89.7, 32.3, "state-label"],
-  ["MEXICO", -103.6, 29.0, "country-label"],
+  ["MEXICO", -102.4, 27.5, "country-label"],
 ];
 
 // ---- Figure layout (GEM chart anatomy) ----
-const Wfig = 1000,
+const Wfig = 800, // the style guide's maximum chart width
   PAD = 28;
 const mapX = PAD,
-  mapW = Wfig - 2 * PAD; // 944
-const mapH = 600;
+  mapW = Wfig - 2 * PAD; // 744
+const mapH = 560; // tall enough for the legend to sit below the Rio Grande labels
 // Geographic window. The projection is a conic fitted to this box, so the box
 // is "contained" in the map rectangle; any spare room shows real geography.
 const LON0 = -106.6,
@@ -79,14 +79,14 @@ const LON0 = -106.6,
 
 // Inset: zoom on the Sabine Pass / Lake Charles cluster.
 const INSET = {
-  lon0: -94.3,
-  lon1: -92.9,
+  lon0: -94.43,
+  lon1: -93.03,
   lat0: 29.56,
   lat1: 30.24,
-  w: 370,
-  h: 240,
-  left: 520, // px in from the map's left edge (sits over the Gulf, below Freeport)
-  bottom: 16, // px up from the map's bottom edge
+  w: 310,
+  h: 205,
+  bottom: 16, // px up from the map's bottom edge; the same gap is kept on the right
+  get left() { return mapW - this.w - this.bottom; }, // px in from the map's left edge
   title: "Sabine Pass and Lake Charles area",
 };
 
@@ -97,16 +97,16 @@ const LABEL_POS = {
     "Texas LNG": [-8, 9, "end"],
     "Freeport LNG": [8, 10, "start"],
     "Plaquemines LNG": [-9, -12, "end"],
-    "Delfin FLNG": [9, 6, "start"],
+    "Delfin FLNG": [9, 6, "start"], // crosses the inset leader line, drawn above it
   },
   inset: {
-    "Sabine Pass LNG": [10, 4, "start"],
-    "Golden Pass LNG": [-6, 24, "middle"],
+    "Sabine Pass LNG": [-14, 25, "middle"],
+    "Golden Pass LNG": [-7, 8, "end"],
     "Port Arthur LNG": [6, -14, "middle"],
-    "CP2 LNG": [10, -8, "start"],
-    "Commonwealth LNG": [4, 24, "middle"],
+    "CP2 LNG": [8, -8, "start"],
+    "Commonwealth LNG": [-2, 25, "middle"],
     "Woodside Louisiana LNG": [-9, 6, "end"],
-    "Magnolia LNG": [9, -6, "start"],
+    "Magnolia LNG": [4, -14, "middle"],
   },
 };
 // Terminals drawn only in the inset (the main map gets one box for the cluster).
@@ -115,12 +115,21 @@ const INSET_ONLY = new Set(Object.keys(LABEL_POS.inset));
 // Header typography (baselines + line heights, px).
 const TITLE_TOP = 46,
   TITLE_LH = 34,
-  TITLE_TO_SUB = 30,
-  SUB_LH = 23,
-  SUB_TO_MAP = 18;
-const NOTE_LH = 19;
+  TITLE_TO_SUB = 34, // 8 px between title and subtitle
+  SUB_LH = 26, // 18 px at the guide's 1.45 line height
+  SUB_TO_MAP = 32; // 32 px between sections
+// Footer: source first, note below it, 14 px at 1.2 line height. The logo is
+// 40 px high, bottom right, with a 28 px margin.
+const FOOT_TOP = 43, // map bottom to the first footer baseline (32 px gap)
+  NOTE_LH = 17,
+  NOTE_GAP = 23,
+  LOGO_VB_W = 1080,
+  LOGO_VB_H = 488.11,
+  LOGO_H = 40,
+  LOGO_W = (LOGO_VB_W * LOGO_H) / LOGO_VB_H,
+  LOGO_MARGIN = 28;
 
-let mapTop, mapBottom, footerTop, Hfig;
+let mapTop, mapBottom, logoTop, Hfig;
 
 function boxOutline(lon0, lon1, lat0, lat1, n = 20) {
   // sampled box edges, so a conic fit sees the curved parallels
@@ -210,7 +219,7 @@ function whenFontsLoaded() {
 function extractLogoPaths(svgText) {
   if (!svgText) return "";
   const ds = [...svgText.matchAll(/<path\b[^>]*?\sd="([^"]+)"/g)].map((m) => m[1]);
-  return ds.map((d) => `<path fill="#002430" d="${d}"></path>`).join("");
+  return ds.map((d) => `<path fill="#016B83" d="${d}"></path>`).join("");
 }
 
 let svg;
@@ -226,10 +235,17 @@ function layoutHeader() {
 }
 
 function layoutFooter() {
-  const note = svg.append("text").attr("class", "fig-note").attr("x", mapX).attr("y", mapBottom + 26);
-  const noteLines = wrapText(note, TEXT.note, mapW, NOTE_LH);
-  footerTop = mapBottom + 26 + (noteLines - 1) * NOTE_LH + 14;
-  Hfig = footerTop + 50;
+  const textW = mapW - LOGO_W - 30; // footer text stops short of the logo
+  const srcY = mapBottom + FOOT_TOP;
+  const src = svg.append("text").attr("class", "fig-source").attr("x", mapX).attr("y", srcY);
+  const srcLines = wrapText(src, TEXT.source, textW, NOTE_LH);
+  const noteY = srcY + (srcLines - 1) * NOTE_LH + NOTE_GAP;
+  const note = svg.append("text").attr("class", "fig-note").attr("x", mapX).attr("y", noteY);
+  const noteLines = wrapText(note, TEXT.note, textW, NOTE_LH);
+  const textBottom = noteY + (noteLines - 1) * NOTE_LH + 4;
+  // Logo bottom lines up with the last line of footer text.
+  logoTop = Math.max(mapBottom + 32, textBottom - LOGO_H);
+  Hfig = logoTop + LOGO_H + LOGO_MARGIN;
 }
 
 // Draws basemap + all data layers into group `g`, using projection `proj`.
@@ -281,7 +297,8 @@ function drawLayers(g, proj, opts) {
   const terms = TERMINALS.filter((t) => (opts.inset ? INSET_ONLY.has(t.label) : !INSET_ONLY.has(t.label)));
   // operating drawn last so filled dots sit on top
   terms.sort((a, b) => (a.status === "operating") - (b.status === "operating"));
-  const tg = g.append("g").selectAll("g").data(terms).join("g")
+  const tg = g.append("g").attr("class", opts.inset ? "terminals-inset" : "terminals-main")
+    .selectAll("g").data(terms).join("g")
     .attr("transform", (d) => `translate(${proj([d.lon, d.lat])})`)
     .on("mousemove", (e, d) => showPointTip(e, d)).on("mouseleave", hideTip);
   tg.append("circle").attr("class", "terminal").attr("r", opts.inset ? 6 : 6)
@@ -314,22 +331,24 @@ function draw() {
   const g = svg.append("g").attr("clip-path", "url(#frame-clip)");
   drawLayers(g, proj, { labels: true, inset: false });
 
-  // Saguaro annotation: the main line heads for the border, the terminal is in Sonora.
+  // Saguaro annotation: the Saguaro Connector meets the Sierra Madre pipeline at
+  // the Rio Grande, and Sierra Madre runs off the frame's west edge toward Sonora.
   const sag = TERMINALS.find((t) => t.label.startsWith("Saguaro"));
   if (sag) {
-    const a = proj([-105.45, 31.2]);
+    const exit = proj([-106.6, 30.61]); // where Sierra Madre leaves the frame
+    const x0 = mapX + 12, y0 = exit[1] + 16;
     const ann = g.append("g").attr("class", "annotation");
     ann.append("path")
-      .attr("d", `M${a[0] - 8},${a[1] + 11} L${a[0] - 46},${a[1] + 11}`)
+      .attr("d", `M${x0 + 44},${y0} L${x0 + 2},${y0}`)
       .attr("marker-end", "url(#arrow)");
-    ann.append("text").attr("x", a[0] - 46).attr("y", a[1] + 36).attr("text-anchor", "start")
-      .selectAll("tspan").data(["To Saguaro Energía LNG", "in Sonora, Mexico (in development)"]).join("tspan")
-      .attr("x", a[0] - 46).attr("dy", (d, i) => (i ? 18 : 0)).text((d) => d);
+    ann.append("text").attr("x", x0).attr("y", y0 + 24).attr("text-anchor", "start")
+      .selectAll("tspan").data(["Continues about 750 km to", "Saguaro Energía LNG in Sonora,", "Mexico (in development)"]).join("tspan")
+      .attr("x", x0).attr("dy", (d, i) => (i ? 18 : 0)).text((d) => d);
   }
   svg.append("defs").append("marker").attr("id", "arrow").attr("viewBox", "0 0 10 10")
     .attr("refX", 8).attr("refY", 5).attr("markerWidth", 7).attr("markerHeight", 7)
     .attr("orient", "auto-start-reverse")
-    .append("path").attr("d", "M1,1 L9,5 L1,9").attr("fill", "none").attr("stroke", "#3a4a50").attr("stroke-width", 1.5);
+    .append("path").attr("d", "M1,1 L9,5 L1,9").attr("fill", "none").attr("stroke", "#3a4a50").attr("stroke-width", 2);
 
   // ---- inset ----
   const ix = mapX + INSET.left;
@@ -347,6 +366,8 @@ function draw() {
   svg.append("line").attr("class", "inset-leader")
     .attr("x1", (b0[0] + b1[0]) / 2).attr("y1", b1[1])
     .attr("x2", ix + INSET.w / 2).attr("y2", iy);
+  // main-map terminals and labels sit above the cluster box and leader line
+  svg.node().appendChild(svg.select(".terminals-main").node());
 
   svg.append("rect").attr("class", "inset-bg")
     .attr("x", ix).attr("y", iy).attr("width", INSET.w).attr("height", INSET.h);
@@ -374,7 +395,10 @@ function drawChrome() {
     .concat([{ label: CONTEXT_STYLE.label, color: CONTEXT_STYLE.color, kind: "context" }])
     .concat(Object.values(TERMINAL_STYLE).map((t) => ({ ...t, kind: "point" })));
 
-  const SWATCH_W = 40, TEXT_X = 50, ROW = 24;
+  // Swatch width fits exactly three dashes of the proposed pattern (dash, gap,
+  // dash, gap, dash), so no partial fourth dash shows.
+  const [DASH, GAP] = CATEGORY_STYLE.find((c) => c.key === "proposed").dash.split(",").map(Number);
+  const SWATCH_W = 3 * DASH + 2 * GAP, TEXT_X = SWATCH_W + 10, ROW = 24;
   const left = mapX + 22, top = mapBottom - 20 - (items.length - 1) * ROW - 16;
   const lg = svg.append("g").attr("class", "legend");
   const labels = [];
@@ -397,12 +421,8 @@ function drawChrome() {
     .attr("height", (items.length - 1) * ROW + 32).attr("rx", 6);
   lg.attr("transform", `translate(${left}, ${top})`);
 
-  const LOGO_VB_W = 1080, LOGO_VB_H = 488.11, logoH = 40;
-  const logoScale = logoH / LOGO_VB_H, logoW = LOGO_VB_W * logoScale;
-  const src = svg.append("text").attr("class", "fig-source").attr("x", mapX).attr("y", footerTop + 20);
-  wrapText(src, TEXT.source, mapW - logoW - 30, 20);
   svg.append("g")
-    .attr("transform", `translate(${Wfig - PAD - logoW},${footerTop + 4}) scale(${logoScale})`)
+    .attr("transform", `translate(${Wfig - PAD - LOGO_W},${logoTop}) scale(${LOGO_H / LOGO_VB_H})`)
     .html(LOGO_PATHS);
 }
 

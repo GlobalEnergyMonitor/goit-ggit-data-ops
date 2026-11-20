@@ -130,7 +130,7 @@ body {
   font-family: "Barlow Semi Condensed", system-ui, sans-serif;
 }
 #wrap {
-  max-width: 1000px;
+  max-width: 800px;
   margin: 0 auto;
   padding: 16px 16px 8px;
 }
@@ -229,13 +229,13 @@ svg {
 .state-border {
   fill: none;
   stroke: #555555;
-  stroke-opacity: 0.25;
+  stroke-opacity: 0.18;
   stroke-width: 0.8;
   stroke-dasharray: 3, 2;
 }
 .state-label {
   font-family: "Barlow Semi Condensed", sans-serif;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 500;
   letter-spacing: 1.5px;
   fill: #8ba3a8;
@@ -255,7 +255,7 @@ svg {
 .annotation path {
   fill: none;
   stroke: var(--text);
-  stroke-width: 1.5;
+  stroke-width: 2;
 }
 .annotation text {
   font-family: "Barlow Semi Condensed", sans-serif;
@@ -339,7 +339,7 @@ svg {
 }
 .legend text {
   font-family: "Barlow Semi Condensed", sans-serif;
-  font-size: 17px;
+  font-size: 16px;
   fill: var(--text);
   paint-order: stroke;
   stroke: #fff;

@@ -56,6 +56,10 @@ HIGHLIGHT_STATUSES = ["construction", "proposed"]
 # "Louisiana LNG Terminal" is the older name the Phase 3 Driftwood row uses for
 # Woodside Louisiana LNG; its only terminal-tracker unit is cancelled.
 TERMINAL_ALIASES = {"Louisiana LNG Terminal": "Woodside Louisiana LNG Terminal"}
+# The Saguaro Connector (P5664) stops at the Rio Grande; the Sierra Madre Gas
+# Pipeline (P5795, Mexico, proposed) carries that gas on to Puerto Libertad.
+# The backend does not flag P5795 as LNG-linked, so it is added here by hand.
+ONWARD_LEGS = {"P5795": "Saguaro Energía LNG Terminal"}
 
 
 def read_backend():
@@ -113,6 +117,11 @@ def main():
         & back["Status"].isin(HIGHLIGHT_STATUSES)
         & back["CountriesOrAreas"].str.contains("United States")
     ].copy()
+    # Onward legs: lines that carry flagged US gas the rest of the way to a
+    # terminal but are not flagged themselves (Mexico-only rows).
+    onward = back[back["ProjectID"].isin(ONWARD_LEGS)].copy()
+    onward["AssociatedLNGTerminal(s)"] = onward["ProjectID"].map(ONWARD_LEGS)
+    flagged = pd.concat([flagged, onward], ignore_index=True)
     flagged["geometry"] = flagged["ProjectID"].map(routes)
     no_route = flagged[flagged["geometry"].isna()]
     hl = flagged[flagged["geometry"].notna()]

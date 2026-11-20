@@ -14,9 +14,21 @@ python export.py --serve     # live preview while editing map.js
 
 ## Scope choices
 
-- Highlighted lines: `AssociatedWithLNGExportOrImport = export`, status construction (solid) or proposed (dashed), `CountriesOrAreas` includes the United States. Routes come from `origin/normalized` of goit-ggit-pipeline-routes-normalized, read with `git archive`, joined on ProjectID. No release file is used; the map shows the data as it stands on the day `prep_data.py` runs, and the source line carries that date.
+- Highlighted lines: `AssociatedWithLNGExportOrImport = export`, status construction (solid) or proposed (dashed), `CountriesOrAreas` includes the United States. Routes come from `origin/normalized` of goit-ggit-pipeline-routes-normalized, read with `git archive`, joined on ProjectID. No release file is used; the map shows the data as it stands on the day `prep_data.py` runs. The source line is set by hand in `map.js` and reads "October 2026", the release's data vintage, not the run date.
 - Flagged rows with no drawn route are left off the map, and the note says how many (five on 2026-11-19 after the route work that day, all upgrades that add no new pipe; none is a missing line, so the note no longer mentions one. P5509 was removed that day as a duplicate of P7798, and the Gillis Access extension, P7807, went into service and now draws in the grey background). Update that count in `map.js` after a rerun.
 - The four shared hub lines (Blackcomb, Blackfin, Eiger Express, Pelican) are included and named in the note.
 - "Louisiana LNG Terminal" in the pipelines sheet is treated as Woodside Louisiana LNG.
-- Alaska LNG and the Ohio line are outside the frame. Saguaro Energía (Sonora, Mexico) is shown by an arrow.
+- Alaska LNG and the Ohio line are outside the frame. Saguaro Energía (Sonora, Mexico) is off the west edge: the Saguaro Connector (P5664) stops at the Rio Grande, so the Sierra Madre Gas Pipeline (P5795, Mexico, proposed) is added by hand through `ONWARD_LEGS` in `prep_data.py`, because the backend doesn't flag it as LNG-linked. An arrow at the frame edge points the way to the terminal.
 - Terminal status is "operating" if any export unit is operating, otherwise "in development".
+
+## House style
+
+Checked against GEM's data visualization style guide (https://globalenergymonitor.org/data-visualization-style-guide) and the GEM color notebook (https://observablehq.com/d/76aaf1373f5dfdab) on 2026-11-19. The Alaska map follows the same rules.
+
+- Width: the figure is 800 px wide, the guide's maximum, so `--scale 2` gives a 1600 px PNG. `Wfig` in `map.js`, `FIG_W` in `export.py` and the `#wrap` max-width in `style.css` must agree.
+- Fonts: Plus Jakarta Sans for the title (28 px bold), subtitle (18 px) and footer (14 px). Barlow Semi Condensed at 16 px for the legend, terminal labels, state labels, annotations and the inset title. The country label is 20 px. All text is #3A4A50.
+- Colors: orange #FE4F2D for the highlighted pipelines, grey #BECCCF for the operating network, teal #016B83 for terminals and the logo, water #C8D5D9, land #F2F2EB, borders #555555 at 40% opacity for countries and 18% for states.
+- Footer: the source line comes first and the note below it. The logo is 40 px high at the bottom right with a 28 px margin.
+- Spacing: 32 px between the header, the map and the footer.
+- Labels are placed by hand in pixels (`LABEL_POS`, `REGION_LABELS`), so check every label after changing the width, the map height or the inset window.
+- One known departure: the gap between a legend sample and its label is 10 px. The guide says 4 px, which is written for small square swatches.
