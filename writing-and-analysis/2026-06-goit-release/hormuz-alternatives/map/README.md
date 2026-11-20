@@ -1,5 +1,7 @@
 # Hormuz crude-oil alternatives — map figure
 
+**Legacy (noted 2026-11-20).** This map was made before the shared map kit in `dataviz/` and does not use it. It carries its own styles and export script, and it predates the current style rules: it is 1000 px wide, the logo is Midnight, and the legend and footer text are larger than the guide allows. Do not copy from this folder for a new map. Start from `dataviz/README.md` instead. Everything below describes this map as it was built.
+
 Static map of Strait of Hormuz crude-oil alternative pipeline routes for the
 GOIT June 2026 release, built to the GEM chart-anatomy spec (one self-contained
 SVG → drops in next to the report's Flourish figures).

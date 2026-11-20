@@ -35,6 +35,12 @@ route-lengths/*.gpkg
 !route-lengths/boundaries.json
 !route-lengths/boundaries-attribution.csv
 
+# dataviz: the style values, the pinned basemaps and the template's example data are committed deliberately. A figure folder that commits its own prepared data carries its own .gitignore (see dataviz/README.md).
+!dataviz/tokens.json
+!dataviz/shared/vendor/*.json
+!dataviz/template-map/data/*
+!dataviz/template-map/*.png
+
 *.bundle.*
 lib/
 node_modules/

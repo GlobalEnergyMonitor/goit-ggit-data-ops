@@ -1,0 +1,6 @@
+# This figure commits its small prepared data and its PNG, which the repo-wide rules would otherwise ignore.
+!data/*.geojson
+!data/*.csv
+!*.png
+# The full database pull stays out of git.
+data/raw/

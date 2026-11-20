@@ -7,7 +7,7 @@ Data-release production, QC, and admin scripts for the Global Energy Monitor pip
 
 This repo is the merge of the former `goit-ggit-qc`, `goit-ggit-data-requests`, and `gem-tracker-constants` repos (June 2026); all histories are preserved.
 
-Most scripts are Jupyter notebooks. Data files (`.xlsx`, `.csv`, `.geojson`, `.json`, and release artifacts) are not committed. Published tracker data is available from [globalenergymonitor.org](https://globalenergymonitor.org/).
+Most scripts are Jupyter notebooks. Data files (`.xlsx`, `.csv`, `.geojson`, `.json`, and release artifacts) are not committed, apart from the small files a map figure needs to be rebuilt (see [dataviz/README.md](dataviz/README.md)). Published tracker data is available from [globalenergymonitor.org](https://globalenergymonitor.org/).
 
 ## Setup
 
@@ -39,6 +39,7 @@ releases/                             the release phase (freeze, export, QC, pub
 └── summary-sheets/                   per-release summary tables (one folder per release)
 route-lengths/                        pipeline length + per-country ratio calculation
 writing-and-analysis/                 per-release briefings, announcements, figures
+dataviz/                              kit for static maps in GEM house style (template, style rules, export)
 gem-wiki/                             GEM.wiki maintenance scripts
 subnational/                          aligning tracker locations with the GEM subnational standard
 maps/                                 local working area for tracker test maps

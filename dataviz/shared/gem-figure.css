@@ -1,0 +1,299 @@
+/* GEM figure styles, shared by every figure built with gem-figure.js.
+
+   The --gem-* variables (text color, fonts, sizes, map colors) are not set in this file. gem-figure.js builds them from ../tokens.json when the page loads and writes them into the exported SVG, so tokens.json stays the one place a style value lives.
+
+   A figure that needs its own rules adds a style.css next to its map.js and links it after this file. */
+
+:root {
+  /* Line widths. Each map line and its legend sample read the same variable, so they always match. A figure can override these in its own style.css. */
+  --pipe-w-construction: 3.5px;
+  --pipe-w-proposed: 2.5px;
+  --pipe-w-context: 1.6px; /* grey background network */
+  --pipe-w-default: 3px;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #fff;
+  color: var(--gem-text);
+  font-family: var(--gem-font-body);
+}
+#wrap {
+  max-width: var(--gem-max-width);
+  margin: 0 auto;
+  padding: 16px 16px 8px;
+}
+svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* header and footer */
+.fig-title {
+  font-family: var(--gem-font-header);
+  font-weight: 700;
+  font-size: var(--gem-size-title);
+  fill: var(--gem-text);
+}
+.fig-subtitle {
+  font-family: var(--gem-font-header);
+  font-weight: 400;
+  font-size: var(--gem-size-subtitle);
+  fill: var(--gem-text);
+}
+.fig-source,
+.fig-note {
+  font-family: var(--gem-font-header);
+  font-weight: 400;
+  font-size: var(--gem-size-footer);
+  fill: var(--gem-text);
+}
+
+/* basemap */
+.water {
+  fill: var(--gem-water);
+}
+.country {
+  fill: var(--gem-land);
+  stroke: #ffffff;
+  stroke-width: 0.5;
+}
+.border {
+  fill: none;
+  stroke: var(--gem-border);
+  stroke-opacity: var(--gem-border-opacity);
+  stroke-width: 1;
+}
+.state-border {
+  fill: none;
+  stroke: var(--gem-border);
+  stroke-opacity: var(--gem-subnational-opacity);
+  stroke-width: 0.8;
+  stroke-dasharray: 3, 2;
+}
+.graticule {
+  fill: none;
+  stroke: #b9c6ca;
+  stroke-width: 0.5;
+  stroke-dasharray: 2, 3;
+  stroke-opacity: 0.7;
+}
+.map-outline {
+  fill: none;
+  stroke: #cdd6d9;
+  stroke-width: 1;
+}
+
+/* lines */
+.context {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: var(--pipe-w-context);
+}
+.pipe {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: var(--pipe-w-default);
+  cursor: pointer;
+}
+/* Keep these after .pipe so they win the tie. */
+.pipe--construction {
+  stroke-width: var(--pipe-w-construction);
+}
+.pipe--proposed {
+  stroke-width: var(--pipe-w-proposed);
+}
+.pipe-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 12;
+  cursor: pointer;
+}
+
+/* points and labels */
+.terminal {
+  stroke-width: 2px;
+}
+.terminal-label {
+  font-family: var(--gem-font-body);
+  font-size: var(--gem-size-body);
+  fill: var(--gem-text);
+  dominant-baseline: central;
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 2.5px;
+  stroke-linejoin: round;
+}
+.country-label {
+  font-family: var(--gem-font-body);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  fill: #6e8c91;
+  text-anchor: middle;
+  dominant-baseline: central;
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.state-label {
+  font-family: var(--gem-font-body);
+  font-size: var(--gem-size-body);
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  fill: #8ba3a8;
+  text-anchor: middle;
+  dominant-baseline: central;
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.place-label {
+  font-family: var(--gem-font-body);
+  font-weight: 500;
+  font-size: var(--gem-size-body);
+  fill: var(--gem-text);
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 3px;
+}
+.place-dot {
+  fill: var(--gem-text);
+  stroke: #fff;
+  stroke-width: 1px;
+}
+
+/* annotations */
+.annotation path {
+  fill: none;
+  stroke: var(--gem-text);
+  stroke-width: 2;
+}
+.annotation text {
+  font-family: var(--gem-font-body);
+  font-size: var(--gem-size-body);
+  fill: var(--gem-text);
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+/* inset */
+.inset-bg {
+  fill: #ffffff;
+}
+.inset-frame {
+  fill: none;
+  stroke: var(--gem-text);
+  stroke-width: 1;
+}
+.inset-marker {
+  fill: none;
+  stroke: var(--gem-text);
+  stroke-width: 1.2;
+}
+.inset-leader {
+  stroke: var(--gem-text);
+  stroke-width: 1;
+}
+.inset-title {
+  font-family: var(--gem-font-body);
+  font-size: var(--gem-size-body);
+  font-weight: 600;
+  fill: var(--gem-text);
+}
+
+/* legend */
+.legend-title {
+  font-family: var(--gem-font-header);
+  font-weight: 600;
+  font-size: var(--gem-size-body);
+  fill: var(--gem-text);
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+/* Faint panel behind the legend. Change fill-opacity for more or less see-through. */
+.legend-bg {
+  fill: #ffffff;
+  fill-opacity: 0.72;
+  stroke: #cdd6d9;
+  stroke-opacity: 0.7;
+  stroke-width: 1;
+}
+.legend text {
+  font-family: var(--gem-font-body);
+  font-size: var(--gem-size-body);
+  fill: var(--gem-text);
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+/* toolbar (screen only, hidden on export) */
+.toolbar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 0 0 8px;
+}
+.toolbar button {
+  font-family: var(--gem-font-body);
+  font-size: 13px;
+  color: var(--gem-text);
+  background: #fff;
+  border: 1px solid #cdd6d9;
+  border-radius: 4px;
+  padding: 5px 11px;
+  cursor: pointer;
+}
+.toolbar button:hover {
+  background: #f2f2eb;
+  border-color: #9fb0b4;
+}
+.toolbar label {
+  font-size: 12.5px;
+  color: #6e8c91;
+  margin-left: 6px;
+}
+.toolbar select {
+  font-family: inherit;
+  font-size: 12.5px;
+  color: var(--gem-text);
+  border: 1px solid #cdd6d9;
+  border-radius: 4px;
+  padding: 3px 5px;
+}
+
+/* hover tooltip (screen only) */
+.tooltip {
+  position: absolute;
+  pointer-events: none;
+  display: none;
+  z-index: 10;
+  background: #fff;
+  border: 1px solid #cdd6d9;
+  border-radius: 4px;
+  padding: 7px 9px;
+  font-size: 12.5px;
+  max-width: 260px;
+  color: var(--gem-text);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.14);
+  line-height: 1.35;
+}
+.tooltip b {
+  font-weight: 600;
+}
+.tooltip .meta {
+  color: #6e8c91;
+}

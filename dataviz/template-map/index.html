@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GEM map template</title>
+<link rel="stylesheet" href="../shared/gem-fonts.css">
+<link rel="stylesheet" href="../shared/gem-figure.css">
+</head>
+<body>
+<div id="wrap">
+  <div class="toolbar">
+    <button id="dl-svg">Download SVG</button>
+    <button id="dl-png">Download PNG</button>
+    <label for="png-scale">PNG scale</label>
+    <select id="png-scale"><option value="2" selected>2×</option><option value="3">3×</option><option value="4">4×</option></select>
+  </div>
+  <div id="map"></div>
+</div>
+<div class="tooltip"></div>
+
+<script src="../shared/vendor/d3-7.9.0.min.js"></script>
+<script src="../shared/vendor/topojson-client-3.1.0.min.js"></script>
+<script src="../shared/gem-figure.js"></script>
+<script src="map.js"></script>
+</body>
+</html>
