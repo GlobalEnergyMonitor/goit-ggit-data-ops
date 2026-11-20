@@ -165,3 +165,8 @@ venv/
 
 # claude code local settings
 .claude/settings.local.json
+
+# internal-only notes (credentials, auth flows); never commit
+README.internal.md
+# local-only Claude Code project instructions (credential and auth detail); never commit
+CLAUDE.local.md
