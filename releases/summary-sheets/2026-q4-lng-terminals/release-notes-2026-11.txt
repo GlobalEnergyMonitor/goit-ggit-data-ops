@@ -1,0 +1,6 @@
+This release replaces the October 2026 release and its corrected version of November 16, 2026. It is built from the GEM database export of November 20, 2026.
+It keeps all the corrections from November 16, 2026. Cameroon FLNG Terminal is idled and placed off Kribi, Cameroon. Bahrain Hidd FLNG Terminal has 2019 as its planned start year and April 2025 as its actual start.
+Stop years are blank for the 11 operating units that were idled for a while and then restarted. The database still gives them a stop year from the idle period, so they are corrected in this file.
+Plaquemines LNG Terminal Phase 2 is 6.67 million tonnes per year. The database records that number in the wrong unit, so it and the terminal total are corrected in this file.
+The Corrections sheet lists every value that differs from the database export, with the reason.
+Other changes since October 2026 come from the database. One unit was added: Polar LNG Terminal in the United States, proposed, 7.0 million tonnes per year. Aguirre GasPort FSRU and Kangan LNG Terminal are now cancelled. Plaquemines LNG Terminal Phase 2 is now operating. The terminal total for Papua New Guinea LNG Terminal is now 10.9 million tonnes per year. Some owners, operators, and start, proposal, and construction dates were also updated.

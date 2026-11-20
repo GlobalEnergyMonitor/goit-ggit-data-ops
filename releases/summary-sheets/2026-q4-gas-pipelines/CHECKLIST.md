@@ -4,9 +4,9 @@ Copied from [../../RELEASE-CHECKLIST.md](../../RELEASE-CHECKLIST.md) on 2026-10-
 
 ```
 Release:          2026-q4-gas-pipelines
-Release month:    2026-11                  (stamp used in download filenames; confirm at freeze)
+Release month:    2026-10                  (the "October 2026 release", decided 2026-11-19; download filenames, copyright tab, draft banners)
 Tracker sheet:    1foPLE6K-uqFlaYgLPAUxzeXfDO5wOOqE7tibNHeqTek  ("Pipelines (Gas/Oil/NGL) - main", tab "Gas pipelines")
-Release snapshot: 1f-7LGFWa6v9O63e2P7X3aHRWIJGgp87eSer_i3jm91Q  ("Copy of Pipelines (Gas/Oil/NGL) - main - Oct 2026 pre-release for Ownership team", made 2026-10-29)
+Release snapshot: 1WffDjdiYVhx_59dofNcE5sb7BdGu3v6iOjTyxd1Z8a4  ("Copy of Pipelines (Gas/Oil/NGL) - main - Nov 19 2026 snapshot (Oct 2026 release, ownership provisional)", made 2026-11-19). Earlier copies: 1f-7LGFW… (ownership hand-off, 2026-10-29), 1M6QjSsc… (interim, 2026-11-17)
 Data freeze:      TBD (Asana "Prep for GGIT pipelines update - Q3 2026": start 2026-10-09, due 2026-11-10)
 Update cycle:     ../../../updates/2026-q3-gas-pipelines/
 Run by:           Baird

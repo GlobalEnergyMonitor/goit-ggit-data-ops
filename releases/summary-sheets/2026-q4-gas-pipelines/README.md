@@ -193,9 +193,15 @@ The notebook now reads the interim snapshot (`1M6QjSscN7ck2XpiSKQvTcfMbtMP_FHWwj
 
 `draft-workbook/write_draft.py` is the only step beyond the notebook. It reads the Global xlsx and overwrites the six gas tabs and the cost per km tab of the DRAFT summary workbook in the release Drive folder (dry run first with the `dry` argument, real writes through `gws-gem-write`, so each run needs approval). The owner tab is provisional until the parent research lands. `find_cell.py` is the small gws helper it imports. Re-run the notebook and the writer after the final snapshot.
 
+## Run of 2026-11-19: October 2026 release snapshot
+
+The release is called the **October 2026 release** (decided 2026-11-19), so the copyright tab on the live tracker, the download filenames (`--release-month 2026-10`) and the draft banners all say October 2026. Before the snapshot, the normalized routes checkout was 9 commits behind; after updating it, `route_lengths.py --write` refreshed both length tabs (5,486 lengths, up 18, and 7,460 country rows). The live tracker was then copied to `1WffDjdiYVhx_59dofNcE5sb7BdGu3v6iOjTyxd1Z8a4`. Ownership is still provisional in that copy.
+
+The notebook reads that snapshot. The guard passes with every status within 0.1 km. Global and the four regional runs are written next to the notebook and in `regional/<tracker code>/`. In-development capex is US$628.2 bn on the gas-only basis (763.1 bn on the old all-fuel basis), against 636.1 in the Nov 17 interim run. Most of that change is in Iran and Pakistan, where about 2,600 km moved from construction to shelved. The downloads (`GEM-GGIT-Gas-Pipelines-2026-10.*`, 4,608 rows) pass `data-release-qc.py` with 0 FAIL and the four known WARNs, and their km by status match the notebook exactly. `write_draft.py` wrote the draft workbook. The only formatting fix needed was the top border on the owner tab's Total row, which moved up one row.
+
 ## Open before publishing
 
-- Repoint `SPREADSHEET_KEY` at the final Nov 2026 snapshot (after ownership) and rerun; the interim snapshot is pre-ownership.
+- Ownership is still provisional in the Nov 19 snapshot. When parent research lands, take a new snapshot, repoint `SPREADSHEET_KEY`, and rerun the notebook, the downloads and `write_draft.py`.
 - Update the wiki page [GGIT and GOIT cost estimates](https://www.gem.wiki/GGIT_and_GOIT_cost_estimates) with the additional cost estimates for the November 2026 release, once the final snapshot is in (preview and per-edit approval required).
 - Decide whether the gas capex tabs ship on the corrected gas-only basis (default here) or
   the historical all-fuel basis, and note the choice in the release notes either way.

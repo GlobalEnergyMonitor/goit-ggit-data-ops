@@ -2,8 +2,9 @@ import json,sys,math,pandas as pd
 sys.path.insert(0,'/Users/baird/Dropbox/_git_ALL/_github-repos-gem/gem-db-ops')
 import gem_sheets
 from find_cell import gws
-K="15vRJg2uwsNbEKYB1LrvqKRkEi-0Ta4OP7x6awUNEGgI"; import os; SNAP=os.environ.get("SNAP","1f-7LGFWa6v9O63e2P7X3aHRWIJGgp87eSer_i3jm91Q")
-import os; G=os.environ.get("GXLSX",os.path.join(os.path.dirname(os.path.abspath(__file__)),"..","GGIT-Summary-Sheets-Gas-2026-11-17.xlsx")); R="~/.config/gws-gem"; W="~/.config/gws-gem-write"
+K="15vRJg2uwsNbEKYB1LrvqKRkEi-0Ta4OP7x6awUNEGgI"; import os; SNAP=os.environ.get("SNAP","1WffDjdiYVhx_59dofNcE5sb7BdGu3v6iOjTyxd1Z8a4")
+MONTH=os.environ.get("RELEASE_LABEL","October 2026")
+import os; G=os.environ.get("GXLSX",os.path.join(os.path.dirname(os.path.abspath(__file__)),"..","GGIT-Summary-Sheets-Gas-2026-11-19.xlsx")); R="~/.config/gws-gem"; W="~/.config/gws-gem-write"
 DRY=len(sys.argv)>1 and sys.argv[1]=="dry"
 def clean(v,dp=2):
     if v is None or (isinstance(v,float) and math.isnan(v)): return ""
@@ -55,7 +56,7 @@ for t,r0,hc,ht,data in PLAN:
     gws(W,"sheets","spreadsheets","values","update","--params",json.dumps({"spreadsheetId":K,"range":f"'{t}'!A{r0}","valueInputOption":"RAW"}),"--json",json.dumps({"values":data}))
     if old_end>new_end:
         gws(W,"sheets","spreadsheets","values","clear","--params",json.dumps({"spreadsheetId":K,"range":f"'{t}'!A{new_end+1}:Z{old_end}"}),"--json","{}")
-    note="Gas Pipelines data, November 2026 (DRAFT; parent research not finished, owner figures are provisional)" if "owner" in t else "Gas Pipelines data, November 2026 (DRAFT)"
+    note=f"Gas Pipelines data, {MONTH} (DRAFT; parent research not finished, owner figures are provisional)" if "owner" in t else f"Gas Pipelines data, {MONTH} (DRAFT)"
     gws(W,"sheets","spreadsheets","values","update","--params",json.dumps({"spreadsheetId":K,"range":f"'{t}'!A3","valueInputOption":"RAW"}),"--json",json.dumps({"values":[[note]]}))
 import pandas as pd
 ct="Pipeline cost per km estimates"
@@ -65,7 +66,7 @@ def cost(sheet,first):
     print(ct,"rows from",first,len(rows))
     if not DRY: gws(W,"sheets","spreadsheets","values","update","--params",json.dumps({"spreadsheetId":K,"range":f"'{ct}'!A{first}","valueInputOption":"RAW"}),"--json",json.dumps({"values":rows}))
 cost("Cost per km by region",9); cost("Cost per km by subregion",17)
-if not DRY: gws(W,"sheets","spreadsheets","values","update","--params",json.dumps({"spreadsheetId":K,"range":f"'{ct}'!A3","valueInputOption":"RAW"}),"--json",json.dumps({"values":[["Gas Pipelines data, November 2026 (DRAFT)"]]}))
+if not DRY: gws(W,"sheets","spreadsheets","values","update","--params",json.dumps({"spreadsheetId":K,"range":f"'{ct}'!A3","valueInputOption":"RAW"}),"--json",json.dumps({"values":[[f"Gas Pipelines data, {MONTH} (DRAFT)"]]}))
 # trim empty rows below the data (every tab we wrote, ending on its last non-blank row)
 if not DRY:
     meta=gws(R,"sheets","spreadsheets","get","--params",json.dumps({"spreadsheetId":K,"fields":"sheets.properties(sheetId,title,gridProperties.rowCount)"}))
